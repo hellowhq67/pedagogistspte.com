@@ -12,6 +12,7 @@
 # next.js
 /.next/
 /out/
+.next/
 
 # production
 /build
@@ -35,6 +36,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .vscode
+
+# cache
+.turbo
+.swc
+.cache
+.parcel-cache
 
 # Docker
 postgres_data/
