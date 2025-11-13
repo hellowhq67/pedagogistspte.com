@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Writing — Summarize Written Text 1",
+    "type": "summarize_written_text",
+    "promptText": "Read the passage about renewable energy adoption and write a one-sentence summary capturing its main point.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "writing", "swt", "energy"]
+  },
+  {
+    "title": "Writing — Summarize Written Text 2",
+    "type": "summarize_written_text",
+    "promptText": "Summarize the paragraph on the impact of public transportation on urban mobility in a single concise sentence.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "swt", "mobility"]
+  },
+  {
+    "title": "Writing — Summarize Written Text 3",
+    "type": "summarize_written_text",
+    "promptText": "Write a one-sentence summary of the provided text discussing the role of data privacy regulations in product analytics.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "writing", "swt", "privacy"]
+  },
+  {
+    "title": "Writing — Write Essay 1",
+    "type": "write_essay",
+    "promptText": "Some people believe remote work increases productivity, while others argue it reduces collaboration. Discuss both views and give your opinion.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "essay", "workplace"]
+  },
+  {
+    "title": "Writing — Write Essay 2",
+    "type": "write_essay",
+    "promptText": "To what extent do you agree or disagree that governments should prioritize public transport over private vehicle infrastructure?",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "essay", "infrastructure"]
+  },
+  {
+    "title": "Writing — Write Essay 3",
+    "type": "write_essay",
+    "promptText": "Do the benefits of stricter data privacy laws outweigh the potential limitations they impose on innovation? Provide reasons and examples.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "writing", "essay", "technology"]
+  }
+]

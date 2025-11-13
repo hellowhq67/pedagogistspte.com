@@ -1,19 +1,19 @@
-import { initialCategories } from "@/lib/pte/data";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
+import Image from 'next/image'
+import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { initialCategories } from '@/lib/pte/data'
 
 export default function Page() {
-  const parentCategories = initialCategories.filter((c) => c.parent === null);
+  const parentCategories = initialCategories.filter((c) => c.parent === null)
 
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">
           Start Your PTE Academic Practice Test Online
         </h1>
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="mt-1 text-sm text-gray-600">
           Prepare with targeted online PTE practice tests across all sections.
         </p>
       </div>
@@ -21,10 +21,10 @@ export default function Page() {
       {parentCategories.map((parent) => {
         const childCategories = initialCategories.filter(
           (c) => c.parent === parent.id
-        );
+        )
         return (
           <section key={parent.id} className="mb-8">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="mb-4 flex items-center gap-4">
               <Image
                 src={parent.icon}
                 alt={parent.title}
@@ -36,8 +36,8 @@ export default function Page() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {childCategories.map((child) => (
                 <Card key={child.id}>
-                  <CardContent className="p-4 flex flex-col h-full">
-                    <div className="flex items-center gap-4 mb-4">
+                  <CardContent className="flex h-full flex-col p-4">
+                    <div className="mb-4 flex items-center gap-4">
                       <Image
                         src={child.icon}
                         alt={child.title}
@@ -51,7 +51,7 @@ export default function Page() {
                         </p>
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600 flex-grow">
+                    <p className="flex-grow text-sm text-gray-600">
                       {child.description}
                     </p>
                     <div className="mt-4 flex justify-end">
@@ -68,8 +68,8 @@ export default function Page() {
               ))}
             </div>
           </section>
-        );
+        )
       })}
     </main>
-  );
+  )
 }

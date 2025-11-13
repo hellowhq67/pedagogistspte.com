@@ -1,65 +1,70 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Clock, FileText, PenTool } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { initialCategories } from '@/lib/pte/data';
+import { use, useEffect, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ArrowLeft, Clock, FileText, PenTool } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+import { initialCategories } from '@/lib/pte/data'
 
 // Define types for our writing questions
 type WritingQuestion = {
-  id: string;
-  title: string;
-  description: string;
-  instructions: string;
-  example?: string;
-  tips?: string[];
-  preparationTime: number; // in seconds
-  answerTime: number; // in seconds
-  category: string;
-  passage?: string;
-};
-
-type WritingTab = {
-  id: string;
-  title: string;
-  shortName: string;
-  description: string;
-  icon: string;
-  color: string;
-  question_count?: number;
-  questions: WritingQuestion[];
-};
-
-interface WritingPracticePageProps {
-  params: {
-    category: string;
-  };
+  id: string
+  title: string
+  description: string
+  instructions: string
+  example?: string
+  tips?: string[]
+  preparationTime: number // in seconds
+  answerTime: number // in seconds
+  category: string
+  passage?: string
 }
 
-export default function WritingPracticePage({ params }: WritingPracticePageProps) {
-  const { category } = params;
-  const [activeTab, setActiveTab] = useState(category || 'summarize-written-text');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswer, setUserAnswer] = useState('');
-  const [timer, setTimer] = useState(0);
-  const [timerActive, setTimerActive] = useState(false);
-  const [phase, setPhase] = useState<'preparation' | 'writing'>('preparation');
-  const [writingData, setWritingData] = useState<WritingTab[]>([]);
-  const [loading, setLoading] = useState(true);
+type WritingTab = {
+  id: string
+  title: string
+  shortName: string
+  description: string
+  icon: string
+  color: string
+  question_count?: number
+  questions: WritingQuestion[]
+}
+
+interface WritingPracticePageProps {
+  params: Promise<{
+    category: string
+  }>
+}
+
+export default function WritingPracticePage(props: WritingPracticePageProps) {
+  const params = use(props.params)
+  const { category } = params
+  const [activeTab, setActiveTab] = useState(
+    category || 'summarize-written-text'
+  )
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [userAnswer, setUserAnswer] = useState('')
+  const [timer, setTimer] = useState(0)
+  const [timerActive, setTimerActive] = useState(false)
+  const [phase, setPhase] = useState<'preparation' | 'writing'>('preparation')
+  const [writingData, setWritingData] = useState<WritingTab[]>([])
+  const [loading, setLoading] = useState(true)
 
   // Fetch and transform the writing data from initialCategories
   useEffect(() => {
     const fetchWritingData = () => {
       // Get all writing categories (where parent is 2 - the writing parent)
-      const writingCategories = initialCategories.filter(cat => cat.parent === 2);
+      const writingCategories = initialCategories.filter(
+        (cat) => cat.parent === 2
+      )
 
       // Transform to the format expected by our component
-      const transformedData: WritingTab[] = writingCategories.map(cat => ({
+      const transformedData: WritingTab[] = writingCategories.map((cat) => ({
         id: cat.code,
         title: cat.title,
         shortName: cat.short_name || cat.code.toUpperCase(),
@@ -67,11 +72,11 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
         icon: cat.icon,
         color: cat.color || '#10b981', // Default green color if none provided
         question_count: cat.question_count,
-        questions: [] // For now, we'll use placeholder questions
-      }));
+        questions: [], // For now, we'll use placeholder questions
+      }))
 
       // For now, create some placeholder questions for each category
-      const dataWithQuestions = transformedData.map(tab => ({
+      const dataWithQuestions = transformedData.map((tab) => ({
         ...tab,
         questions: Array.from({ length: tab.question_count || 5 }, (_, i) => ({
           id: `${tab.id}-${i + 1}`,
@@ -81,88 +86,99 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
           example: `This is a sample ${tab.title} example`,
           tips: ['Sample tip 1', 'Sample tip 2'],
           preparationTime: tab.id.includes('summarize-written-text') ? 10 : 0,
-          answerTime: tab.id.includes('summarize-written-text') ? 600 :
-                     tab.id.includes('write-essay') ? 1200 : 600,
+          answerTime: tab.id.includes('summarize-written-text')
+            ? 600
+            : tab.id.includes('write-essay')
+              ? 1200
+              : 600,
           category: tab.id,
-          passage: tab.id.includes('summarize-written-text') ?
-            'This is a sample passage for summarization. It contains information about various topics that need to be condensed into a single sentence summary. The passage discusses important concepts and ideas that students should understand.' : undefined
-        }))
-      }));
+          passage: tab.id.includes('summarize-written-text')
+            ? 'This is a sample passage for summarization. It contains information about various topics that need to be condensed into a single sentence summary. The passage discusses important concepts and ideas that students should understand.'
+            : undefined,
+        })),
+      }))
 
-      setWritingData(dataWithQuestions);
-      setLoading(false);
-    };
+      setWritingData(dataWithQuestions)
+      setLoading(false)
+    }
 
-    fetchWritingData();
-  }, []);
+    fetchWritingData()
+  }, [])
 
   // Get the current tab data
-  const currentTab = writingData.find(tab => tab.id === activeTab);
-  const currentQuestion = currentTab?.questions[currentQuestionIndex];
+  const currentTab = writingData.find((tab) => tab.id === activeTab)
+  const currentQuestion = currentTab?.questions[currentQuestionIndex]
 
   // Handle starting the question
   const startQuestion = () => {
-    setPhase('preparation');
-    setTimerActive(true);
+    setPhase('preparation')
+    setTimerActive(true)
 
     // Start preparation timer
-    let timeLeft = currentQuestion?.preparationTime || 10;
-    setTimer(timeLeft);
+    let timeLeft = currentQuestion?.preparationTime || 10
+    setTimer(timeLeft)
 
     const timerInterval = setInterval(() => {
-      timeLeft -= 1;
-      setTimer(timeLeft);
+      timeLeft -= 1
+      setTimer(timeLeft)
 
       if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        setTimerActive(false);
-        setPhase('writing');
+        clearInterval(timerInterval)
+        setTimerActive(false)
+        setPhase('writing')
         // Start writing timer
-        let writingTime = currentQuestion?.answerTime || 600;
-        setTimer(writingTime);
+        let writingTime = currentQuestion?.answerTime || 600
+        setTimer(writingTime)
 
         const writingTimerInterval = setInterval(() => {
-          writingTime -= 1;
-          setTimer(writingTime);
+          writingTime -= 1
+          setTimer(writingTime)
 
           if (writingTime <= 0) {
-            clearInterval(writingTimerInterval);
-            setTimerActive(false);
+            clearInterval(writingTimerInterval)
+            setTimerActive(false)
           }
-        }, 1000);
+        }, 1000)
       }
-    }, 1000);
-  };
+    }, 1000)
+  }
 
   // Navigate to next question
   const nextQuestion = () => {
-    if (currentQuestion && currentQuestionIndex < currentTab!.questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setUserAnswer('');
-      setPhase('preparation');
-      setTimerActive(false);
+    if (
+      currentQuestion &&
+      currentQuestionIndex < currentTab!.questions.length - 1
+    ) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1)
+      setUserAnswer('')
+      setPhase('preparation')
+      setTimerActive(false)
     }
-  };
+  }
 
   // Navigate to previous question
   const prevQuestion = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-      setUserAnswer('');
-      setPhase('preparation');
-      setTimerActive(false);
+      setCurrentQuestionIndex(currentQuestionIndex - 1)
+      setUserAnswer('')
+      setPhase('preparation')
+      setTimerActive(false)
     }
-  };
+  }
 
   // Reset timer when question changes
   useEffect(() => {
     if (currentQuestion) {
-      setTimer(currentQuestion.preparationTime);
-      setTimerActive(false);
-      setPhase('preparation');
-      setUserAnswer('');
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Reset timer when question changes
+      setTimer(currentQuestion.preparationTime)
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Reset active flag on question change
+      setTimerActive(false)
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Reset phase alongside question change
+      setPhase('preparation')
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- Clear user input when question changes
+      setUserAnswer('')
     }
-  }, [currentQuestionIndex, currentQuestion]);
+  }, [currentQuestionIndex, currentQuestion])
 
   if (loading || !currentTab || !currentQuestion) {
     return (
@@ -170,21 +186,21 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
         <div className="flex items-center gap-4">
           <Link href="/pte/practice">
             <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Practice
             </Button>
           </Link>
           <h1 className="text-2xl font-bold">PTE Writing Practice</h1>
         </div>
 
-        <div className="flex items-center justify-center min-h-[400px]">
+        <div className="flex min-h-[400px] items-center justify-center">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <div className="border-primary mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2"></div>
             <p className="text-muted-foreground">Loading writing practice...</p>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -194,13 +210,15 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
         <div className="flex items-center gap-4">
           <Link href="/pte/practice">
             <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
+              <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Practice
             </Button>
           </Link>
           <div>
             <h1 className="text-2xl font-bold">PTE Writing Practice</h1>
-            <p className="text-muted-foreground">Practice your writing skills for the PTE Academic test</p>
+            <p className="text-muted-foreground">
+              Practice your writing skills for the PTE Academic test
+            </p>
           </div>
         </div>
       </div>
@@ -208,7 +226,11 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           {writingData.map((tab) => (
-            <TabsTrigger key={tab.id} value={tab.id} className="flex flex-col items-center">
+            <TabsTrigger
+              key={tab.id}
+              value={tab.id}
+              className="flex flex-col items-center"
+            >
               <div className="relative">
                 <Image
                   src={tab.icon}
@@ -218,7 +240,7 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
                   className="mb-1"
                 />
                 <div
-                  className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-6 h-1 rounded-full text-xs"
+                  className="absolute -bottom-1 left-1/2 h-1 w-6 -translate-x-1/2 transform rounded-full text-xs"
                   style={{ backgroundColor: tab.color }}
                 />
               </div>
@@ -229,35 +251,39 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
 
         {writingData.map((tab) => (
           <TabsContent key={tab.id} value={tab.id} className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
               {/* Question Bank */}
               <div className="lg:col-span-1">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-lg flex items-center justify-between">
+                    <CardTitle className="flex items-center justify-between text-lg">
                       <span>Questions</span>
-                      <span className="text-sm text-muted-foreground">({tab.questions.length})</span>
+                      <span className="text-muted-foreground text-sm">
+                        ({tab.questions.length})
+                      </span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-2 max-h-[600px] overflow-y-auto pr-2">
+                    <div className="max-h-[600px] space-y-2 overflow-y-auto pr-2">
                       {tab.questions.map((question, index) => (
                         <div
                           key={question.id}
-                          className={`p-3 rounded cursor-pointer transition-colors ${
+                          className={`cursor-pointer rounded p-3 transition-colors ${
                             index === currentQuestionIndex
-                              ? 'bg-primary/10 border border-primary'
+                              ? 'bg-primary/10 border-primary border'
                               : 'hover:bg-muted'
                           }`}
                           onClick={() => setCurrentQuestionIndex(index)}
                         >
                           <div className="flex items-center gap-2">
-                            <span className="text-sm font-medium w-6 h-6 flex items-center justify-center rounded-full bg-primary/10">
+                            <span className="bg-primary/10 flex h-6 w-6 items-center justify-center rounded-full text-sm font-medium">
                               {index + 1}
                             </span>
-                            <span className="text-sm truncate">{question.title}</span>
+                            <span className="truncate text-sm">
+                              {question.title}
+                            </span>
                           </div>
-                          <div className="text-xs text-muted-foreground mt-1 ml-8">
+                          <div className="text-muted-foreground mt-1 ml-8 text-xs">
                             {question.description.substring(0, 40)}...
                           </div>
                         </div>
@@ -268,7 +294,7 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
               </div>
 
               {/* Question Content */}
-              <div className="lg:col-span-3 space-y-4">
+              <div className="space-y-4 lg:col-span-3">
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -277,7 +303,7 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
                         alt={tab.title}
                         width={32}
                         height={32}
-                        className="bg-gray-100 p-1 rounded"
+                        className="rounded bg-gray-100 p-1"
                       />
                       <span>{currentQuestion.title}</span>
                     </CardTitle>
@@ -285,45 +311,53 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
                   <CardContent>
                     <div className="space-y-6">
                       <div>
-                        <h3 className="font-medium mb-2">Instructions:</h3>
-                        <div className="p-4 bg-blue-50 rounded-md text-sm">
+                        <h3 className="mb-2 font-medium">Instructions:</h3>
+                        <div className="rounded-md bg-blue-50 p-4 text-sm">
                           <p>{currentQuestion.instructions}</p>
                         </div>
                       </div>
 
                       {currentQuestion.passage && (
                         <div>
-                          <h3 className="font-medium mb-2">Passage:</h3>
-                          <div className="p-4 bg-gray-50 rounded-md text-sm leading-relaxed">
+                          <h3 className="mb-2 font-medium">Passage:</h3>
+                          <div className="rounded-md bg-gray-50 p-4 text-sm leading-relaxed">
                             <p>{currentQuestion.passage}</p>
                           </div>
                         </div>
                       )}
 
-                      {currentQuestion.tips && currentQuestion.tips.length > 0 && (
-                        <div>
-                          <h3 className="font-medium mb-2">Tips:</h3>
-                          <ul className="list-disc list-inside space-y-1">
-                            {currentQuestion.tips.map((tip, index) => (
-                              <li key={index} className="text-muted-foreground">{tip}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                      {currentQuestion.tips &&
+                        currentQuestion.tips.length > 0 && (
+                          <div>
+                            <h3 className="mb-2 font-medium">Tips:</h3>
+                            <ul className="list-inside list-disc space-y-1">
+                              {currentQuestion.tips.map((tip, index) => (
+                                <li
+                                  key={index}
+                                  className="text-muted-foreground"
+                                >
+                                  {tip}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
 
                       <div className="pt-4">
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="mb-2 flex items-center justify-between">
                           <span className="text-sm font-medium">
-                            {phase === 'preparation' ? 'Preparation Time' : 'Writing Time'}
+                            {phase === 'preparation'
+                              ? 'Preparation Time'
+                              : 'Writing Time'}
                           </span>
                           <span className="text-sm">{timer}s</span>
                         </div>
-                        <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
                           <div
-                            className="h-full bg-primary transition-all duration-1000"
+                            className="bg-primary h-full transition-all duration-1000"
                             style={{
                               width: `${(timer / (phase === 'preparation' ? currentQuestion.preparationTime : currentQuestion.answerTime)) * 100}%`,
-                              backgroundColor: tab.color
+                              backgroundColor: tab.color,
                             }}
                           />
                         </div>
@@ -331,14 +365,14 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
 
                       {phase === 'writing' && (
                         <div>
-                          <h3 className="font-medium mb-2">Your Answer:</h3>
+                          <h3 className="mb-2 font-medium">Your Answer:</h3>
                           <Textarea
                             value={userAnswer}
                             onChange={(e) => setUserAnswer(e.target.value)}
                             placeholder="Write your answer here..."
                             className="min-h-[200px] resize-none"
                           />
-                          <div className="text-xs text-muted-foreground mt-1">
+                          <div className="text-muted-foreground mt-1 text-xs">
                             {userAnswer.length} characters
                           </div>
                         </div>
@@ -347,7 +381,7 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
                       <div className="flex gap-2">
                         {phase === 'preparation' && !timerActive && (
                           <Button onClick={startQuestion}>
-                            <Clock className="w-4 h-4 mr-2" />
+                            <Clock className="mr-2 h-4 w-4" />
                             Start Preparation
                           </Button>
                         )}
@@ -372,7 +406,9 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
                         <Button
                           onClick={nextQuestion}
                           variant="outline"
-                          disabled={currentQuestionIndex === tab.questions.length - 1}
+                          disabled={
+                            currentQuestionIndex === tab.questions.length - 1
+                          }
                         >
                           Next
                         </Button>
@@ -385,30 +421,43 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <PenTool className="w-5 h-5" />
+                      <PenTool className="h-5 w-5" />
                       <span>AI Feedback</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-primary">7.5</div>
-                        <div className="text-sm text-muted-foreground">Overall Score</div>
+                        <div className="text-primary text-3xl font-bold">
+                          7.5
+                        </div>
+                        <div className="text-muted-foreground text-sm">
+                          Overall Score
+                        </div>
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-green-500">8.0</div>
-                        <div className="text-sm text-muted-foreground">Content</div>
+                        <div className="text-3xl font-bold text-green-500">
+                          8.0
+                        </div>
+                        <div className="text-muted-foreground text-sm">
+                          Content
+                        </div>
                       </div>
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-blue-500">7.0</div>
-                        <div className="text-sm text-muted-foreground">Grammar</div>
+                        <div className="text-3xl font-bold text-blue-500">
+                          7.0
+                        </div>
+                        <div className="text-muted-foreground text-sm">
+                          Grammar
+                        </div>
                       </div>
                     </div>
 
                     <div className="mt-4">
-                      <h4 className="font-medium mb-2">Feedback Summary:</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Good content with clear ideas. Work on grammar accuracy and sentence variety.
+                      <h4 className="mb-2 font-medium">Feedback Summary:</h4>
+                      <p className="text-muted-foreground text-sm">
+                        Good content with clear ideas. Work on grammar accuracy
+                        and sentence variety.
                       </p>
                     </div>
                   </CardContent>
@@ -419,5 +468,5 @@ export default function WritingPracticePage({ params }: WritingPracticePageProps
         ))}
       </Tabs>
     </div>
-  );
+  )
 }

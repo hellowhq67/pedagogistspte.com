@@ -1,25 +1,27 @@
-import type { Config } from "drizzle-kit";
-import { config } from "dotenv";
+import { config } from 'dotenv'
+import type { Config } from 'drizzle-kit'
 
-// Load environment variables from .env.local
-config({ path: ".env.local" });
+// Load env from .env.local then fallback to .env
+config({ path: '.env.local' })
+config()
 
-if (!process.env.POSTGRES_URL) {
+const DATABASE_URL = process.env.POSTGRES_URL || process.env.DATABASE_URL
+if (!DATABASE_URL) {
   throw new Error(
-    "POSTGRES_URL is not defined. Make sure it exists in your .env.local file."
-  );
+    'Neither POSTGRES_URL nor DATABASE_URL is defined. Add one to .env.local or .env.'
+  )
 }
 
 export default {
-  schema: "./lib/db/schema.ts",
-  out: "./lib/db/migrations",
-  dialect: "postgresql",
+  schema: './lib/db/schema.ts',
+  out: './lib/db/migrations',
+  dialect: 'postgresql',
   dbCredentials: {
-    url: process.env.POSTGRES_URL,
+    url: DATABASE_URL,
   },
   migrations: {
     // Configure migrations settings here if needed
     // For available options, refer to the Drizzle documentation: https://orm.drizzle.team/kit-docs/migrations
   },
   // Removed invalid 'studio' property that was causing TypeScript error
-} satisfies Config;
+} satisfies Config

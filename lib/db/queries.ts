@@ -1,52 +1,73 @@
-import "server-only";
-import { cache } from 'react';
-import { eq, and, desc, sql } from 'drizzle-orm';
-import { db } from './drizzle';
+import 'server-only'
+import { cache } from 'react'
+import { and, desc, eq, inArray, sql } from 'drizzle-orm'
+import { getCurrentUser } from '@/lib/auth/server'
+import { db } from './drizzle'
 import {
-  users,
-  pteTests,
-  pteQuestions,
-  testAttempts,
-  testAnswers,
-  userProgress,
-  userSubscriptions,
-  userProfiles,
+  activityLogs,
+  comments,
   forums,
   posts,
-  comments,
-  teams,
+  pteQuestions,
+  pteTests,
   teamMembers,
-  activityLogs
-} from './schema';
-import { getCurrentUser } from '@/lib/auth/server';
+  teams,
+  testAnswers,
+  testAttempts,
+  userProfiles,
+  userProgress,
+  users,
+  userSubscriptions,
+} from './schema'
 
 // User queries with improved error handling and caching
 export const getUserProfile = cache(async () => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return null;
+    return null
   }
 
   const user = await db
-    .select()
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      emailVerified: users.emailVerified,
+      image: users.image,
+      createdAt: users.createdAt,
+      updatedAt: users.updatedAt,
+      dailyAiCredits: users.dailyAiCredits,
+      aiCreditsUsed: users.aiCreditsUsed,
+      lastCreditReset: users.lastCreditReset,
+      organizationId: users.organizationId,
+      role: users.role,
+      targetScore: userProfiles.targetScore,
+      examDate: userProfiles.examDate,
+      studyGoal: userProfiles.studyGoal,
+      phoneNumber: userProfiles.phoneNumber,
+      country: userProfiles.country,
+      timezone: userProfiles.timezone,
+      preferences: userProfiles.preferences,
+    })
     .from(users)
+    .leftJoin(userProfiles, eq(users.id, userProfiles.userId))
     .where(eq(users.id, authUser.id))
-    .limit(1);
+    .limit(1)
 
   if (user.length === 0) {
-    return null;
+    return null
   }
 
-  return user[0];
-});
+  return user[0]
+})
 
-export const getUser = getUserProfile;
+export const getUser = getUserProfile
 
 // Get user with profile and progress data
 export const getUserWithProfile = cache(async () => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return null;
+    return null
   }
 
   const userData = await db
@@ -61,20 +82,20 @@ export const getUserWithProfile = cache(async () => {
     .leftJoin(userProgress, eq(users.id, userProgress.userId))
     .leftJoin(userSubscriptions, eq(users.id, userSubscriptions.userId))
     .where(eq(users.id, authUser.id))
-    .limit(1);
+    .limit(1)
 
   if (userData.length === 0) {
-    return null;
+    return null
   }
 
-  return userData[0];
-});
+  return userData[0]
+})
 
 // Team/Organization queries
 export const getTeamForUser = cache(async () => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return null;
+    return null
   }
 
   // Note: organizations table doesn't exist in schema, using teams instead
@@ -85,20 +106,20 @@ export const getTeamForUser = cache(async () => {
     .from(teamMembers)
     .innerJoin(teams, eq(teamMembers.teamId, teams.id))
     .where(eq(teamMembers.userId, authUser.id))
-    .limit(1);
+    .limit(1)
 
   if (userTeams.length === 0) {
-    return null;
+    return null
   }
 
-  return userTeams[0].team;
-});
+  return userTeams[0].team
+})
 
 // Get team members for a user
 export const getTeamMembers = cache(async () => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return [];
+    return []
   }
 
   const userTeams = await db
@@ -108,14 +129,20 @@ export const getTeamMembers = cache(async () => {
     })
     .from(teamMembers)
     .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-    .where(eq(teamMembers.userId, authUser.id));
+    .where(eq(teamMembers.userId, authUser.id))
 
   if (userTeams.length === 0) {
-    return [];
+    return []
   }
 
   // Get all members of user's teams
-  const teamIds = userTeams.map(t => t.team.id);
+  const teamIds = userTeams.map((t) => t.team.id)
+
+  // If somehow empty (shouldn't happen due to check above), short-circuit
+  if (teamIds.length === 0) {
+    return []
+  }
+
   const members = await db
     .select({
       user: users,
@@ -125,58 +152,58 @@ export const getTeamMembers = cache(async () => {
     .from(teamMembers)
     .innerJoin(users, eq(teamMembers.userId, users.id))
     .innerJoin(teams, eq(teamMembers.teamId, teams.id))
-    .where(sql`${teams.id} = ANY(${teamIds})`);
+    .where(inArray(teams.id, teamIds))
 
-  return members;
-});
+  return members
+})
 
 // PTE Tests queries
 export const getTests = cache(async () => {
   const tests = await db
     .select()
     .from(pteTests)
-    .orderBy(desc(pteTests.createdAt));
+    .orderBy(desc(pteTests.createdAt))
 
-  return tests;
-});
+  return tests
+})
 
 export const getTestById = cache(async (testId: string) => {
   const test = await db
     .select()
     .from(pteTests)
     .where(eq(pteTests.id, testId))
-    .limit(1);
+    .limit(1)
 
   if (test.length === 0) {
-    return null;
+    return null
   }
 
-  return test[0];
-});
+  return test[0]
+})
 
 export const getTestWithQuestions = cache(async (testId: string) => {
-  const test = await getTestById(testId);
+  const test = await getTestById(testId)
   if (!test) {
-    return null;
+    return null
   }
 
   const questions = await db
     .select()
     .from(pteQuestions)
     .where(eq(pteQuestions.testId, testId))
-    .orderBy(pteQuestions.orderIndex);
+    .orderBy(pteQuestions.orderIndex)
 
   return {
     ...test,
     questions,
-  };
-});
+  }
+})
 
 // Test attempts and answers
 export const getUserTestAttempts = cache(async () => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return [];
+    return []
   }
 
   const attempts = await db
@@ -187,25 +214,27 @@ export const getUserTestAttempts = cache(async () => {
     .from(testAttempts)
     .innerJoin(pteTests, eq(testAttempts.testId, pteTests.id))
     .where(eq(testAttempts.userId, authUser.id))
-    .orderBy(desc(testAttempts.startedAt));
+    .orderBy(desc(testAttempts.startedAt))
 
-  return attempts;
-});
+  return attempts
+})
 
 export const getTestAttemptWithAnswers = cache(async (attemptId: string) => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return null;
+    return null
   }
 
   const attempt = await db
     .select()
     .from(testAttempts)
-    .where(and(eq(testAttempts.id, attemptId), eq(testAttempts.userId, authUser.id)))
-    .limit(1);
+    .where(
+      and(eq(testAttempts.id, attemptId), eq(testAttempts.userId, authUser.id))
+    )
+    .limit(1)
 
   if (attempt.length === 0) {
-    return null;
+    return null
   }
 
   const answers = await db
@@ -216,38 +245,38 @@ export const getTestAttemptWithAnswers = cache(async (attemptId: string) => {
     .from(testAnswers)
     .innerJoin(pteQuestions, eq(testAnswers.questionId, pteQuestions.id))
     .where(eq(testAnswers.attemptId, attemptId))
-    .orderBy(testAnswers.submittedAt);
+    .orderBy(testAnswers.submittedAt)
 
   return {
     ...attempt[0],
     answers,
-  };
-});
+  }
+})
 
 // User progress and analytics
 export const getUserProgress = cache(async () => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return null;
+    return null
   }
 
   const progress = await db
     .select()
     .from(userProgress)
     .where(eq(userProgress.userId, authUser.id))
-    .limit(1);
+    .limit(1)
 
   if (progress.length === 0) {
-    return null;
+    return null
   }
 
-  return progress[0];
-});
+  return progress[0]
+})
 
 export const getUserAnalytics = cache(async () => {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return null;
+    return null
   }
 
   // Get recent test attempts with scores
@@ -258,29 +287,54 @@ export const getUserAnalytics = cache(async () => {
     })
     .from(testAttempts)
     .innerJoin(pteTests, eq(testAttempts.testId, pteTests.id))
-    .where(and(
-      eq(testAttempts.userId, authUser.id),
-      eq(testAttempts.status, 'completed')
-    ))
+    .where(
+      and(
+        eq(testAttempts.userId, authUser.id),
+        eq(testAttempts.status, 'completed')
+      )
+    )
     .orderBy(desc(testAttempts.completedAt))
-    .limit(10);
+    .limit(10)
 
   // Calculate average scores
-  const totalAttempts = recentAttempts.length;
-  const avgScores = totalAttempts > 0 ? {
-    speaking: recentAttempts.reduce((sum, a) => sum + parseFloat(a.attempt.speakingScore || '0'), 0) / totalAttempts,
-    writing: recentAttempts.reduce((sum, a) => sum + parseFloat(a.attempt.writingScore || '0'), 0) / totalAttempts,
-    reading: recentAttempts.reduce((sum, a) => sum + parseFloat(a.attempt.readingScore || '0'), 0) / totalAttempts,
-    listening: recentAttempts.reduce((sum, a) => sum + parseFloat(a.attempt.listeningScore || '0'), 0) / totalAttempts,
-    overall: recentAttempts.reduce((sum, a) => sum + parseFloat(a.attempt.totalScore || '0'), 0) / totalAttempts,
-  } : null;
+  const totalAttempts = recentAttempts.length
+  const avgScores =
+    totalAttempts > 0
+      ? {
+          speaking:
+            recentAttempts.reduce(
+              (sum, a) => sum + parseFloat(a.attempt.speakingScore || '0'),
+              0
+            ) / totalAttempts,
+          writing:
+            recentAttempts.reduce(
+              (sum, a) => sum + parseFloat(a.attempt.writingScore || '0'),
+              0
+            ) / totalAttempts,
+          reading:
+            recentAttempts.reduce(
+              (sum, a) => sum + parseFloat(a.attempt.readingScore || '0'),
+              0
+            ) / totalAttempts,
+          listening:
+            recentAttempts.reduce(
+              (sum, a) => sum + parseFloat(a.attempt.listeningScore || '0'),
+              0
+            ) / totalAttempts,
+          overall:
+            recentAttempts.reduce(
+              (sum, a) => sum + parseFloat(a.attempt.totalScore || '0'),
+              0
+            ) / totalAttempts,
+        }
+      : null
 
   return {
     recentAttempts,
     averageScores: avgScores,
     totalAttempts,
-  };
-});
+  }
+})
 
 // Community features
 export const getForums = cache(async () => {
@@ -288,86 +342,92 @@ export const getForums = cache(async () => {
     .select()
     .from(forums)
     .where(eq(forums.isActive, true))
-    .orderBy(forums.orderIndex);
+    .orderBy(forums.orderIndex)
 
-  return forumList;
-});
+  return forumList
+})
 
-export const getForumPosts = cache(async (forumId: string, limit = 20, offset = 0) => {
-  const posts = await db
-    .select({
-      post: posts,
-      author: users,
-      commentCount: sql<number>`count(${comments.id})`,
-    })
-    .from(posts)
-    .innerJoin(users, eq(posts.authorId, users.id))
-    .leftJoin(comments, eq(posts.id, comments.postId))
-    .where(eq(posts.forumId, forumId))
-    .groupBy(posts.id, users.id)
-    .orderBy(desc(posts.createdAt))
-    .limit(limit)
-    .offset(offset);
+export const getForumPosts = cache(
+  async (forumId: string, limit = 20, offset = 0) => {
+    const forumPosts = await db
+      .select({
+        post: posts,
+        author: users,
+        commentCount: sql<number>`count(${comments.id})`,
+      })
+      .from(posts)
+      .innerJoin(users, eq(posts.authorId, users.id))
+      .leftJoin(comments, eq(posts.id, comments.postId))
+      .where(eq(posts.forumId, forumId))
+      .groupBy(posts.id, users.id)
+      .orderBy(desc(posts.createdAt))
+      .limit(limit)
+      .offset(offset)
 
-  return posts;
-});
+    return forumPosts
+  }
+)
 
 // User update functions
 export async function updateUser(userData: Partial<typeof users.$inferInsert>) {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    throw new Error("Not authenticated");
+    throw new Error('Not authenticated')
   }
 
   const [updatedUser] = await db
     .update(users)
     .set(userData)
     .where(eq(users.id, authUser.id))
-    .returning();
+    .returning()
 
-  return updatedUser;
+  return updatedUser
 }
 
-export async function updateUserProfile(profileData: Partial<typeof userProfiles.$inferInsert>) {
-  const authUser = await getCurrentUser();
+export async function updateUserProfile(
+  profileData: Partial<typeof userProfiles.$inferInsert>
+) {
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    throw new Error("Not authenticated");
+    throw new Error('Not authenticated')
   }
 
   const [updatedProfile] = await db
     .update(userProfiles)
     .set(profileData)
     .where(eq(userProfiles.userId, authUser.id))
-    .returning();
+    .returning()
 
-  return updatedProfile;
+  return updatedProfile
 }
 
-export async function updateUserProgress(progressData: Partial<typeof userProgress.$inferInsert>) {
-  const authUser = await getCurrentUser();
+export async function updateUserProgress(
+  progressData: Partial<typeof userProgress.$inferInsert>
+) {
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    throw new Error("Not authenticated");
+    throw new Error('Not authenticated')
   }
 
   const [updatedProgress] = await db
     .update(userProgress)
     .set(progressData)
     .where(eq(userProgress.userId, authUser.id))
-    .returning();
+    .returning()
 
-  return updatedProgress;
+  return updatedProgress
 }
 
 // Activity logging
 export async function logActivity(action: string, ipAddress?: string) {
-  const authUser = await getCurrentUser();
+  const authUser = await getCurrentUser()
   if (!authUser) {
-    return;
+    return
   }
 
   await db.insert(activityLogs).values({
     userId: authUser.id,
     action,
     ipAddress,
-  });
+  })
 }

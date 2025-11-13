@@ -1,10 +1,9 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import Link from 'next/link'
+import { AlertCircle, Bookmark, CheckCircle2, Circle, Eye } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -12,171 +11,199 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Search, Play, RotateCcw } from 'lucide-react';
-import Link from 'next/link';
+} from '@/components/ui/table'
 
-type Question = {
-  id: string;
-  title: string;
-  category: string;
-  subcategory: string;
-  difficulty: string;
-  status: 'completed' | 'in-progress' | 'not-started';
-  attempts: number;
-  score?: number;
-  lastAttempted?: string;
-};
+interface QuestionRow {
+  id: string
+  title?: string | null
+  difficulty?: string | null
+  practicedCount?: number
+  tags?: string[] | null
+}
 
-type QuestionTableProps = {
-  questions: Question[];
-  category?: string;
-};
+interface QuestionsTableProps {
+  rows: QuestionRow[]
+  section: 'speaking' | 'reading' | 'writing' | 'listening'
+  questionType: string
+}
 
-export default function QuestionsTable({ questions, category }: QuestionTableProps) {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(category || 'all');
-  const [statusFilter, setStatusFilter] = useState('all');
+function capitalize(s?: string | null): string {
+  if (!s) return 'Medium'
+  const lower = String(s).toLowerCase()
+  return lower.charAt(0).toUpperCase() + lower.slice(1)
+}
 
-  // Filter questions based on search term, category and status
-  const filteredQuestions = questions.filter(question => {
-    const matchesSearch = question.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         question.subcategory.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || question.category === selectedCategory;
-    const matchesStatus = statusFilter === 'all' || question.status === statusFilter;
-    
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
+function difficultyVariant(d: string): 'default' | 'secondary' | 'destructive' {
+  const v = d.toLowerCase()
+  if (v === 'hard') return 'destructive'
+  if (v === 'easy') return 'secondary'
+  return 'default'
+}
 
-  // Get unique categories for the filter
-  const uniqueCategories = Array.from(new Set(questions.map(q => q.category)));
+export default function QuestionsTable({
+  rows,
+  section,
+  questionType,
+}: QuestionsTableProps) {
+  const isDev = process.env.NODE_ENV !== 'production'
+  const isEmpty = rows.length === 0
+
+  const handleSeedClick = async () => {
+    try {
+      const response = await fetch(`/api/${section}/seed`, { method: 'POST' })
+      if (response.ok) {
+        window.location.reload()
+      } else {
+        alert('Failed to seed questions. Check console for details.')
+      }
+    } catch (error) {
+      console.error('Error seeding questions:', error)
+      alert('Error seeding questions. Check console.')
+    }
+  }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <CardTitle>Question Bank</CardTitle>
-        <div className="flex flex-wrap gap-3">
-          <div className="relative">
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search questions..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
-            />
-          </div>
-          
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="border rounded-md px-3 py-2 bg-background"
-          >
-            <option value="all">All Categories</option>
-            {uniqueCategories.map(cat => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
-          
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="border rounded-md px-3 py-2 bg-background"
-          >
-            <option value="all">All Statuses</option>
-            <option value="not-started">Not Started</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-      </CardHeader>
-      
-      <CardContent>
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Question</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Subcategory</TableHead>
-                <TableHead>Difficulty</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Attempts</TableHead>
-                <TableHead>Score</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredQuestions.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="text-center py-8 text-gray-500">
-                    No questions found matching your criteria
+    <div className="rounded-md border bg-white">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-20">ID</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead className="w-40">Difficulty</TableHead>
+            <TableHead className="w-40">Practiced</TableHead>
+            <TableHead className="w-40 text-right">Stats</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {isEmpty ? (
+            <TableRow>
+              <TableCell colSpan={5} className="py-12 text-center">
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <AlertCircle className="h-12 w-12 text-gray-400" />
+                  <div className="space-y-2">
+                    <p className="text-lg font-medium text-gray-900">
+                      No questions available
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Questions haven't been seeded yet for this section.
+                    </p>
+                  </div>
+                  {isDev && (
+                    <div className="mt-4 max-w-md space-y-3 rounded-lg border border-orange-200 bg-orange-50 p-4">
+                      <p className="text-sm font-medium text-orange-900">
+                        Developer Mode
+                      </p>
+                      <p className="text-xs text-orange-700">
+                        Click the button below to seed questions, or use:
+                      </p>
+                      <code className="block rounded bg-orange-100 p-2 text-xs text-orange-900">
+                        POST /api/{section}/seed
+                      </code>
+                      <Button
+                        onClick={handleSeedClick}
+                        size="sm"
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Seed{' '}
+                        {section.charAt(0).toUpperCase() + section.slice(1)}{' '}
+                        Questions
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </TableCell>
+            </TableRow>
+          ) : (
+            rows.map((row) => {
+              const id = row.id
+              const title = row.title || 'Question'
+              const diff = capitalize(row.difficulty ?? 'medium')
+              const practiced = (row.practicedCount ?? 0) > 0
+
+              return (
+                <TableRow key={id}>
+                  <TableCell className="font-mono text-xs text-gray-600">
+                    {id.length > 10 ? `${id.slice(0, 8)}...` : id}
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    <Link
+                      href={`/pte/academic/practice/${section}/${questionType}/question/${id}`}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {title.length > 120 ? `${title.slice(0, 120)}...` : title}
+                    </Link>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={difficultyVariant(diff)}>{diff}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {practiced ? (
+                      <span className="inline-flex items-center gap-2 text-green-600">
+                        <CheckCircle2 className="h-4 w-4" /> Practiced
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-2 text-gray-500">
+                        <Circle className="h-4 w-4" /> Not Practiced
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <div className="inline-flex items-center gap-4 text-gray-600">
+                      <span className="inline-flex items-center gap-1">
+                        <Eye className="h-4 w-4" /> {row.practicedCount ?? 0}
+                      </span>
+                      <span className="inline-flex items-center gap-1">
+                        <Bookmark className="h-4 w-4" /> 0
+                      </span>
+                    </div>
                   </TableCell>
                 </TableRow>
-              ) : (
-                filteredQuestions.map((question) => (
-                  <TableRow key={question.id}>
-                    <TableCell className="font-medium">{question.id}</TableCell>
-                    <TableCell className="font-medium">{question.title}</TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{question.category}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{question.subcategory}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={question.difficulty === 'Hard' ? 'destructive' : 
-                                question.difficulty === 'Medium' ? 'default' : 'secondary'}
-                      >
-                        {question.difficulty}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge 
-                        variant={question.status === 'completed' ? 'default' : 
-                                question.status === 'in-progress' ? 'secondary' : 'outline'}
-                      >
-                        {question.status === 'completed' ? 'Completed' : 
-                         question.status === 'in-progress' ? 'In Progress' : 'Not Started'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{question.attempts}</TableCell>
-                    <TableCell>
-                      {question.score ? `${question.score}%` : 'N/A'}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline" asChild>
-                          <Link href={`/pte-academic/practice/${question.category.toLowerCase()}/${question.subcategory.toLowerCase()}/question/${question.id}`}>
-                            <Play className="h-4 w-4 mr-1" />
-                            Practice
-                          </Link>
-                        </Button>
-                        <Button size="sm" variant="outline">
-                          <RotateCcw className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
-        
-        {filteredQuestions.length > 0 && (
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-sm text-gray-500">
-              Showing {filteredQuestions.length} of {questions.length} questions
-            </p>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm">Previous</Button>
-              <Button variant="outline" size="sm">Next</Button>
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
+              )
+            })
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  )
+}
+
+// Loading skeleton component
+export function QuestionsTableSkeleton() {
+  return (
+    <div className="rounded-md border bg-white">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-20">ID</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead className="w-40">Difficulty</TableHead>
+            <TableHead className="w-40">Practiced</TableHead>
+            <TableHead className="w-40 text-right">Stats</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {[1, 2, 3, 4, 5].map((i) => (
+            <TableRow key={i}>
+              <TableCell>
+                <div className="h-4 w-16 animate-pulse rounded bg-gray-200" />
+              </TableCell>
+              <TableCell>
+                <div className="h-4 w-full animate-pulse rounded bg-gray-200" />
+              </TableCell>
+              <TableCell>
+                <div className="h-6 w-20 animate-pulse rounded bg-gray-200" />
+              </TableCell>
+              <TableCell>
+                <div className="h-4 w-24 animate-pulse rounded bg-gray-200" />
+              </TableCell>
+              <TableCell>
+                <div className="ml-auto h-4 w-16 animate-pulse rounded bg-gray-200" />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  )
 }

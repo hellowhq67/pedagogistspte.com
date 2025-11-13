@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Retell Lecture #1",
+    "type": "retell_lecture",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 1/Retell Lecture_Question 1_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "retell_lecture", "offline_practice_test"]
+  },
+  {
+    "title": "Retell Lecture #2",
+    "type": "retell_lecture",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 2/Retell Lecture_Question 2_P.mp3",
+    "difficulty": "Easy",
+    "tags": ["seed", "retell_lecture", "offline_practice_test"]
+  },
+  {
+    "title": "Retell Lecture #3",
+    "type": "retell_lecture",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 3/Retell Lecture_Question 3_P.mp3",
+    "difficulty": "Hard",
+    "tags": ["seed", "retell_lecture", "offline_practice_test"]
+  },
+  {
+    "title": "Retell Lecture #4",
+    "type": "retell_lecture",
+    "promptText": "After listening to the lecture, summarize it in your own words focusing on the key arguments and supporting points.",
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 1/Retell Lecture_Question 1_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "retell_lecture"]
+  },
+  {
+    "title": "Retell Lecture #5",
+    "type": "retell_lecture",
+    "promptText": "Listen carefully and then retell the main points from the lecture using clear structure.",
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 2/Retell Lecture_Question 2_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "retell_lecture"]
+  },
+  {
+    "title": "Retell Lecture #6",
+    "type": "retell_lecture",
+    "promptText": "Provide a concise summary of the lecture highlighting problem, method, and conclusion if applicable.",
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 3/Retell Lecture_Question 3_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "retell_lecture"]
+  },
+  {
+    "title": "Retell Lecture #7",
+    "type": "retell_lecture",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 1/Retell Lecture_Question 1_P.mp3",
+    "difficulty": "Easy",
+    "tags": ["seed", "retell_lecture", "offline_practice_test"]
+  },
+  {
+    "title": "Retell Lecture #8",
+    "type": "retell_lecture",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 2/Retell Lecture_Question 2_P.mp3",
+    "difficulty": "Hard",
+    "tags": ["seed", "retell_lecture", "offline_practice_test"]
+  },
+  {
+    "title": "Retell Lecture #9",
+    "type": "retell_lecture",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 3/Retell Lecture_Question 3_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "retell_lecture", "offline_practice_test"]
+  },
+  {
+    "title": "Retell Lecture #10",
+    "type": "retell_lecture",
+    "promptText": "Summarize the lecture, emphasizing the central idea and how it is supported.",
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/2 Retell Lecture/Retell Lecture_Question 2/Retell Lecture_Question 2_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "retell_lecture"]
+  }
+]

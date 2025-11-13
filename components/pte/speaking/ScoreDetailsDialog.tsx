@@ -1,0 +1,158 @@
+'use client'
+
+import React from 'react'
+import { Badge } from '@/components/ui/badge'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+
+type Props = {
+  open: boolean
+  onOpenChange: (v: boolean) => void
+  attempt: any | null
+}
+
+function asNumber(n: any): number | null {
+  const v =
+    typeof n === 'number' ? n : Number.isFinite(Number(n)) ? Number(n) : null
+  return Number.isFinite(v as number) ? (v as number) : null
+}
+
+export default function ScoreDetailsDialog({
+  open,
+  onOpenChange,
+  attempt,
+}: Props) {
+  const scores = (attempt?.scores as any) || {}
+  const content = asNumber(scores?.content)
+  const pronunciation = asNumber(scores?.pronunciation)
+  const fluency = asNumber(scores?.fluency)
+  const total = asNumber(scores?.total)
+  const rubric = scores?.rubric || {}
+  const feedback = scores?.feedback || {}
+  const audioUrl: string | undefined = attempt?.audioUrl
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent aria-label="Score details dialog">
+        <DialogHeader>
+          <DialogTitle>AI Score Details</DialogTitle>
+          <DialogDescription>
+            Review your speaking attempt scores and suggestions.
+          </DialogDescription>
+        </DialogHeader>
+
+        {/* Audio preview */}
+        {audioUrl ? (
+          <div className="space-y-2">
+            <label className="text-sm font-medium" htmlFor="attempt-audio">
+              Submitted Audio
+            </label>
+            <audio
+              id="attempt-audio"
+              className="w-full"
+              controls
+              preload="none"
+              src={audioUrl}
+            />
+          </div>
+        ) : null}
+
+        {/* Score summary */}
+        <div
+          className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4"
+          role="group"
+          aria-label="Score summary"
+        >
+          <div className="rounded-md border p-3">
+            <div className="text-muted-foreground text-xs">Content</div>
+            <div className="text-xl font-semibold">{content ?? '—'}</div>
+          </div>
+          <div className="rounded-md border p-3">
+            <div className="text-muted-foreground text-xs">Pronunciation</div>
+            <div className="text-xl font-semibold">{pronunciation ?? '—'}</div>
+          </div>
+          <div className="rounded-md border p-3">
+            <div className="text-muted-foreground text-xs">Fluency</div>
+            <div className="text-xl font-semibold">{fluency ?? '—'}</div>
+          </div>
+          <div className="bg-muted/30 rounded-md border p-3">
+            <div className="text-muted-foreground text-xs">Total</div>
+            <div className="text-xl font-bold">{total ?? '—'}</div>
+          </div>
+        </div>
+
+        {/* Suggestions */}
+        <div className="mt-4 space-y-3">
+          {rubric?.contentNotes ||
+          rubric?.fluencyNotes ||
+          rubric?.pronunciationNotes ? (
+            <div className="space-y-2">
+              <div className="text-sm font-medium">Rubric Notes</div>
+              <ul className="list-inside list-disc space-y-1 text-sm">
+                {rubric?.contentNotes ? <li>{rubric.contentNotes}</li> : null}
+                {rubric?.fluencyNotes ? <li>{rubric.fluencyNotes}</li> : null}
+                {rubric?.pronunciationNotes ? (
+                  <li>{rubric.pronunciationNotes}</li>
+                ) : null}
+              </ul>
+            </div>
+          ) : null}
+
+          {Array.isArray(feedback?.suggestions) &&
+          feedback.suggestions.length > 0 ? (
+            <div className="space-y-2">
+              <div className="text-sm font-medium">Suggestions</div>
+              <div className="flex flex-wrap gap-2">
+                {feedback.suggestions.map((s: string, i: number) => (
+                  <Badge key={i} variant="secondary">
+                    {s}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
+          {/* Optional strengths / areas */}
+          {(Array.isArray(feedback?.strengths) &&
+            feedback.strengths.length > 0) ||
+          (Array.isArray(feedback?.areasForImprovement) &&
+            feedback.areasForImprovement.length > 0) ? (
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {Array.isArray(feedback?.strengths) &&
+              feedback.strengths.length > 0 ? (
+                <div className="rounded-md border p-3">
+                  <div className="mb-1 text-sm font-medium">Strengths</div>
+                  <ul className="list-inside list-disc space-y-1 text-sm">
+                    {feedback.strengths.map((s: string, i: number) => (
+                      <li key={i}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {Array.isArray(feedback?.areasForImprovement) &&
+              feedback.areasForImprovement.length > 0 ? (
+                <div className="rounded-md border p-3">
+                  <div className="mb-1 text-sm font-medium">
+                    Areas for Improvement
+                  </div>
+                  <ul className="list-inside list-disc space-y-1 text-sm">
+                    {feedback.areasForImprovement.map(
+                      (s: string, i: number) => (
+                        <li key={i}>{s}</li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}

@@ -1,21 +1,19 @@
-
-import "server-only";
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "../db/drizzle";
-import { users, accounts, sessions, verifications, organizations } from "../db/schema";
-
-import { nextCookies } from "better-auth/next-js";
+import 'server-only'
+import { betterAuth } from 'better-auth'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { nextCookies } from 'better-auth/next-js'
+import { db } from '../db/drizzle'
+import { accounts, sessions, users, verifications } from '../db/schema'
 
 export const auth = betterAuth({
-  appName: "PTE Learning LMS",
+  appName: 'PTE Learning LMS',
   database: drizzleAdapter(db, {
-    provider: "pg",
+    provider: 'pg',
     schema: {
-      user: users,
-      account: accounts,
-      session: sessions,
-      verifications: verifications,
+      users,
+      accounts,
+      sessions,
+      verifications,
     },
     usePlural: true,
   }),
@@ -28,50 +26,53 @@ export const auth = betterAuth({
   advanced: {
     // Override user info when signing in with OAuth
     overrideUserInfoOnSignIn: true,
-    useSecureCookies: process.env.NODE_ENV === "production",
-    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === 'production',
+    cookiePrefix: 'better-auth',
   },
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: process.env.GOOGLE_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       enabled: !!(
         process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
       ),
-      scope: ["email", "profile"],
-      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/api/auth/callback/google`,
+      scope: ['email', 'profile'],
+      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000'}/api/auth/callback/google`,
     },
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID || "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+      clientId: process.env.GITHUB_CLIENT_ID || '',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
       enabled: !!(
         process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
       ),
-      scope: ["email", "user"],
-      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/api/auth/callback/github`,
+      scope: ['email', 'user'],
+      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000'}/api/auth/callback/github`,
     },
     facebook: {
-      clientId: process.env.FACEBOOK_CLIENT_ID || "",
-      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || "",
+      clientId: process.env.FACEBOOK_CLIENT_ID || '',
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET || '',
       enabled: !!(
         process.env.FACEBOOK_CLIENT_ID && process.env.FACEBOOK_CLIENT_SECRET
       ),
-      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/api/auth/callback/facebook`,
+      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000'}/api/auth/callback/facebook`,
     },
     apple: {
-      clientId: process.env.APPLE_CLIENT_ID || "",
-      clientSecret: process.env.APPLE_CLIENT_SECRET || "",
+      clientId: process.env.APPLE_CLIENT_ID || '',
+      clientSecret: process.env.APPLE_CLIENT_SECRET || '',
       enabled: !!(
         process.env.APPLE_CLIENT_ID && process.env.APPLE_CLIENT_SECRET
       ),
-      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000"}/api/auth/callback/apple`,
+      redirectURI: `${process.env.NEXT_PUBLIC_BETTER_AUTH_URL || 'http://localhost:3000'}/api/auth/callback/apple`,
     },
   },
   trustedOrigins: [
-    "http://localhost:3000",
-    process.env.BETTER_AUTH_URL || "http://localhost:3000",
+    'http://localhost:3000',
+    process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   ],
-  baseURL: process.env.BETTER_AUTH_URL || process.env.NEXT_PUBLIC_BETTER_AUTH_URL || "http://localhost:3000",
+  baseURL:
+    process.env.BETTER_AUTH_URL ||
+    process.env.NEXT_PUBLIC_BETTER_AUTH_URL ||
+    'http://localhost:3000',
   secret: process.env.BETTER_AUTH_SECRET || process.env.AUTH_SECRET,
   session: {
     cookieCache: {
@@ -79,10 +80,8 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // Cache duration in seconds
     },
   },
-  plugins: [
-    nextCookies(),
-  ],
-});
+  plugins: [nextCookies()],
+})
 
-export type Session = typeof auth.$Infer.Session;
-export type User = typeof auth.$Infer.Session.user;
+export type Session = typeof auth.$Infer.Session
+export type User = typeof auth.$Infer.Session.user

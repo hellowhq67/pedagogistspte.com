@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Writing — Summarize Written Text: Renewable Energy",
+    "type": "summarize_written_text",
+    "promptText": "The transition to renewable energy sources has become increasingly urgent as climate change accelerates. Solar and wind power have shown remarkable cost reductions over the past decade, making them competitive with traditional fossil fuels in many markets. Governments worldwide are implementing policies to incentivize clean energy adoption, including tax credits, subsidies, and renewable energy mandates. However, challenges remain in terms of energy storage, grid infrastructure, and the intermittent nature of renewable sources. Balancing economic growth with environmental sustainability requires innovative solutions and international cooperation.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "swt", "environment"]
+  },
+  {
+    "title": "Writing — Summarize Written Text: Urban Transportation",
+    "type": "summarize_written_text",
+    "promptText": "Public transportation systems play a crucial role in reducing urban congestion and environmental pollution. Cities that invest in comprehensive metro, bus, and light rail networks experience improved air quality, reduced traffic congestion, and enhanced economic productivity. However, successful public transit requires significant upfront investment, ongoing maintenance, and integration with other transport modes. Many cities struggle to balance the need for extensive coverage with financial constraints, leading to debates about optimal funding models and the role of private sector participation in public transport development.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "writing", "swt", "urban", "weekly_prediction"]
+  },
+  {
+    "title": "Writing — Summarize Written Text: Data Privacy",
+    "type": "summarize_written_text",
+    "promptText": "The exponential growth of digital technologies has raised critical concerns about personal data privacy and security. Companies collect vast amounts of user information for targeted advertising, personalization, and business intelligence, often without explicit consent or clear transparency. Regulatory frameworks like the GDPR in Europe and CCPA in California attempt to protect consumer rights, but enforcement remains challenging. The tension between innovation and privacy protection continues to intensify as artificial intelligence and machine learning systems require massive datasets to function effectively.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "writing", "swt", "technology", "monthly_prediction"]
+  },
+  {
+    "title": "Writing — Summarize Written Text: Remote Work Impact",
+    "type": "summarize_written_text",
+    "promptText": "The COVID-19 pandemic fundamentally transformed workplace dynamics, accelerating the adoption of remote work arrangements. Organizations discovered that many jobs could be performed effectively from home, leading to cost savings on office space and expanded talent pools. Employees gained flexibility and reduced commute times, though some reported challenges with work-life balance and social isolation. Companies now face decisions about permanent remote work policies, hybrid models, and the future role of physical offices in fostering collaboration and corporate culture.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "swt", "workplace"]
+  },
+  {
+    "title": "Writing — Summarize Written Text: Artificial Intelligence Ethics",
+    "type": "summarize_written_text",
+    "promptText": "As artificial intelligence systems become more sophisticated and pervasive, questions about ethical guidelines and accountability have become paramount. AI algorithms can perpetuate biases present in training data, leading to discriminatory outcomes in hiring, lending, and criminal justice. The lack of transparency in complex neural networks makes it difficult to understand and challenge automated decisions. Researchers and policymakers are working to develop frameworks for responsible AI development that prioritize fairness, transparency, and human oversight while preserving innovation.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "writing", "swt", "ai", "ethics"]
+  }
+]

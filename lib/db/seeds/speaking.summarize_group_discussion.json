@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Summarize Group Discussion — Remote Work Policies 1",
+    "type": "summarize_group_discussion",
+    "promptText": "You will hear a group discussing the pros and cons of implementing a permanent remote work policy. Summarize the key arguments and any consensus.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "sgd", "workplace"]
+  },
+  {
+    "title": "Summarize Group Discussion — Urban Transport 2",
+    "type": "summarize_group_discussion",
+    "promptText": "A team debates whether to prioritize bike lanes or expand bus routes to reduce congestion. Summarize the positions and the conclusion if any.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "sgd", "infrastructure"]
+  },
+  {
+    "title": "Summarize Group Discussion — Data Privacy 3",
+    "type": "summarize_group_discussion",
+    "promptText": "Participants discuss the impact of new data privacy regulations on app analytics and user experience. Summarize concerns and proposed solutions.",
+    "promptMediaUrl": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "sgd", "technology"]
+  },
+  {
+    "title": "Summarize Group Discussion — University Funding 4",
+    "type": "summarize_group_discussion",
+    "promptText": "The committee explores funding allocations for research labs versus student services. Summarize arguments and any prioritization outcome.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "sgd", "education"]
+  },
+  {
+    "title": "Summarize Group Discussion — Healthy Canteen 5",
+    "type": "summarize_group_discussion",
+    "promptText": "A school board discusses introducing healthier canteen options and possible price changes. Summarize the main points and trade-offs.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "sgd", "health"]
+  },
+  {
+    "title": "Summarize Group Discussion — Climate Policy 6",
+    "type": "summarize_group_discussion",
+    "promptText": "A panel evaluates carbon pricing versus subsidies for renewable energy adoption. Summarize the rationale behind each approach.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "sgd", "climate"]
+  },
+  {
+    "title": "Summarize Group Discussion — Product Launch 7",
+    "type": "summarize_group_discussion",
+    "promptText": "The marketing team discusses timelines, risks, and messaging for an upcoming product launch. Summarize priorities and risk mitigations.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "sgd", "business"]
+  },
+  {
+    "title": "Summarize Group Discussion — Housing Policy 8",
+    "type": "summarize_group_discussion",
+    "promptText": "A civic group debates rent control versus incentives for new housing construction. Summarize key arguments and potential compromises.",
+    "promptMediaUrl": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "sgd", "policy"]
+  },
+  {
+    "title": "Summarize Group Discussion — Recycling Program 9",
+    "type": "summarize_group_discussion",
+    "promptText": "City council members discuss expanding recycling facilities and public education campaigns. Summarize proposed steps and expected outcomes.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "sgd", "environment"]
+  },
+  {
+    "title": "Summarize Group Discussion — Hospital Staffing 10",
+    "type": "summarize_group_discussion",
+    "promptText": "A hospital committee reviews shift scheduling changes to address staff burnout. Summarize the causes identified and recommended actions.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "sgd", "healthcare"]
+  }
+]

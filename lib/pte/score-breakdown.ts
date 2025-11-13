@@ -2,17 +2,17 @@
 // Based on APEUni Score Breakdown (Effective from 25.08.07)
 
 export interface QuestionTypeScoreInfo {
-  sequence: number;
-  questionType: string;
-  abbreviation: string;
-  numbers: string; // e.g., "6-7", "10-12"
-  timeForAnswering: string; // e.g., "Preparation: 35s or 40s, Answer: 40s"
-  speaking?: number; // Percentage contribution to Speaking
-  writing?: number; // Percentage contribution to Writing
-  reading?: number; // Percentage contribution to Reading
-  listening?: number; // Percentage contribution to Listening
-  section: 'Speaking & Writing' | 'Reading' | 'Listening';
-  duration?: string; // Section duration like "76-84 mins"
+  sequence: number
+  questionType: string
+  abbreviation: string
+  numbers: string // e.g., "6-7", "10-12"
+  timeForAnswering: string // e.g., "Preparation: 35s or 40s, Answer: 40s"
+  speaking?: number // Percentage contribution to Speaking
+  writing?: number // Percentage contribution to Writing
+  reading?: number // Percentage contribution to Reading
+  listening?: number // Percentage contribution to Listening
+  section: 'Speaking & Writing' | 'Reading' | 'Listening'
+  duration?: string // Section duration like "76-84 mins"
 }
 
 export const pteScoreBreakdown: QuestionTypeScoreInfo[] = [
@@ -103,7 +103,7 @@ export const pteScoreBreakdown: QuestionTypeScoreInfo[] = [
     writing: 25.5,
     section: 'Speaking & Writing',
   },
-  
+
   // II. Reading (23-30 mins)
   {
     sequence: 10,
@@ -150,7 +150,7 @@ export const pteScoreBreakdown: QuestionTypeScoreInfo[] = [
     reading: 2,
     section: 'Reading',
   },
-  
+
   // III. Listening (31-39 mins)
   {
     sequence: 15,
@@ -228,7 +228,7 @@ export const pteScoreBreakdown: QuestionTypeScoreInfo[] = [
     listening: 14,
     section: 'Listening',
   },
-];
+]
 
 // Section summaries
 export const sectionSummaries = {
@@ -237,30 +237,35 @@ export const sectionSummaries = {
     questionCount: 9,
     totalQuestions: '30-35',
   },
-  'Reading': {
+  Reading: {
     duration: '23-30 mins',
     questionCount: 5,
     totalQuestions: '15-20',
   },
-  'Listening': {
+  Listening: {
     duration: '31-39 mins',
     questionCount: 8,
     totalQuestions: '13-19',
   },
-};
+}
 
 // Helper functions
-export function getQuestionTypeBySequence(sequence: number): QuestionTypeScoreInfo | undefined {
-  return pteScoreBreakdown.find(q => q.sequence === sequence);
+export function getQuestionTypeBySequence(
+  sequence: number
+): QuestionTypeScoreInfo | undefined {
+  return pteScoreBreakdown.find((q) => q.sequence === sequence)
 }
 
-export function getQuestionsBySection(section: QuestionTypeScoreInfo['section']): QuestionTypeScoreInfo[] {
-  return pteScoreBreakdown.filter(q => q.section === section);
+export function getQuestionsBySection(
+  section: QuestionTypeScoreInfo['section']
+): QuestionTypeScoreInfo[] {
+  return pteScoreBreakdown.filter((q) => q.section === section)
 }
 
-export function getTotalScoreContribution(skill: 'speaking' | 'writing' | 'reading' | 'listening'): number {
+export function getTotalScoreContribution(
+  skill: 'speaking' | 'writing' | 'reading' | 'listening'
+): number {
   return pteScoreBreakdown.reduce((total, question) => {
-    return total + (question[skill] || 0);
-  }, 0);
+    return total + (question[skill] || 0)
+  }, 0)
 }
-

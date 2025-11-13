@@ -1,7 +1,7 @@
-import { Suspense } from "react";
-import { OnePTEDashboard } from "@/components/pte/app-dashboard";
+import { Suspense } from 'react'
+import { OnePTEDashboard } from '@/components/pte/app-dashboard'
 
-export const dynamic = "force-static";
+// Removed route segment config; using Cache Components
 
 export default function AcademicPracticePage() {
   return (
@@ -10,5 +10,5 @@ export default function AcademicPracticePage() {
         <OnePTEDashboard />
       </Suspense>
     </div>
-  );
+  )
 }

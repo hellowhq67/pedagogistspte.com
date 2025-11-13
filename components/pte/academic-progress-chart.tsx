@@ -1,23 +1,23 @@
-'use client';
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer 
-} from 'recharts';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 
 interface AcademicProgressData {
-  month: string;
-  score: number;
+  month: string
+  score: number
 }
 
 interface AcademicProgressChartProps {
-  data: AcademicProgressData[];
+  data: AcademicProgressData[]
 }
 
 export function AcademicProgressChart({ data }: AcademicProgressChartProps) {
@@ -33,7 +33,7 @@ export function AcademicProgressChart({ data }: AcademicProgressChartProps) {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="month" />
               <YAxis domain={[0, 100]} />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`${value}`, 'Score']}
                 labelFormatter={(label) => `Month: ${label}`}
               />
@@ -43,5 +43,5 @@ export function AcademicProgressChart({ data }: AcademicProgressChartProps) {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

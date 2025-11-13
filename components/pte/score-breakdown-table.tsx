@@ -1,8 +1,9 @@
-"use client";
+'use client'
 
-import React from "react";
-import { pteScoreBreakdown, sectionSummaries, QuestionTypeScoreInfo } from "@/lib/pte/score-breakdown";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React from 'react'
+import { BookOpen, Headphones, Info, Mic, PenTool } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -10,60 +11,62 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { BookOpen, Mic, PenTool, Headphones, Info } from "lucide-react";
+} from '@/components/ui/table'
+import {
+  pteScoreBreakdown,
+  QuestionTypeScoreInfo,
+  sectionSummaries,
+} from '@/lib/pte/score-breakdown'
 
 export function ScoreBreakdownTable() {
-  const sections = ['Speaking & Writing', 'Reading', 'Listening'] as const;
-  
+  const sections = ['Speaking & Writing', 'Reading', 'Listening'] as const
+
   const sectionIcons = {
     'Speaking & Writing': Mic,
-    'Reading': BookOpen,
-    'Listening': Headphones,
-  };
+    Reading: BookOpen,
+    Listening: Headphones,
+  }
 
   const sectionColors = {
     'Speaking & Writing': 'bg-blue-50 border-blue-200',
-    'Reading': 'bg-green-50 border-green-200',
-    'Listening': 'bg-purple-50 border-purple-200',
-  };
+    Reading: 'bg-green-50 border-green-200',
+    Listening: 'bg-purple-50 border-purple-200',
+  }
 
   const getSectionQuestions = (section: QuestionTypeScoreInfo['section']) => {
-    return pteScoreBreakdown.filter(q => q.section === section);
-  };
+    return pteScoreBreakdown.filter((q) => q.section === section)
+  }
 
   const formatPercentage = (value?: number) => {
-    if (value === undefined) return '-';
-    return `${value}%`;
-  };
+    if (value === undefined) return '-'
+    return `${value}%`
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="text-center space-y-2">
+      <div className="space-y-2 text-center">
         <h1 className="text-3xl font-bold text-gray-900">
           PTE Content Question Types & Score Information Table V4
         </h1>
-        <p className="text-sm text-gray-600">
-          Effective from 25.08.07
-        </p>
-        <div className="flex items-center justify-center gap-2 text-sm text-amber-600 bg-amber-50 px-4 py-2 rounded-md max-w-2xl mx-auto">
+        <p className="text-sm text-gray-600">Effective from 25.08.07</p>
+        <div className="mx-auto flex max-w-2xl items-center justify-center gap-2 rounded-md bg-amber-50 px-4 py-2 text-sm text-amber-600">
           <Info className="h-4 w-4" />
           <span>
-            *The score proportion is a conclusion drawn from tests by the Xingji Teaching and Research Group. 
-            The proportion in the actual exam will fluctuate slightly based on changes in the number of questions.
+            *The score proportion is a conclusion drawn from tests by the Xingji
+            Teaching and Research Group. The proportion in the actual exam will
+            fluctuate slightly based on changes in the number of questions.
           </span>
         </div>
       </div>
 
       {/* Section Summary Cards */}
-      <div className="grid md:grid-cols-3 gap-4">
+      <div className="grid gap-4 md:grid-cols-3">
         {sections.map((section) => {
-          const summary = sectionSummaries[section];
-          const Icon = sectionIcons[section];
-          const colorClass = sectionColors[section];
-          
+          const summary = sectionSummaries[section]
+          const Icon = sectionIcons[section]
+          const colorClass = sectionColors[section]
+
           return (
             <Card key={section} className={`${colorClass} border-2`}>
               <CardHeader className="pb-3">
@@ -80,16 +83,20 @@ export function ScoreBreakdownTable() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Question Types:</span>
-                    <span className="font-semibold">{summary.questionCount}</span>
+                    <span className="font-semibold">
+                      {summary.questionCount}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Total Questions:</span>
-                    <span className="font-semibold">{summary.totalQuestions}</span>
+                    <span className="font-semibold">
+                      {summary.totalQuestions}
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
-          );
+          )
         })}
       </div>
 
@@ -100,21 +107,37 @@ export function ScoreBreakdownTable() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gray-50">
-                  <TableHead className="w-16 text-center font-bold">Seq</TableHead>
-                  <TableHead className="min-w-[200px] font-bold">Question Type</TableHead>
-                  <TableHead className="w-24 text-center font-bold">Numbers</TableHead>
-                  <TableHead className="min-w-[250px] font-bold">Time for Answering</TableHead>
-                  <TableHead className="w-24 text-center font-bold text-blue-600">Speaking</TableHead>
-                  <TableHead className="w-24 text-center font-bold text-green-600">Writing</TableHead>
-                  <TableHead className="w-24 text-center font-bold text-purple-600">Reading</TableHead>
-                  <TableHead className="w-24 text-center font-bold text-orange-600">Listening</TableHead>
+                  <TableHead className="w-16 text-center font-bold">
+                    Seq
+                  </TableHead>
+                  <TableHead className="min-w-[200px] font-bold">
+                    Question Type
+                  </TableHead>
+                  <TableHead className="w-24 text-center font-bold">
+                    Numbers
+                  </TableHead>
+                  <TableHead className="min-w-[250px] font-bold">
+                    Time for Answering
+                  </TableHead>
+                  <TableHead className="w-24 text-center font-bold text-blue-600">
+                    Speaking
+                  </TableHead>
+                  <TableHead className="w-24 text-center font-bold text-green-600">
+                    Writing
+                  </TableHead>
+                  <TableHead className="w-24 text-center font-bold text-purple-600">
+                    Reading
+                  </TableHead>
+                  <TableHead className="w-24 text-center font-bold text-orange-600">
+                    Listening
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sections.map((section) => {
-                  const questions = getSectionQuestions(section);
-                  const sectionSummary = sectionSummaries[section];
-                  
+                  const questions = getSectionQuestions(section)
+                  const sectionSummary = sectionSummaries[section]
+
                   return (
                     <React.Fragment key={section}>
                       {/* Section Header Row */}
@@ -122,7 +145,11 @@ export function ScoreBreakdownTable() {
                         <TableCell colSpan={8} className="py-3">
                           <div className="flex items-center justify-between">
                             <span className="text-lg">
-                              {section === 'Speaking & Writing' ? 'I. ' : section === 'Reading' ? 'II. ' : 'III. '}
+                              {section === 'Speaking & Writing'
+                                ? 'I. '
+                                : section === 'Reading'
+                                  ? 'II. '
+                                  : 'III. '}
                               {section}
                             </span>
                             <Badge variant="outline" className="ml-2">
@@ -131,16 +158,21 @@ export function ScoreBreakdownTable() {
                           </div>
                         </TableCell>
                       </TableRow>
-                      
+
                       {/* Question Rows */}
                       {questions.map((question) => (
-                        <TableRow key={question.sequence} className="hover:bg-gray-50">
+                        <TableRow
+                          key={question.sequence}
+                          className="hover:bg-gray-50"
+                        >
                           <TableCell className="text-center font-medium">
                             {question.sequence}
                           </TableCell>
                           <TableCell>
                             <div className="space-y-1">
-                              <div className="font-semibold">{question.questionType}</div>
+                              <div className="font-semibold">
+                                {question.questionType}
+                              </div>
                               <Badge variant="secondary" className="text-xs">
                                 {question.abbreviation}
                               </Badge>
@@ -167,7 +199,7 @@ export function ScoreBreakdownTable() {
                         </TableRow>
                       ))}
                     </React.Fragment>
-                  );
+                  )
                 })}
               </TableBody>
             </Table>
@@ -176,20 +208,25 @@ export function ScoreBreakdownTable() {
       </Card>
 
       {/* Score Totals */}
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-blue-600">Total Speaking Contribution</CardTitle>
+            <CardTitle className="text-sm text-blue-600">
+              Total Speaking Contribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {pteScoreBreakdown.reduce((sum, q) => sum + (q.speaking || 0), 0)}%
+              {pteScoreBreakdown.reduce((sum, q) => sum + (q.speaking || 0), 0)}
+              %
             </div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-green-600">Total Writing Contribution</CardTitle>
+            <CardTitle className="text-sm text-green-600">
+              Total Writing Contribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
@@ -199,7 +236,9 @@ export function ScoreBreakdownTable() {
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-purple-600">Total Reading Contribution</CardTitle>
+            <CardTitle className="text-sm text-purple-600">
+              Total Reading Contribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-purple-600">
@@ -209,16 +248,21 @@ export function ScoreBreakdownTable() {
         </Card>
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-orange-600">Total Listening Contribution</CardTitle>
+            <CardTitle className="text-sm text-orange-600">
+              Total Listening Contribution
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-orange-600">
-              {pteScoreBreakdown.reduce((sum, q) => sum + (q.listening || 0), 0)}%
+              {pteScoreBreakdown.reduce(
+                (sum, q) => sum + (q.listening || 0),
+                0
+              )}
+              %
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  )
 }
-

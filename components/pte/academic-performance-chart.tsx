@@ -1,29 +1,31 @@
-'use client';
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
   ResponsiveContainer,
-  Cell
-} from 'recharts';
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 
 interface AcademicPerformanceData {
-  section: string;
-  score: number;
+  section: string
+  score: number
 }
 
 interface AcademicPerformanceChartProps {
-  data: AcademicPerformanceData[];
+  data: AcademicPerformanceData[]
 }
 
-const COLORS = ['#10b981', '#8b5cf6', '#f97316', '#ef4444'];
+const COLORS = ['#10b981', '#8b5cf6', '#f97316', '#ef4444']
 
-export function AcademicPerformanceChart({ data }: AcademicPerformanceChartProps) {
+export function AcademicPerformanceChart({
+  data,
+}: AcademicPerformanceChartProps) {
   return (
     <Card>
       <CardHeader>
@@ -36,13 +38,16 @@ export function AcademicPerformanceChart({ data }: AcademicPerformanceChartProps
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="section" />
               <YAxis domain={[0, 100]} />
-              <Tooltip 
+              <Tooltip
                 formatter={(value) => [`${value}`, 'Score']}
                 labelFormatter={(label) => `Section: ${label}`}
               />
               <Bar dataKey="score" name="Score">
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
                 ))}
               </Bar>
             </BarChart>
@@ -50,5 +55,5 @@ export function AcademicPerformanceChart({ data }: AcademicPerformanceChartProps
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

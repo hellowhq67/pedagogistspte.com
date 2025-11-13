@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Respond — Customer Complaint 1",
+    "type": "respond_to_a_situation",
+    "promptText": "You are a store manager. A customer complains that their order arrived late and the packaging was damaged. Apologize and propose a clear resolution.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "situation", "customer_service"]
+  },
+  {
+    "title": "Respond — Roommate Noise 2",
+    "type": "respond_to_a_situation",
+    "promptText": "Your roommate plays loud music at night before your exam. Respond politely, explain the situation, and suggest a compromise.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "situation", "communication"]
+  },
+  {
+    "title": "Respond — Project Deadline 3",
+    "type": "respond_to_a_situation",
+    "promptText": "You realize you cannot meet a project deadline due to unexpected issues. Inform your supervisor, accept responsibility, and propose a realistic plan.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "situation", "workplace"]
+  },
+  {
+    "title": "Respond — Event Cancellation 4",
+    "type": "respond_to_a_situation",
+    "promptText": "An event you organized must be canceled due to safety concerns. Inform participants, provide reasons, and offer next steps or alternatives.",
+    "promptMediaUrl": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "situation", "announcement"]
+  },
+  {
+    "title": "Respond — Lost Item 5",
+    "type": "respond_to_a_situation",
+    "promptText": "You borrowed a friend’s book and lost it. Apologize sincerely, explain what happened, and propose a fair solution.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "situation", "apology"]
+  },
+  {
+    "title": "Respond — Team Conflict 6",
+    "type": "respond_to_a_situation",
+    "promptText": "Two teammates disagree on task ownership. Respond as the team lead to clarify roles and maintain a cooperative environment.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "situation", "leadership"]
+  },
+  {
+    "title": "Respond — Service Feedback 7",
+    "type": "respond_to_a_situation",
+    "promptText": "A client provides negative feedback about your service. Thank them, address concerns, and explain how you will improve.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "situation", "feedback"]
+  },
+  {
+    "title": "Respond — Travel Delay 8",
+    "type": "respond_to_a_situation",
+    "promptText": "You will arrive late to an important meeting due to public transport delays. Inform the organizer and propose how to minimize disruption.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "situation", "logistics"]
+  },
+  {
+    "title": "Respond — Academic Integrity 9",
+    "type": "respond_to_a_situation",
+    "promptText": "You notice a group member copying content without citations. Address the issue respectfully and propose corrective steps.",
+    "promptMediaUrl": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "situation", "ethics"]
+  },
+  {
+    "title": "Respond — Price Increase 10",
+    "type": "respond_to_a_situation",
+    "promptText": "Customers are upset about a recent price increase. Explain the reasons, emphasize value, and offer helpful options.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "situation", "business"]
+  }
+]

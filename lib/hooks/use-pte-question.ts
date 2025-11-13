@@ -1,41 +1,43 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react'
 
 // Define TypeScript interfaces
 interface PTEQuestion {
-  id: string;
-  type: string;
-  category: string;
-  content: any;
-  options?: string[];
-  correctAnswer?: string | string[];
-  userAnswer?: string | string[];
-  isAnswered?: boolean;
+  id: string
+  type: string
+  category: string
+  content: unknown
+  options?: string[]
+  correctAnswer?: string | string[]
+  userAnswer?: string | string[]
+  isAnswered?: boolean
 }
 
 interface UsePTEQuestionReturn {
-  question: PTEQuestion | null;
-  loading: boolean;
-  error: string | null;
-  userAnswer: string | string[] | null;
-  setUserAnswer: (answer: string | string[]) => void;
-  submitAnswer: () => Promise<void>;
-  resetQuestion: () => void;
+  question: PTEQuestion | null
+  loading: boolean
+  error: string | null
+  userAnswer: string | string[] | null
+  setUserAnswer: (answer: string | string[]) => void
+  submitAnswer: () => Promise<void>
+  resetQuestion: () => void
 }
 
 export function usePteQuestion(
   questionId: string,
   initialQuestion?: PTEQuestion
 ): UsePTEQuestionReturn {
-  const [question, setQuestion] = useState<PTEQuestion | null>(initialQuestion || null);
-  const [userAnswer, setUserAnswer] = useState<string | string[] | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [question, setQuestion] = useState<PTEQuestion | null>(
+    initialQuestion || null
+  )
+  const [userAnswer, setUserAnswer] = useState<string | string[] | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Mock function to fetch question data
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        setLoading(true);
+        setLoading(true)
         // This would be an actual API call in a real application
         // For now, we'll use mock data or the initial question
         if (!initialQuestion) {
@@ -44,24 +46,24 @@ export function usePteQuestion(
           // const data = await response.json();
           // setQuestion(data);
         } else {
-          setQuestion(initialQuestion);
+          setQuestion(initialQuestion)
         }
       } catch (err) {
-        setError('Failed to load question');
-        console.error(err);
+        setError('Failed to load question')
+        console.error(err)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
     if (questionId) {
-      fetchQuestion();
+      fetchQuestion()
     }
-  }, [questionId, initialQuestion]);
+  }, [questionId, initialQuestion])
 
   const submitAnswer = async () => {
-    if (!question) return;
-    
+    if (!question) return
+
     try {
       // In a real app, you'd submit the answer to an API
       // const response = await fetch(`/api/pte-questions/${questionId}/submit`, {
@@ -70,22 +72,26 @@ export function usePteQuestion(
       //   body: JSON.stringify({ answer: userAnswer })
       // });
       // const result = await response.json();
-      
+
       // Update question with user answer
-      setQuestion(prev => prev ? { ...prev, userAnswer, isAnswered: true } : null);
+      setQuestion((prev) =>
+        prev
+          ? { ...prev, userAnswer: userAnswer ?? undefined, isAnswered: true }
+          : null
+      )
     } catch (err) {
-      setError('Failed to submit answer');
-      console.error(err);
+      setError('Failed to submit answer')
+      console.error(err)
     }
-  };
+  }
 
   const resetQuestion = () => {
-    setUserAnswer(null);
-    setError(null);
+    setUserAnswer(null)
+    setError(null)
     if (question) {
-      setQuestion({ ...question, userAnswer: undefined, isAnswered: false });
+      setQuestion({ ...question, userAnswer: undefined, isAnswered: false })
     }
-  };
+  }
 
   return {
     question,
@@ -94,9 +100,9 @@ export function usePteQuestion(
     userAnswer,
     setUserAnswer,
     submitAnswer,
-    resetQuestion
-  };
+    resetQuestion,
+  }
 }
 
 // Also export with the original name to support different import styles
-export { usePteQuestion as usePTEQuestion };
+export { usePteQuestion as usePTEQuestion }

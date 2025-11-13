@@ -1,14 +1,10 @@
-import { ReactNode } from "react";
-import { AcademicProvider } from "@/components/pte/academic-context";
+import { ReactNode } from 'react'
+import { AcademicProvider } from '@/components/pte/academic-context'
 
 export default function AcademicSectionTestsLayout({
   children,
 }: {
-  children: ReactNode;
+  children: ReactNode
 }) {
-  return (
-    <AcademicProvider>
-      {children}
-    </AcademicProvider>
-  );
+  return <AcademicProvider>{children}</AcademicProvider>
 }

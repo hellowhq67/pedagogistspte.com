@@ -1,83 +1,118 @@
-'use client';
+'use client'
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import Link from 'next/link'
 import {
-  IconChevronRight,
   IconBook,
-  IconFileCheck,
-  IconTemplate,
-  IconStar,
-  IconCheck,
   IconBulb,
   IconChartBar,
+  IconCheck,
+  IconChevronRight,
   IconClock,
-  IconPlayerPlay,
-  IconVocabulary,
   IconEar,
+  IconFileCheck,
+  IconPlayerPlay,
+  IconStar,
+  IconTemplate,
+  IconVocabulary,
   IconWaveSine,
-} from '@tabler/icons-react';
-import Link from 'next/link';
-import useSWR from 'swr';
-import { User as UserType } from '@/lib/db/schema';
-import { StudyReportChart } from '@/components/pte/study-report-chart';
-import { ExamCountdown } from '@/components/pte/exam-countdown';
+} from '@tabler/icons-react'
+import useSWR from 'swr'
+import { ExamDateScheduler } from '@/components/pte/dashboard/exam-date-scheduler'
+import { PracticeProgressWidget } from '@/components/pte/dashboard/practice-progress-widget'
+import { TargetScoreWidget } from '@/components/pte/dashboard/target-score-widget'
+import { ExamCountdown } from '@/components/pte/exam-countdown'
+import { StudyReportChart } from '@/components/pte/study-report-chart'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { User as UserType } from '@/lib/db/schema'
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+type UIUser = UserType & {
+  examDate?: string | Date | null
+  targetScore?: number | null
+}
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function DashboardPage() {
-  const { data: user, error: userError } = useSWR<UserType>('/api/user', fetcher);
+  const { data: user, error: userError } = useSWR<UIUser>('/api/user', fetcher)
 
-  if (userError) return <div>Failed to load dashboard data.</div>;
-  if (!user) return <div>Loading...</div>;
+  if (userError) return <div>Failed to load dashboard data.</div>
+  if (!user) return <div>Loading...</div>
 
   return (
     <div className="space-y-8 p-4 md:p-6">
       {/* Welcome Banner */}
-      <Card className="bg-gradient-to-r from-gray-900 to-gray-800 text-white overflow-hidden">
-        <div className="flex flex-col md:flex-row items-center justify-between p-6">
+      <Card className="overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+        <div className="flex flex-col items-center justify-between p-6 md:flex-row">
           <div className="mb-4 md:mb-0">
-            <h2 className="text-2xl font-bold">Welcome to your PTE Practice Hub</h2>
-            <p className="text-gray-300">Get full access to all features and tools to help you prepare for the PTE exam.</p>
+            <h2 className="text-2xl font-bold">
+              Welcome to your PTE Practice Hub
+            </h2>
+            <p className="text-gray-300">
+              Get full access to all features and tools to help you prepare for
+              the PTE exam.
+            </p>
           </div>
-          <Button variant="secondary" size="lg">Get VIP Now</Button>
+          <Button variant="secondary" size="lg">
+            Get VIP Now
+          </Button>
         </div>
       </Card>
 
+      {/* Practice Progress Section */}
+      <div>
+        <h2 className="mb-4 text-2xl font-bold text-gray-900">
+          Your Practice Progress
+        </h2>
+        <PracticeProgressWidget />
+      </div>
+
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left Column */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="hover:shadow-lg transition-shadow">
+        <div className="space-y-6 lg:col-span-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <Card className="transition-shadow hover:shadow-lg">
               <CardHeader>
-                <IconBook className="h-8 w-8 text-blue-500 mb-2" />
+                <IconBook className="mb-2 h-8 w-8 text-blue-500" />
                 <CardTitle>PTE Practice</CardTitle>
                 <CardDescription>5000+ Questions</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">Practice questions for PTE exam by question type</p>
+                <p className="text-sm text-gray-600">
+                  Practice questions for PTE exam by question type
+                </p>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="transition-shadow hover:shadow-lg">
               <CardHeader>
-                <IconFileCheck className="h-8 w-8 text-green-500 mb-2" />
+                <IconFileCheck className="mb-2 h-8 w-8 text-green-500" />
                 <CardTitle>Mock Tests</CardTitle>
                 <CardDescription>200+ Tests</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">Simulate real exam conditions with mock tests</p>
+                <p className="text-sm text-gray-600">
+                  Simulate real exam conditions with mock tests
+                </p>
               </CardContent>
             </Card>
-            <Card className="hover:shadow-lg transition-shadow">
+            <Card className="transition-shadow hover:shadow-lg">
               <CardHeader>
-                <IconTemplate className="h-8 w-8 text-purple-500 mb-2" />
+                <IconTemplate className="mb-2 h-8 w-8 text-purple-500" />
                 <CardTitle>Templates</CardTitle>
                 <CardDescription>20+ Templates</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-gray-600">Get access to pre-written templates</p>
+                <p className="text-sm text-gray-600">
+                  Get access to pre-written templates
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -96,9 +131,18 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-gray-700">
-                <li className="flex items-center gap-2"><IconCheck className="h-4 w-4 text-green-500" /> AI score + personalized feedback</li>
-                <li className="flex items-center gap-2"><IconCheck className="h-4 w-4 text-green-500" /> Total 19-21 questions</li>
-                <li className="flex items-center gap-2"><IconCheck className="h-4 w-4 text-green-500" /> Estimated time 30+ minutes</li>
+                <li className="flex items-center gap-2">
+                  <IconCheck className="h-4 w-4 text-green-500" /> AI score +
+                  personalized feedback
+                </li>
+                <li className="flex items-center gap-2">
+                  <IconCheck className="h-4 w-4 text-green-500" /> Total 19-21
+                  questions
+                </li>
+                <li className="flex items-center gap-2">
+                  <IconCheck className="h-4 w-4 text-green-500" /> Estimated
+                  time 30+ minutes
+                </li>
               </ul>
             </CardContent>
           </Card>
@@ -108,10 +152,12 @@ export default function DashboardPage() {
               <CardTitle>AI Study Tips</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center text-center p-8 border-2 border-dashed rounded-lg">
+              <div className="flex items-center justify-center rounded-lg border-2 border-dashed p-8 text-center">
                 <div className="space-y-2">
-                  <IconBulb className="h-8 w-8 mx-auto text-gray-400" />
-                  <p className="text-gray-600">Buy VIP to see question types you should focus on.</p>
+                  <IconBulb className="mx-auto h-8 w-8 text-gray-400" />
+                  <p className="text-gray-600">
+                    Buy VIP to see question types you should focus on.
+                  </p>
                   <Button variant="outline">Buy VIP</Button>
                 </div>
               </div>
@@ -124,13 +170,17 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               {/* Placeholder for Study Guide */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="border rounded-lg p-4">
-                  <h3 className="font-semibold mb-2">New PTE Academic Summarize Group Discussion Guide</h3>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="rounded-lg border p-4">
+                  <h3 className="mb-2 font-semibold">
+                    New PTE Academic Summarize Group Discussion Guide
+                  </h3>
                   <p className="text-sm text-gray-500">July 20, 2025</p>
                 </div>
-                <div className="border rounded-lg p-4">
-                  <h3 className="font-semibold mb-2">How to Improve Your Listening Skills</h3>
+                <div className="rounded-lg border p-4">
+                  <h3 className="mb-2 font-semibold">
+                    How to Improve Your Listening Skills
+                  </h3>
                   <p className="text-sm text-gray-500">July 27, 2024</p>
                 </div>
               </div>
@@ -138,47 +188,10 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Right Column */}
+        {/* Right Column - Dashboard Widgets */}
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Study Report</CardTitle>
-              <Button variant="outline" size="sm">Set New Target</Button>
-            </CardHeader>
-            <CardContent>
-              <StudyReportChart />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Exam In</CardTitle>
-              <Button variant="outline" size="sm">Set New Date</Button>
-            </CardHeader>
-            <CardContent>
-              <ExamCountdown examDate={user.examDate} />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Practice Summary</CardTitle>
-            </CardHeader>
-            <CardContent className="flex justify-around text-center">
-              <div>
-                <div className="text-2xl font-bold">0</div>
-                <div className="text-sm text-gray-500">Today Practiced</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold">7</div>
-                <div className="text-sm text-gray-500">Total Practiced</div>
-              </div>
-              <div>
-                <div className="text-2xl font-bold">5</div>
-                <div className="text-sm text-gray-500">Practice Days</div>
-              </div>
-            </CardContent>
-          </Card>
+          <TargetScoreWidget />
+          <ExamDateScheduler />
 
           <Card>
             <CardHeader>
@@ -186,15 +199,15 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <IconVocabulary className="h-8 w-8 mx-auto text-blue-500 mb-2" />
+                <IconVocabulary className="mx-auto mb-2 h-8 w-8 text-blue-500" />
                 <p className="text-sm font-medium">Vocab Books</p>
               </div>
               <div className="text-center">
-                <IconWaveSine className="h-8 w-8 mx-auto text-green-500 mb-2" />
+                <IconWaveSine className="mx-auto mb-2 h-8 w-8 text-green-500" />
                 <p className="text-sm font-medium">Shadowing</p>
               </div>
               <div className="text-center">
-                <IconEar className="h-8 w-8 mx-auto text-purple-500 mb-2" />
+                <IconEar className="mx-auto mb-2 h-8 w-8 text-purple-500" />
                 <p className="text-sm font-medium">OnePTE MP3</p>
               </div>
             </CardContent>
@@ -202,5 +215,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

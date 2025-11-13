@@ -1,14 +1,14 @@
 // lib/pte/pte-scoring.ts
 
 // PTE Academic scoring structure
-export type PTESkill = 
-  | 'Speaking' 
-  | 'Writing' 
-  | 'Reading' 
+export type PTESkill =
+  | 'Speaking'
+  | 'Writing'
+  | 'Reading'
   | 'Listening'
-  | 'Enabling Skills';
+  | 'Enabling Skills'
 
-export type PTEModule = 
+export type PTEModule =
   | 'RA' // Read Aloud
   | 'RS' // Repeat Sentence
   | 'DI' // Describe Image
@@ -33,28 +33,28 @@ export type PTEModule =
   | 'SGD' // Summarize Group Discussion;
 
 export interface PTEModuleScore {
-  module: PTEModule;
-  name: string;
-  description: string;
-  contributingSkills: PTESkill[];
-  scoreRange: [number, number]; // min, max score
-  timeLimit: number; // in seconds
+  module: PTEModule
+  name: string
+  description: string
+  contributingSkills: PTESkill[]
+  scoreRange: [number, number] // min, max score
+  timeLimit: number // in seconds
 }
 
 export interface PTEScoreBreakdown {
-  overall: number;
-  speaking: number;
-  writing: number;
-  reading: number;
-  listening: number;
+  overall: number
+  speaking: number
+  writing: number
+  reading: number
+  listening: number
   enablingSkills?: {
-    grammar: number;
-    oralFluency: number;
-    pronunciation: number;
-    spelling: number;
-    vocabulary: number;
-    writtenDiscourse: number;
-  };
+    grammar: number
+    oralFluency: number
+    pronunciation: number
+    spelling: number
+    vocabulary: number
+    writtenDiscourse: number
+  }
 }
 
 // Define all PTE modules with their characteristics
@@ -65,7 +65,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Read a text aloud',
     contributingSkills: ['Speaking', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 60
+    timeLimit: 60,
   },
   {
     module: 'RS',
@@ -73,7 +73,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Repeat a sentence exactly as you hear it',
     contributingSkills: ['Speaking', 'Listening'],
     scoreRange: [10, 90],
-    timeLimit: 15
+    timeLimit: 15,
   },
   {
     module: 'DI',
@@ -81,7 +81,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Describe an image in detail',
     contributingSkills: ['Speaking'],
     scoreRange: [10, 90],
-    timeLimit: 65
+    timeLimit: 65,
   },
   {
     module: 'RL',
@@ -89,7 +89,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Summarize a lecture in your own words',
     contributingSkills: ['Speaking', 'Listening'],
     scoreRange: [10, 90],
-    timeLimit: 40
+    timeLimit: 40,
   },
   {
     module: 'ASQ',
@@ -97,7 +97,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Answer a question in a few words',
     contributingSkills: ['Speaking', 'Listening'],
     scoreRange: [10, 90],
-    timeLimit: 10
+    timeLimit: 10,
   },
   {
     module: 'SWT',
@@ -105,7 +105,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Write a one-sentence summary of a text',
     contributingSkills: ['Writing', 'Reading', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 600
+    timeLimit: 600,
   },
   {
     module: 'WE',
@@ -113,7 +113,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Write an essay on a given topic',
     contributingSkills: ['Writing', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 1200
+    timeLimit: 1200,
   },
   {
     module: 'FIB_RW',
@@ -121,7 +121,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Fill in blanks in a text',
     contributingSkills: ['Reading', 'Writing', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'MCS',
@@ -129,7 +129,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Choose one correct answer',
     contributingSkills: ['Reading'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'MCM',
@@ -137,7 +137,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Choose multiple correct answers',
     contributingSkills: ['Reading', 'Listening'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'RO',
@@ -145,7 +145,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Reorder paragraphs to form a coherent text',
     contributingSkills: ['Reading'],
     scoreRange: [10, 90],
-    timeLimit: 180
+    timeLimit: 180,
   },
   {
     module: 'FIB_R',
@@ -153,7 +153,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Fill in blanks in a text',
     contributingSkills: ['Reading', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'SST',
@@ -161,7 +161,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Write a summary of a spoken text',
     contributingSkills: ['Listening', 'Writing', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 600
+    timeLimit: 600,
   },
   {
     module: 'MCS_L',
@@ -169,7 +169,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Choose one correct answer from audio',
     contributingSkills: ['Listening'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'FIB_L',
@@ -177,7 +177,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Fill in blanks from audio',
     contributingSkills: ['Listening', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 150
+    timeLimit: 150,
   },
   {
     module: 'HCS',
@@ -185,7 +185,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Choose the correct summary from audio',
     contributingSkills: ['Listening'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'MCM_L',
@@ -193,7 +193,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Choose multiple correct answers from audio',
     contributingSkills: ['Listening'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'SMW',
@@ -201,7 +201,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Select the missing word from audio',
     contributingSkills: ['Listening'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'HIW',
@@ -209,7 +209,7 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Highlight incorrect words from audio',
     contributingSkills: ['Listening'],
     scoreRange: [10, 90],
-    timeLimit: 90
+    timeLimit: 90,
   },
   {
     module: 'WFD',
@@ -217,12 +217,12 @@ export const pteModules: PTEModuleScore[] = [
     description: 'Write a sentence as you hear it',
     contributingSkills: ['Listening', 'Writing', 'Enabling Skills'],
     scoreRange: [10, 90],
-    timeLimit: 90
-  }
-];
+    timeLimit: 90,
+  },
+]
 
 // Calculate scores based on PTE Academic algorithm
-export const calculatePTEScore = (responses: any[]): PTEScoreBreakdown => {
+export const calculatePTEScore = (responses: unknown[]): PTEScoreBreakdown => {
   // This would implement the actual PTE scoring algorithm
   // For demonstration, returning mock scores
   return {
@@ -237,15 +237,17 @@ export const calculatePTEScore = (responses: any[]): PTEScoreBreakdown => {
       pronunciation: 76,
       spelling: 85,
       vocabulary: 80,
-      writtenDiscourse: 79
-    }
-  };
-};
+      writtenDiscourse: 79,
+    },
+  }
+}
 
 // Get module by code
 export const getModuleByCode = (code: string): PTEModuleScore | undefined => {
-  return pteModules.find(module => 
-    module.module === code || 
-    module.name.toLowerCase().replace(/\s+/g, '') === code.toLowerCase().replace(/\s+/g, '')
-  );
-};
+  return pteModules.find(
+    (module) =>
+      module.module === code ||
+      module.name.toLowerCase().replace(/\s+/g, '') ===
+        code.toLowerCase().replace(/\s+/g, '')
+  )
+}

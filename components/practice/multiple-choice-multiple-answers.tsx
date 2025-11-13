@@ -1,33 +1,38 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 interface MultipleChoiceMultipleAnswersProps {
-  question: string;
-  options: { id: string; text: string }[];
-  correctAnswers: string[];
-  onComplete?: (selected: string[]) => void;
+  question: string
+  options: { id: string; text: string }[]
+  correctAnswers: string[]
+  onComplete?: (selected: string[]) => void
 }
 
-export function MultipleChoiceMultipleAnswers({ question, options, correctAnswers, onComplete }: MultipleChoiceMultipleAnswersProps) {
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+export function MultipleChoiceMultipleAnswers({
+  question,
+  options,
+  correctAnswers,
+  onComplete,
+}: MultipleChoiceMultipleAnswersProps) {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
 
   const toggleOption = (optionId: string) => {
     if (selectedOptions.includes(optionId)) {
-      setSelectedOptions(selectedOptions.filter(id => id !== optionId));
+      setSelectedOptions(selectedOptions.filter((id) => id !== optionId))
     } else {
-      setSelectedOptions([...selectedOptions, optionId]);
+      setSelectedOptions([...selectedOptions, optionId])
     }
-  };
+  }
 
   return (
     <div className="space-y-4">
       <h3 className="font-medium">{question}</h3>
-      
+
       <div className="space-y-2">
         {options.map((option) => (
-          <div 
+          <div
             key={option.id}
             onClick={() => toggleOption(option.id)}
-            className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+            className={`cursor-pointer rounded-lg border p-3 transition-colors ${
               selectedOptions.includes(option.id)
                 ? 'border-primary bg-primary/10'
                 : 'hover:bg-muted'
@@ -45,10 +50,8 @@ export function MultipleChoiceMultipleAnswers({ question, options, correctAnswer
           </div>
         ))}
       </div>
-      
-      <div className="text-sm text-muted-foreground">
-        Select all that apply
-      </div>
+
+      <div className="text-muted-foreground text-sm">Select all that apply</div>
     </div>
-  );
+  )
 }

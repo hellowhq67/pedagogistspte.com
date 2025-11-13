@@ -1,38 +1,37 @@
-import { initialCategories } from "@/lib/pte/data";
-import { notFound } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import Image from "next/image";
-import { AcademicPracticeHeader } from "@/components/pte/practice-header";
+import Image from 'next/image'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { AcademicPracticeHeader } from '@/components/pte/practice-header'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { initialCategories } from '@/lib/pte/data'
 
-export default function SectionPage({
-  params,
-}: {
-  params: Promise<{ section: string }>;
+export default async function SectionPage(props: {
+  params: Promise<{ section: string }>
 }) {
-  const { section } = params;
-  
+  const params = await props.params
+  const { section } = params
+
   const parentCategory = initialCategories.find(
     (cat) => cat.code === section && cat.parent === null
-  );
+  )
 
   if (!parentCategory) {
-    notFound();
+    notFound()
   }
 
   const childCategories = initialCategories.filter(
     (cat) => cat.parent === parentCategory.id
-  );
+  )
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <AcademicPracticeHeader section={section} />
-        
+
         <div className="mt-6">
           <div className="mb-6">
-            <div className="flex items-center gap-4 mb-4">
+            <div className="mb-4 flex items-center gap-4">
               <Image
                 src={parentCategory.icon}
                 alt={parentCategory.title}
@@ -41,7 +40,7 @@ export default function SectionPage({
               />
               <div>
                 <h1 className="text-2xl font-bold">{parentCategory.title}</h1>
-                <p className="text-sm text-gray-600 mt-1">
+                <p className="mt-1 text-sm text-gray-600">
                   Choose from {childCategories.length} question types
                 </p>
               </div>
@@ -50,9 +49,12 @@ export default function SectionPage({
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {childCategories.map((child) => (
-              <Card key={child.id} className="hover:shadow-md transition-shadow">
-                <CardContent className="p-6 flex flex-col h-full">
-                  <div className="flex items-center gap-3 mb-4">
+              <Card
+                key={child.id}
+                className="transition-shadow hover:shadow-md"
+              >
+                <CardContent className="flex h-full flex-col p-6">
+                  <div className="mb-4 flex items-center gap-3">
                     <Image
                       src={child.icon}
                       alt={child.title}
@@ -60,17 +62,17 @@ export default function SectionPage({
                       height={32}
                     />
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{child.title}</h3>
+                      <h3 className="text-lg font-semibold">{child.title}</h3>
                       <p className="text-sm text-gray-500">
                         {child.question_count} questions available
                       </p>
                     </div>
                   </div>
-                  
-                  <p className="text-sm text-gray-600 mb-4 flex-grow">
+
+                  <p className="mb-4 flex-grow text-sm text-gray-600">
                     {child.description}
                   </p>
-                  
+
                   <div className="mt-auto">
                     <Button asChild className="w-full">
                       <Link
@@ -87,13 +89,15 @@ export default function SectionPage({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export async function generateStaticParams() {
-  const parentCategories = initialCategories.filter((cat) => cat.parent === null);
-  
+  const parentCategories = initialCategories.filter(
+    (cat) => cat.parent === null
+  )
+
   return parentCategories.map((category) => ({
     section: category.code,
-  }));
+  }))
 }

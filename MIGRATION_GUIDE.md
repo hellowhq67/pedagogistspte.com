@@ -1,12 +1,15 @@
 # Migration Guide: Next.js 16 + Better Auth
 
 ## Overview
+
 This project has been migrated to Next.js 16 with Better Auth for authentication, replacing the custom JWT-based auth system.
 
 ## Key Changes
 
 ### 1. Next.js 16 Async Request APIs
+
 All Request APIs are now async in Next.js 16:
+
 - `cookies()` → `await cookies()`
 - `headers()` → `await headers()`
 - `params` prop → now async
@@ -14,6 +17,7 @@ All Request APIs are now async in Next.js 16:
 ### 2. Better Auth Integration
 
 #### New Files Created:
+
 - `lib/auth/auth.ts` - Better Auth configuration
 - `lib/auth/auth-client.ts` - Client-side auth utilities
 - `lib/auth/server.ts` - Server-side auth utilities (async-compatible)
@@ -22,12 +26,14 @@ All Request APIs are now async in Next.js 16:
 - `middleware.ts` - Route protection middleware
 
 #### Updated Files:
+
 - `lib/db/queries.ts` - Now uses Better Auth sessions
 - `app/api/auth/[...all]/route.ts` - Better Auth API routes
 
 ### 3. Authentication Flow
 
 #### Sign In
+
 ```typescript
 import { signInAction } from '@/lib/auth/actions';
 
@@ -42,6 +48,7 @@ const [state, formAction] = useActionState(signInAction, null);
 ```
 
 #### Sign Up
+
 ```typescript
 import { signUpAction } from '@/lib/auth/actions';
 
@@ -57,6 +64,7 @@ const [state, formAction] = useActionState(signUpAction, null);
 ```
 
 #### Sign Out
+
 ```typescript
 import { signOutAction } from '@/lib/auth/actions';
 
@@ -67,22 +75,24 @@ import { signOutAction } from '@/lib/auth/actions';
 ```
 
 #### Get Current User (Server)
+
 ```typescript
 import { getCurrentUser, getSession } from '@/lib/auth/server';
 
 export default async function Page() {
   const user = await getCurrentUser();
   const session = await getSession();
-  
+
   if (!user) {
     redirect('/sign-in');
   }
-  
+
   return <div>Welcome {user.name}</div>;
 }
 ```
 
 #### Use Session (Client)
+
 ```typescript
 'use client';
 
@@ -90,10 +100,10 @@ import { useSession } from '@/lib/auth/auth-client';
 
 export function UserProfile() {
   const { data: session, isPending } = useSession();
-  
+
   if (isPending) return <div>Loading...</div>;
   if (!session) return <div>Not signed in</div>;
-  
+
   return <div>Hello {session.user.name}</div>;
 }
 ```
@@ -103,6 +113,7 @@ export function UserProfile() {
 Routes are now protected by middleware:
 
 **Protected routes:**
+
 - `/dashboard/*`
 - `/practice/*`
 - `/mock-tests/*`
@@ -110,6 +121,7 @@ Routes are now protected by middleware:
 - `/study/*`
 
 **Auth routes** (redirect to dashboard if authenticated):
+
 - `/sign-in`
 - `/sign-up`
 
@@ -153,18 +165,19 @@ APPLE_CLIENT_SECRET=your_apple_client_secret
 All user management actions have been updated:
 
 ```typescript
-import { 
+import {
   updateAccount,
   updatePassword,
   deleteAccount,
   removeTeamMember,
-  inviteTeamMember 
+  inviteTeamMember
 } from '@/lib/auth/user-actions';
 ```
 
 ### 8. Removed Files (Old Auth System)
 
 The following files are deprecated but kept for reference:
+
 - `lib/auth/session.ts` - Old JWT-based session management
 - `lib/auth/middleware.ts` - Old validation middleware
 - `app/(login)/actions.ts` - Old auth actions
@@ -174,11 +187,13 @@ The following files are deprecated but kept for reference:
 ## Testing the Migration
 
 ### 1. Start the Development Server
+
 ```bash
 pnpm dev
 ```
 
 ### 2. Test Authentication Flow
+
 1. Visit http://localhost:3000/sign-up
 2. Create a new account
 3. Verify redirect to dashboard
@@ -187,6 +202,7 @@ pnpm dev
 6. Test protected routes
 
 ### 3. Test User Management
+
 1. Update account details
 2. Change password
 3. Invite team members
@@ -195,17 +211,22 @@ pnpm dev
 ## Troubleshooting
 
 ### Issue: "User not found" after migration
+
 **Solution:** Run database migrations to ensure Better Auth tables are properly set up:
+
 ```bash
 pnpm db:generate
 pnpm db:migrate
 ```
 
 ### Issue: Redirect loops
+
 **Solution:** Clear cookies and local storage, then try again.
 
 ### Issue: TypeScript errors
+
 **Solution:** Ensure all imports are updated to use new auth utilities:
+
 - `getUser()` from `@/lib/db/queries`
 - `getCurrentUser()` from `@/lib/auth/server`
 - `useSession()` from `@/lib/auth/auth-client`

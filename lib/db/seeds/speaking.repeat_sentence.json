@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Repeat Sentence #1",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 1_Prompt/Repeat Sentence_Question 1_P.mp3",
+    "difficulty": "Easy",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #2",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 2_Prompt/Repeat Sentence_Question 2_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #3",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 3_Prompt/Repeat Sentence_Question 3_P.mp3",
+    "difficulty": "Hard",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #4",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 4_Prompt/Repeat Sentence_Question 4_P.mp3",
+    "difficulty": "Easy",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #5",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 5_Prompt/Repeat Sentence_Question 5_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #6",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 6_Prompt/Repeat Sentence_Question 6_P.mp3",
+    "difficulty": "Hard",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #7",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 7_Prompt/Repeat Sentence_Question 7_P.mp3",
+    "difficulty": "Easy",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #8",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 8_Prompt/Repeat Sentence_Question 8_P.mp3",
+    "difficulty": "Medium",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #9",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 9_Prompt/Repeat Sentence_Question 9_P.mp3",
+    "difficulty": "Hard",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  },
+  {
+    "title": "Repeat Sentence #10",
+    "type": "repeat_sentence",
+    "promptText": null,
+    "promptMediaUrl": "/asset/Offline_Practice_Test Pearson Model/Part 1_Speaking and Writing_PTE Academic Offline Practice Test/Prompts & Sample Responses/Prompts/1 Repeat Sentence/Repeat Sentence_Question 10_Prompt/Repeat Sentence_Question 10_P.mp3",
+    "difficulty": "Easy",
+    "tags": ["seed", "repeat_sentence", "offline_practice_test"]
+  }
+]

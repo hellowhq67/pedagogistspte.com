@@ -1,15 +1,18 @@
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'
 
 interface LoadingSkeletonProps {
-  height?: string;
-  className?: string;
+  height?: string
+  className?: string
 }
 
-export function LoadingSkeleton({ height = '20px', className }: LoadingSkeletonProps) {
+export function LoadingSkeleton({
+  height = '20px',
+  className,
+}: LoadingSkeletonProps) {
   return (
-    <div 
-      className={cn('animate-pulse rounded-md bg-muted', className)} 
+    <div
+      className={cn('bg-muted animate-pulse rounded-md', className)}
       style={{ height }}
     />
-  );
+  )
 }

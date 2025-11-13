@@ -1,22 +1,22 @@
-'use client';
+'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { TrendingUp, TrendingDown, Clock, Target } from 'lucide-react';
+import { Clock, Target, TrendingDown, TrendingUp } from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 
 interface AcademicStats {
-  overallScore: number;
-  targetScore: number;
-  readingScore: number;
-  writingScore: number;
-  listeningScore: number;
-  speakingScore: number;
-  testsCompleted: number;
-  studyHours: number;
-  streak: number;
+  overallScore: number
+  targetScore: number
+  readingScore: number
+  writingScore: number
+  listeningScore: number
+  speakingScore: number
+  testsCompleted: number
+  studyHours: number
+  streak: number
 }
 
 interface AcademicStatsCardsProps {
-  data: AcademicStats;
+  data: AcademicStats
 }
 
 export function AcademicStatsCards({ data }: AcademicStatsCardsProps) {
@@ -63,10 +63,10 @@ export function AcademicStatsCards({ data }: AcademicStatsCardsProps) {
       change: '+2 this week',
       changeType: 'positive',
     },
-  ];
+  ]
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {stats.map((stat, index) => (
         <Card key={index}>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -75,10 +75,10 @@ export function AcademicStatsCards({ data }: AcademicStatsCardsProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stat.value}</div>
-            <p className="text-xs text-muted-foreground mt-1">{stat.change}</p>
+            <p className="text-muted-foreground mt-1 text-xs">{stat.change}</p>
           </CardContent>
         </Card>
       ))}
     </div>
-  );
+  )
 }

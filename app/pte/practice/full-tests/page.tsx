@@ -1,18 +1,42 @@
-import { Clock, Star } from 'lucide-react';
+import { Clock, Star } from 'lucide-react'
 
 const mockTests = [
-  { id: 1, title: 'Mock Test 1', duration: '2 hours', questions: 19, isPremium: false },
-  { id: 2, title: 'Mock Test 2', duration: '2 hours', questions: 19, isPremium: false },
-  { id: 3, title: 'Mock Test 3', duration: '2 hours', questions: 19, isPremium: true },
-  { id: 4, title: 'Mock Test 4', duration: '2 hours', questions: 19, isPremium: true },
-];
+  {
+    id: 1,
+    title: 'Mock Test 1',
+    duration: '2 hours',
+    questions: 19,
+    isPremium: false,
+  },
+  {
+    id: 2,
+    title: 'Mock Test 2',
+    duration: '2 hours',
+    questions: 19,
+    isPremium: false,
+  },
+  {
+    id: 3,
+    title: 'Mock Test 3',
+    duration: '2 hours',
+    questions: 19,
+    isPremium: true,
+  },
+  {
+    id: 4,
+    title: 'Mock Test 4',
+    duration: '2 hours',
+    questions: 19,
+    isPremium: true,
+  },
+]
 
 export default function FullTestsPage() {
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Full Practice Tests</h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="text-muted-foreground mt-2">
           Take complete PTE practice tests with AI scoring
         </p>
       </div>
@@ -21,7 +45,9 @@ export default function FullTestsPage() {
       <div className="rounded-lg bg-gradient-to-r from-green-600 to-teal-600 p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="mb-2 text-xl font-bold">✨ Take free Mock Test with AI scoring</h2>
+            <h2 className="mb-2 text-xl font-bold">
+              ✨ Take free Mock Test with AI scoring
+            </h2>
             <ul className="space-y-1 text-sm text-green-50">
               <li>• AI score + personalized feedback</li>
               <li>• Total 19-21 questions</li>
@@ -39,7 +65,7 @@ export default function FullTestsPage() {
         {mockTests.map((test) => (
           <div
             key={test.id}
-            className="rounded-lg border bg-card p-6 transition-shadow hover:shadow-lg"
+            className="bg-card rounded-lg border p-6 transition-shadow hover:shadow-lg"
           >
             {test.isPremium && (
               <div className="mb-3 inline-flex items-center gap-1 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800 dark:bg-amber-900 dark:text-amber-100">
@@ -48,7 +74,7 @@ export default function FullTestsPage() {
               </div>
             )}
             <h3 className="mb-3 text-xl font-semibold">{test.title}</h3>
-            <div className="mb-4 space-y-2 text-sm text-muted-foreground">
+            <div className="text-muted-foreground mb-4 space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 <span>{test.duration}</span>
@@ -68,5 +94,5 @@ export default function FullTestsPage() {
         ))}
       </div>
     </div>
-  );
+  )
 }

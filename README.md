@@ -29,29 +29,33 @@ A modern, production-ready SaaS application built with Next.js 16, Better Auth, 
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - pnpm (recommended) or npm
 - Neon PostgreSQL account ([neon.tech](https://neon.tech))
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <your-repo-url>
    cd saas-starter
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
 
 3. **Set up environment variables**
+
    ```bash
    cp .env.example .env.local
    ```
 
 4. **Configure your `.env.local`**
+
    ```env
    POSTGRES_URL=postgresql://user:pass@host.pooler.aws.neon.tech/db?sslmode=require
    BETTER_AUTH_SECRET=your-secret-key-here
@@ -60,23 +64,26 @@ A modern, production-ready SaaS application built with Next.js 16, Better Auth, 
    ```
 
 5. **Generate auth secret**
+
    ```bash
    openssl rand -base64 32
    ```
 
 6. **Set up database**
+
    ```bash
    # Generate migration
    pnpm db:generate
-   
+
    # Push schema to database
    npx drizzle-kit push
-   
+
    # Verify setup
    npx tsx scripts/verify-auth-setup.ts
    ```
 
 7. **Run development server**
+
    ```bash
    pnpm dev
    ```
@@ -186,9 +193,9 @@ import { useSession } from '@/lib/auth/auth-client';
 
 export default function Profile() {
   const { data: session } = useSession();
-  
+
   if (!session) return <div>Not logged in</div>;
-  
+
   return <div>Welcome, {session.user.name}!</div>;
 }
 ```
@@ -205,6 +212,7 @@ npx shadcn@latest add card
 ```
 
 Components available:
+
 - Buttons, Cards, Dialogs
 - Forms, Inputs, Labels
 - Tables, Tabs, Tooltips
@@ -216,6 +224,7 @@ Components available:
 ### Deploy to Vercel (Recommended)
 
 1. **Push to GitHub**
+
    ```bash
    git add .
    git commit -m "Ready for production"
@@ -230,6 +239,7 @@ Components available:
 
 3. **Configure Environment Variables**
    Add these in Vercel Dashboard → Settings → Environment Variables:
+
    ```
    POSTGRES_URL=your-neon-pooled-connection-string
    BETTER_AUTH_SECRET=your-generated-secret
@@ -274,21 +284,25 @@ pnpm fresh            # Clean cache & restart dev
 ### Implemented Optimizations
 
 ✅ **Bundle Size Reduction**
+
 - Tree shaking enabled
 - Package import optimization
 - Dynamic imports for heavy components
 
 ✅ **Caching Strategy**
+
 - Static asset caching (1 year)
 - API response caching (60s + SWR)
 - Image optimization (AVIF/WebP)
 
 ✅ **Database Performance**
+
 - Connection pooling (max 10 connections)
 - Optimized queries with Drizzle
 - Proper indexing on frequently queried fields
 
 ✅ **Security Headers**
+
 - CSP (Content Security Policy)
 - HSTS (Strict Transport Security)
 - X-Frame-Options, X-Content-Type-Options
@@ -297,17 +311,20 @@ pnpm fresh            # Clean cache & restart dev
 ## 🔧 Configuration Files
 
 ### Next.js (`next.config.ts`)
+
 - Production optimizations
 - Security headers
 - Image optimization
 - Webpack customization
 
 ### TypeScript (`tsconfig.json`)
+
 - Strict mode enabled
 - Path aliases configured
 - Production-ready settings
 
 ### Drizzle (`drizzle.config.ts`)
+
 - PostgreSQL dialect
 - Migration management
 - Schema location
@@ -317,6 +334,7 @@ pnpm fresh            # Clean cache & restart dev
 ### Common Issues
 
 **Database connection failed**
+
 ```bash
 # Check your POSTGRES_URL
 echo $POSTGRES_URL
@@ -326,6 +344,7 @@ pnpm db:test
 ```
 
 **Build errors**
+
 ```bash
 # Clear cache and rebuild
 pnpm clean
@@ -333,6 +352,7 @@ pnpm build
 ```
 
 **OAuth not working**
+
 - Verify redirect URIs match exactly
 - Check OAuth credentials in environment
 - Ensure HTTPS in production
@@ -342,6 +362,8 @@ pnpm build
 - [Deployment Guide](./DEPLOYMENT.md) - Complete production deployment guide
 - [Migration Guide](./MIGRATION_GUIDE.md) - Database migration strategies
 - [Environment Variables](./.env.example) - All environment variables explained
+
+- [Speaking Practice Setup](docs/pte-speaking-setup.md:1) - End-to-end env, local verification, and deployment for the Speaking system
 
 ## 🤝 Contributing
 

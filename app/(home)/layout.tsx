@@ -1,30 +1,30 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { Suspense } from 'react';
-import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
+import { Suspense } from 'react'
+import Link from 'next/link'
+import { LogOut } from 'lucide-react'
+import useSWR from 'swr'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { signOutAction } from '@/lib/auth/actions';
-import { User } from '@/lib/db/schema';
-import useSWR from 'swr';
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { signOutAction } from '@/lib/auth/actions'
+import { User } from '@/lib/db/schema'
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 function UserMenu() {
   const { data: user, error } = useSWR<User>('/api/user', fetcher, {
     onError: (err) => {
-      console.error('SWR Error:', err);
+      console.error('SWR Error:', err)
     },
     // Don't retry on error to prevent infinite loops
     errorRetryCount: 0,
-  });
+  })
 
   // If there's an error, show login options
   if (error) {
@@ -37,7 +37,7 @@ function UserMenu() {
           <Link href="/sign-up">Sign Up</Link>
         </Button>
       </div>
-    );
+    )
   }
 
   // If no user, show login options
@@ -51,7 +51,7 @@ function UserMenu() {
           <Link href="/sign-up">Sign Up</Link>
         </Button>
       </div>
-    );
+    )
   }
 
   return (
@@ -61,7 +61,7 @@ function UserMenu() {
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Avatar className="cursor-pointer size-9">
+          <Avatar className="size-9 cursor-pointer">
             <AvatarImage alt={user.name || ''} />
             <AvatarFallback>
               {(user.email || user.name || 'U')
@@ -83,18 +83,20 @@ function UserMenu() {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  );
+  )
 }
 
 function Header() {
   return (
     <header className="border-b border-gray-200 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center">
-          <div className="h-8 w-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">P</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
+            <span className="text-lg font-bold text-white">P</span>
           </div>
-          <span className="ml-2 text-xl font-bold text-gray-900">Pedagogist&apos;s PTE</span>
+          <span className="ml-2 text-xl font-bold text-gray-900">
+            Pedagogist&apos;s PTE
+          </span>
         </Link>
         <div className="flex items-center space-x-4">
           <Suspense fallback={<div className="h-9" />}>
@@ -103,14 +105,18 @@ function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }
 
-export default function HomeLayout({ children }: { children: React.ReactNode }) {
+export default function HomeLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <section className="flex flex-col min-h-screen">
+    <section className="flex min-h-screen flex-col">
       <Header />
       {children}
     </section>
-  );
+  )
 }

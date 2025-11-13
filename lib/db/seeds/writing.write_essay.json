@@ -1,0 +1,56 @@
+[
+  {
+    "title": "Writing — Write Essay: Remote Work vs Office",
+    "type": "write_essay",
+    "promptText": "Some people believe that remote work increases productivity and work-life balance, while others argue that it reduces team collaboration and company culture. Discuss both views and give your own opinion. Support your answer with reasons and relevant examples from your knowledge or experience.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "essay", "workplace", "weekly_prediction"]
+  },
+  {
+    "title": "Writing — Write Essay: Public vs Private Transport",
+    "type": "write_essay",
+    "promptText": "To what extent do you agree or disagree that governments should prioritize investment in public transportation over private vehicle infrastructure? Provide specific reasons and examples to support your position.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "essay", "transport"]
+  },
+  {
+    "title": "Writing — Write Essay: Data Privacy Laws",
+    "type": "write_essay",
+    "promptText": "Do the benefits of stricter data privacy regulations outweigh the potential limitations they impose on technological innovation and business development? Discuss both perspectives and provide your reasoned conclusion with supporting evidence.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "writing", "essay", "technology", "monthly_prediction"]
+  },
+  {
+    "title": "Writing — Write Essay: Social Media Impact",
+    "type": "write_essay",
+    "promptText": "Social media platforms have fundamentally changed how people communicate and access information. Some argue these changes are predominantly positive, enhancing connectivity and democratic participation. Others contend that social media causes more harm than good through misinformation, mental health issues, and reduced face-to-face interaction. Discuss both viewpoints and present your own perspective with relevant examples.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "writing", "essay", "social"]
+  },
+  {
+    "title": "Writing — Write Essay: Education Technology",
+    "type": "write_essay",
+    "promptText": "The integration of technology in education has accelerated dramatically in recent years. While proponents highlight improved access to resources and personalized learning, critics worry about screen time, digital divides, and the loss of traditional teaching methods. Evaluate both positions and present your reasoned opinion on the role of technology in modern education.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "writing", "essay", "education"]
+  },
+  {
+    "title": "Writing — Write Essay: Climate Change Action",
+    "type": "write_essay",
+    "promptText": "Some people believe that individual actions to combat climate change are insufficient and that only government regulation and corporate accountability can make meaningful impact. Others argue that personal responsibility and lifestyle changes are equally important. Discuss both views and provide your perspective with supporting arguments.",
+    "options": null,
+    "answerKey": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "writing", "essay", "environment"]
+  }
+]

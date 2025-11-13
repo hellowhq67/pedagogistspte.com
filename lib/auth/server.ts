@@ -1,7 +1,7 @@
-import "server-only";
-import { auth } from "./auth";
-import { headers, cookies } from "next/headers";
-import { cache } from "react";
+import 'server-only'
+import { cache } from 'react'
+import { headers } from 'next/headers'
+import { auth } from './auth'
 
 /**
  * Get the current session (cached per request)
@@ -9,45 +9,54 @@ import { cache } from "react";
  */
 export const getSession = cache(async () => {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    // Try to read request headers when available (runtime request)
+    let hdrs: Headers | undefined
+    try {
+      hdrs = await headers()
+    } catch {
+      // During prerender or non-request contexts, headers() rejects. We ignore and fallback.
+      hdrs = undefined
+    }
 
-    return session;
+    const session = await auth.api.getSession({
+      headers: hdrs ?? new Headers(),
+    })
+
+    return session
   } catch (error) {
-    console.error("Error getting session:", error);
-    return null;
+    console.error('Error getting session:', error)
+    return null
   }
-});
+})
 
 /**
  * Get the current user (cached per request)
  */
 export const getCurrentUser = cache(async () => {
   try {
-    const session = await getSession();
-    return session?.user ?? null;
+    const session = await getSession()
+    return session?.user ?? null
   } catch (error) {
-    console.error("Error getting current user:", error);
-    return null;
+    console.error('Error getting current user:', error)
+    return null
   }
-});
+})
 
 /**
  * Require authentication - throws if not authenticated
  */
 export async function requireAuth() {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
   if (!user) {
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized')
   }
-  return user;
+  return user
 }
 
 /**
  * Check if user is authenticated
  */
 export async function isAuthenticated() {
-  const user = await getCurrentUser();
-  return !!user;
+  const user = await getCurrentUser()
+  return !!user
 }

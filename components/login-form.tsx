@@ -1,61 +1,62 @@
-"use client";
+'use client'
 
-import { useActionState, useFormStatus } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signInAction } from "@/lib/auth/actions";
-import { authClient } from "@/lib/auth/auth-client";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { signInAction } from '@/lib/auth/actions'
+import { authClient } from '@/lib/auth/auth-client'
+import { cn } from '@/lib/utils'
 
 // Submit button component using useFormStatus (React 19.2)
 function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
   return (
     <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Signing in..." : "Login"}
+      {pending ? 'Signing in...' : 'Login'}
     </Button>
-  );
+  )
 }
 
 export function LoginForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<'div'>) {
   // Use useActionState hook (React 19.2) for form state management
-  const [state, formAction] = useActionState(signInAction, null);
+  const [state, formAction] = useActionState(signInAction, null)
 
   const handleGoogleSignIn = async () => {
     try {
       await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/pte/dashboard",
-      });
-    } catch (err: any) {
-      console.error("Google sign in error:", err);
+        provider: 'google',
+        callbackURL: '/pte/dashboard',
+      })
+    } catch (err: unknown) {
+      console.error('Google sign in error:', err)
     }
-  };
+  }
 
   const handleAppleSignIn = async () => {
     try {
       await authClient.signIn.social({
-        provider: "apple",
-        callbackURL: "/pte/dashboard",
-      });
-    } catch (err: any) {
-      console.error("Apple sign in error:", err);
+        provider: 'apple',
+        callbackURL: '/pte/dashboard',
+      })
+    } catch (err: unknown) {
+      console.error('Apple sign in error:', err)
     }
-  };
+  }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -67,7 +68,7 @@ export function LoginForm({
           <form action={formAction}>
             <div className="flex flex-col gap-6">
               {state?.error && (
-                <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded">
+                <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-red-800">
                   {state.error}
                 </div>
               )}
@@ -81,7 +82,7 @@ export function LoginForm({
                   name="email"
                   type="email"
                   placeholder="m@example.com"
-                  defaultValue={state?.email || ""}
+                  defaultValue={state?.email || ''}
                   required
                 />
               </div>
@@ -96,12 +97,7 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                />
+                <Input id="password" name="password" type="password" required />
               </div>
 
               <SubmitButton />
@@ -111,7 +107,7 @@ export function LoginForm({
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                  <span className="bg-background text-muted-foreground px-2">
                     Or continue with
                   </span>
                 </div>
@@ -156,7 +152,7 @@ export function LoginForm({
             </div>
           </form>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
+            Don&apos;t have an account?{' '}
             <a href="/sign-up" className="underline underline-offset-4">
               Sign up
             </a>
@@ -164,5 +160,5 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

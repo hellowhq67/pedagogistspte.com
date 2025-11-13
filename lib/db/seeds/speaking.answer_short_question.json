@@ -1,0 +1,82 @@
+[
+  {
+    "title": "ASQ — Baby Cat",
+    "type": "answer_short_question",
+    "promptText": "What do you call a baby cat?",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "asq", "general_knowledge"]
+  },
+  {
+    "title": "ASQ — Opposite of Cold",
+    "type": "answer_short_question",
+    "promptText": "What is the opposite of cold?",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "asq", "vocabulary"]
+  },
+  {
+    "title": "ASQ — Planet We Live On",
+    "type": "answer_short_question",
+    "promptText": "On which planet do humans live?",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "asq", "science"]
+  },
+  {
+    "title": "ASQ — Tool for Cutting Paper",
+    "type": "answer_short_question",
+    "promptText": "Which tool is commonly used to cut paper?",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "asq", "everyday_objects"]
+  },
+  {
+    "title": "ASQ — Study of Weather",
+    "type": "answer_short_question",
+    "promptText": "What do we call the study of weather?",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "asq", "fields_of_study"]
+  },
+  {
+    "title": "ASQ — Longest Bone",
+    "type": "answer_short_question",
+    "promptText": "What is the longest bone in the human body?",
+    "promptMediaUrl": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "asq", "anatomy"]
+  },
+  {
+    "title": "ASQ — Currency of Japan",
+    "type": "answer_short_question",
+    "promptText": "What is the official currency of Japan?",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "asq", "geography"]
+  },
+  {
+    "title": "ASQ — Device to Measure Temperature",
+    "type": "answer_short_question",
+    "promptText": "What device is used to measure temperature?",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "asq", "science_tools"]
+  },
+  {
+    "title": "ASQ — Process of Water Turning to Gas",
+    "type": "answer_short_question",
+    "promptText": "What is the process called when water turns into gas?",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "asq", "science"]
+  },
+  {
+    "title": "ASQ — Largest Ocean",
+    "type": "answer_short_question",
+    "promptText": "Which is the largest ocean on Earth?",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "asq", "geography"]
+  }
+]

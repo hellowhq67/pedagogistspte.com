@@ -1,0 +1,82 @@
+[
+  {
+    "title": "Read Aloud — Health Advisory 1",
+    "type": "read_aloud",
+    "promptText": "In South Australia, most individuals with COVID-19 experience mild illness and recover without requiring hospital care. Public health measures, including vaccination and timely testing, continue to reduce severe outcomes.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "read_aloud", "health"]
+  },
+  {
+    "title": "Read Aloud — Renewable Energy 2",
+    "type": "read_aloud",
+    "promptText": "Wind and solar energy have become more cost-effective over the past decade, driving a significant shift in how electricity is generated and distributed across modern grids.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "read_aloud", "energy"]
+  },
+  {
+    "title": "Read Aloud — Marine Ecosystems 3",
+    "type": "read_aloud",
+    "promptText": "Coral reefs support a vast array of marine life, yet they are increasingly threatened by rising ocean temperatures, acidification, and human activity near coastal regions.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "read_aloud", "environment"]
+  },
+  {
+    "title": "Read Aloud — Behavioral Science 4",
+    "type": "read_aloud",
+    "promptText": "Researchers have observed that small changes in choice architecture can nudge people toward healthier decisions without restricting freedom of choice.",
+    "promptMediaUrl": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "read_aloud", "science"]
+  },
+  {
+    "title": "Read Aloud — Urban Mobility 5",
+    "type": "read_aloud",
+    "promptText": "Cities investing in reliable public transportation often see reduced congestion, improved air quality, and greater access to employment opportunities for residents.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "read_aloud", "city"]
+  },
+  {
+    "title": "Read Aloud — Learning Strategies 6",
+    "type": "read_aloud",
+    "promptText": "Active recall and spaced repetition are evidence-based strategies shown to improve long-term retention compared to passive review techniques.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "read_aloud", "education"]
+  },
+  {
+    "title": "Read Aloud — Climate Adaptation 7",
+    "type": "read_aloud",
+    "promptText": "Adaptation strategies, such as floodplain restoration and heat-resilient infrastructure, can mitigate climate risks while delivering co-benefits to communities.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "read_aloud", "climate"]
+  },
+  {
+    "title": "Read Aloud — Digital Privacy 8",
+    "type": "read_aloud",
+    "promptText": "As digital services expand, organizations must implement transparent data policies and robust security practices to maintain public trust.",
+    "promptMediaUrl": null,
+    "difficulty": "Hard",
+    "tags": ["seed", "read_aloud", "technology"]
+  },
+  {
+    "title": "Read Aloud — Nutrition Guidelines 9",
+    "type": "read_aloud",
+    "promptText": "A balanced diet emphasizes whole grains, lean proteins, fruits, and vegetables, while limiting added sugars, saturated fats, and sodium.",
+    "promptMediaUrl": null,
+    "difficulty": "Easy",
+    "tags": ["seed", "read_aloud", "nutrition"]
+  },
+  {
+    "title": "Read Aloud — Cultural Heritage 10",
+    "type": "read_aloud",
+    "promptText": "Preserving cultural heritage sites helps communities maintain identity, foster tourism, and educate future generations about shared history.",
+    "promptMediaUrl": null,
+    "difficulty": "Medium",
+    "tags": ["seed", "read_aloud", "culture"]
+  }
+]

@@ -27,6 +27,7 @@
 ### Never Expose Credentials
 
 **❌ NEVER do this:**
+
 - ❌ Commit `.env.local` or `.env.production` to Git
 - ❌ Share environment variables in public channels
 - ❌ Include credentials in code, documentation, or screenshots
@@ -36,6 +37,7 @@
 - ❌ Share `.env` files via email or chat
 
 **✅ DO this instead:**
+
 - ✅ Use `.env.example` with placeholder values
 - ✅ Add `.env*` (except `.env.example`) to `.gitignore`
 - ✅ Use environment variables for all secrets
@@ -51,12 +53,14 @@
 ### Authentication Security
 
 1. **Strong Secrets**
+
    ```bash
    # Generate strong secret (minimum 32 characters)
    openssl rand -base64 32
    ```
 
 2. **Secure Cookie Settings**
+
    ```typescript
    // In production
    advanced: {
@@ -108,6 +112,7 @@
 ### Connection Security
 
 1. **Use SSL/TLS**
+
    ```bash
    # Always use sslmode=require for production
    POSTGRES_URL=postgresql://user:pass@host/db?sslmode=require
@@ -181,6 +186,7 @@ const signInSchema = z.object({
 ### Session Management Best Practices
 
 1. **Session Expiration**
+
    ```typescript
    session: {
      expiresIn: 60 * 60 * 24 * 7, // 7 days
@@ -204,16 +210,16 @@ const signInSchema = z.object({
 // Always validate session server-side
 export default async function ProtectedPage() {
   const session = await getSession();
-  
+
   if (!session) {
     redirect('/sign-in');
   }
-  
+
   // Additional authorization checks
   if (session.user.role !== 'admin') {
     redirect('/unauthorized');
   }
-  
+
   return <Page />;
 }
 ```
@@ -316,30 +322,37 @@ export default {
 ## 🔍 Common Vulnerabilities to Avoid
 
 ### 1. Credential Exposure
+
 **Risk**: Database takeover, data breach  
 **Prevention**: Never commit secrets, use proper .gitignore
 
 ### 2. Session Fixation
+
 **Risk**: Account takeover  
 **Prevention**: Regenerate session ID after login (Better Auth handles this)
 
 ### 3. XSS (Cross-Site Scripting)
+
 **Risk**: Session hijacking, data theft  
 **Prevention**: Sanitize user input, use CSP headers
 
 ### 4. CSRF (Cross-Site Request Forgery)
+
 **Risk**: Unauthorized actions  
 **Prevention**: Use SameSite cookies, CSRF tokens (Better Auth handles this)
 
 ### 5. SQL Injection
+
 **Risk**: Database compromise  
 **Prevention**: Use ORM, parameterized queries (Drizzle handles this)
 
 ### 6. Weak Passwords
+
 **Risk**: Brute force attacks  
 **Prevention**: Enforce strong passwords, implement rate limiting
 
 ### 7. Insecure Token Storage
+
 **Risk**: Token theft  
 **Prevention**: Use httpOnly cookies, don't store in localStorage
 

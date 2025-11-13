@@ -1,34 +1,53 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { 
-  BarChart3, 
-  TrendingUp, 
-  TrendingDown,
+import { useState } from 'react'
+import {
+  BarChart3,
+  BookOpen,
   CheckCircle,
-  XCircle,
-  Target,
   Clock,
-  BookOpen
-} from 'lucide-react';
-import { generateMockTestData, MockTest } from '@/lib/pte/mock-test-data';
+  Target,
+  TrendingDown,
+  TrendingUp,
+  XCircle,
+} from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Progress } from '@/components/ui/progress'
+import { generateMockTestData, MockTest } from '@/lib/pte/mock-test-data'
 
 export default function AnalyticsPage() {
-  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'quarter'>('month');
-  const mockTests = generateMockTestData();
-  
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    'week' | 'month' | 'quarter'
+  >('month')
+  const mockTests = generateMockTestData()
+
   // Calculate overall stats
-  const completedTests = mockTests.filter(t => t.status === 'completed' || t.status === 'reviewed').length;
-  const avgScore = mockTests.length > 0 
-    ? Math.round(mockTests.filter(t => t.score).reduce((acc, curr) => acc + (curr.score || 0), 0) / mockTests.filter(t => t.score).length)
-    : 0;
-  const bestScore = mockTests.length > 0 
-    ? Math.max(...mockTests.map(t => t.score || 0))
-    : 0;
-  
+  const completedTests = mockTests.filter(
+    (t) => t.status === 'completed' || t.status === 'reviewed'
+  ).length
+
+  const scoreValue = (t: MockTest) => {
+    const s: any = t.score as any
+    return typeof s === 'number'
+      ? s
+      : typeof s?.overall === 'number'
+        ? s.overall
+        : 0
+  }
+  const scored = mockTests.map(scoreValue)
+  const avgScore =
+    scored.length > 0
+      ? Math.round(scored.reduce((acc, curr) => acc + curr, 0) / scored.length)
+      : 0
+  const bestScore = scored.length > 0 ? Math.max(...scored) : 0
+
   // Mock historical data for charts
   const scoreTrendData = [
     { date: 'Jan 1', score: 65 },
@@ -37,38 +56,40 @@ export default function AnalyticsPage() {
     { date: 'Jan 22', score: 74 },
     { date: 'Jan 29', score: 78 },
     { date: 'Feb 5', score: 80 },
-  ];
-  
+  ]
+
   // Mock skill data
   const skillData = [
     { skill: 'Speaking', current: 75, previous: 68, improvement: 7 },
     { skill: 'Writing', current: 82, previous: 79, improvement: 3 },
     { skill: 'Reading', current: 85, previous: 82, improvement: 3 },
     { skill: 'Listening', current: 80, previous: 75, improvement: 5 },
-  ];
+  ]
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Analytics & Performance</h1>
-          <p className="text-muted-foreground">Detailed insights into your PTE preparation journey</p>
+          <p className="text-muted-foreground">
+            Detailed insights into your PTE preparation journey
+          </p>
         </div>
         <div className="flex gap-2">
-          <button 
-            className={`px-3 py-1 rounded-md text-sm ${selectedPeriod === 'week' ? 'bg-primary text-white' : 'bg-gray-200'}`}
+          <button
+            className={`rounded-md px-3 py-1 text-sm ${selectedPeriod === 'week' ? 'bg-primary text-white' : 'bg-gray-200'}`}
             onClick={() => setSelectedPeriod('week')}
           >
             Week
           </button>
-          <button 
-            className={`px-3 py-1 rounded-md text-sm ${selectedPeriod === 'month' ? 'bg-primary text-white' : 'bg-gray-200'}`}
+          <button
+            className={`rounded-md px-3 py-1 text-sm ${selectedPeriod === 'month' ? 'bg-primary text-white' : 'bg-gray-200'}`}
             onClick={() => setSelectedPeriod('month')}
           >
             Month
           </button>
-          <button 
-            className={`px-3 py-1 rounded-md text-sm ${selectedPeriod === 'quarter' ? 'bg-primary text-white' : 'bg-gray-200'}`}
+          <button
+            className={`rounded-md px-3 py-1 text-sm ${selectedPeriod === 'quarter' ? 'bg-primary text-white' : 'bg-gray-200'}`}
             onClick={() => setSelectedPeriod('quarter')}
           >
             Quarter
@@ -77,18 +98,18 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <TrendingUp className="w-5 h-5 text-green-500" />
+              <TrendingUp className="h-5 w-5 text-green-500" />
               Overall Score
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{avgScore}/90</div>
-            <div className="flex items-center gap-2 mt-2">
-              <TrendingUp className="w-4 h-4 text-green-500" />
+            <div className="mt-2 flex items-center gap-2">
+              <TrendingUp className="h-4 w-4 text-green-500" />
               <span className="text-sm text-green-500">+5 from last month</span>
             </div>
           </CardContent>
@@ -97,54 +118,65 @@ export default function AnalyticsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Target className="w-5 h-5 text-blue-500" />
+              <Target className="h-5 w-5 text-blue-500" />
               Best Score
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{bestScore}/90</div>
-            <div className="text-sm text-gray-500 mt-2">Personal record</div>
+            <div className="mt-2 text-sm text-gray-500">Personal record</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <BookOpen className="w-5 h-5 text-purple-500" />
+              <BookOpen className="h-5 w-5 text-purple-500" />
               Tests Completed
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{completedTests}</div>
-            <div className="text-sm text-gray-500 mt-2">Practice makes perfect</div>
+            <div className="mt-2 text-sm text-gray-500">
+              Practice makes perfect
+            </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Score Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Skill Breakdown */}
         <Card>
           <CardHeader>
             <CardTitle>Skill Breakdown</CardTitle>
-            <CardDescription>Your performance across PTE sections</CardDescription>
+            <CardDescription>
+              Your performance across PTE sections
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-6">
               {skillData.map((skill, index) => (
                 <div key={index}>
-                  <div className="flex justify-between mb-1">
+                  <div className="mb-1 flex justify-between">
                     <span className="font-medium">{skill.skill}</span>
                     <div className="flex items-center gap-2">
                       <span className="font-bold">{skill.current}/90</span>
                       <div className="flex items-center text-sm">
                         {skill.improvement >= 0 ? (
-                          <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
+                          <TrendingUp className="mr-1 h-4 w-4 text-green-500" />
                         ) : (
-                          <TrendingDown className="w-4 h-4 text-red-500 mr-1" />
+                          <TrendingDown className="mr-1 h-4 w-4 text-red-500" />
                         )}
-                        <span className={skill.improvement >= 0 ? 'text-green-500' : 'text-red-500'}>
-                          {skill.improvement >= 0 ? '+' : ''}{skill.improvement}
+                        <span
+                          className={
+                            skill.improvement >= 0
+                              ? 'text-green-500'
+                              : 'text-red-500'
+                          }
+                        >
+                          {skill.improvement >= 0 ? '+' : ''}
+                          {skill.improvement}
                         </span>
                       </div>
                     </div>
@@ -170,7 +202,9 @@ export default function AnalyticsPage() {
                   <div className="w-2/4">
                     <Progress value={data.score} className="h-2" />
                   </div>
-                  <div className="w-1/4 text-right font-medium">{data.score}/90</div>
+                  <div className="w-1/4 text-right font-medium">
+                    {data.score}/90
+                  </div>
                 </div>
               ))}
             </div>
@@ -182,10 +216,12 @@ export default function AnalyticsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Section Analysis</CardTitle>
-          <CardDescription>Detailed breakdown of each PTE section</CardDescription>
+          <CardDescription>
+            Detailed breakdown of each PTE section
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {/* Speaking Analysis */}
             <Card className="border-2 border-blue-200">
               <CardHeader>
@@ -201,13 +237,13 @@ export default function AnalyticsPage() {
                     <span>Accuracy</span>
                     <span>78%</span>
                   </div>
-                  <div className="text-sm mt-2">
+                  <div className="mt-2 text-sm">
                     <div className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                       <span>Fluency: Good</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <XCircle className="w-4 h-4 text-red-500" />
+                      <XCircle className="h-4 w-4 text-red-500" />
                       <span>Pronunciation: Needs work</span>
                     </div>
                   </div>
@@ -230,13 +266,13 @@ export default function AnalyticsPage() {
                     <span>Accuracy</span>
                     <span>85%</span>
                   </div>
-                  <div className="text-sm mt-2">
+                  <div className="mt-2 text-sm">
                     <div className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                       <span>Grammar: Excellent</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                       <span>Vocabulary: Good</span>
                     </div>
                   </div>
@@ -259,13 +295,13 @@ export default function AnalyticsPage() {
                     <span>Accuracy</span>
                     <span>90%</span>
                   </div>
-                  <div className="text-sm mt-2">
+                  <div className="mt-2 text-sm">
                     <div className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                       <span>Skimming: Excellent</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                       <span>Scanning: Excellent</span>
                     </div>
                   </div>
@@ -288,13 +324,13 @@ export default function AnalyticsPage() {
                     <span>Accuracy</span>
                     <span>83%</span>
                   </div>
-                  <div className="text-sm mt-2">
+                  <div className="mt-2 text-sm">
                     <div className="flex items-center gap-1">
-                      <CheckCircle className="w-4 h-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4 text-green-500" />
                       <span>Overall: Good</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <XCircle className="w-4 h-4 text-red-500" />
+                      <XCircle className="h-4 w-4 text-red-500" />
                       <span>Note-taking: Improve</span>
                     </div>
                   </div>
@@ -316,13 +352,13 @@ export default function AnalyticsPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b">
-                  <th className="text-left py-2">Test Name</th>
-                  <th className="text-left py-2">Date</th>
-                  <th className="text-left py-2">Score</th>
-                  <th className="text-left py-2">Speaking</th>
-                  <th className="text-left py-2">Writing</th>
-                  <th className="text-left py-2">Reading</th>
-                  <th className="text-left py-2">Listening</th>
+                  <th className="py-2 text-left">Test Name</th>
+                  <th className="py-2 text-left">Date</th>
+                  <th className="py-2 text-left">Score</th>
+                  <th className="py-2 text-left">Speaking</th>
+                  <th className="py-2 text-left">Writing</th>
+                  <th className="py-2 text-left">Reading</th>
+                  <th className="py-2 text-left">Listening</th>
                 </tr>
               </thead>
               <tbody>
@@ -330,11 +366,19 @@ export default function AnalyticsPage() {
                   <tr key={index} className="border-b">
                     <td className="py-2">{test.title}</td>
                     <td className="py-2">{test.date}</td>
-                    <td className="py-2 font-bold">{test.score}/90</td>
-                    <td className="py-2">{test.sections[0]?.score || 'N/A'}/90</td>
-                    <td className="py-2">{test.sections[1]?.score || 'N/A'}/90</td>
-                    <td className="py-2">{test.sections[2]?.score || 'N/A'}/90</td>
-                    <td className="py-2">{test.sections[3]?.score || 'N/A'}/90</td>
+                    <td className="py-2 font-bold">{scoreValue(test)}/90</td>
+                    <td className="py-2">
+                      {test.sections[0]?.score || 'N/A'}/90
+                    </td>
+                    <td className="py-2">
+                      {test.sections[1]?.score || 'N/A'}/90
+                    </td>
+                    <td className="py-2">
+                      {test.sections[2]?.score || 'N/A'}/90
+                    </td>
+                    <td className="py-2">
+                      {test.sections[3]?.score || 'N/A'}/90
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -343,5 +387,5 @@ export default function AnalyticsPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

@@ -1,82 +1,82 @@
-"use client";
+'use client'
 
-import { useActionState, useState } from "react";
-import { useFormStatus } from "react-dom";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { useActionState, useState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { signUpAction } from "@/lib/auth/actions";
-import { authClient } from "@/lib/auth/auth-client";
+} from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { signUpAction } from '@/lib/auth/actions'
+import { authClient } from '@/lib/auth/auth-client'
+import { cn } from '@/lib/utils'
 
 // Submit button component using useFormStatus (React 19)
 function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
   return (
     <Button type="submit" disabled={pending} className="w-full">
-      {pending ? "Creating account..." : "Create Account"}
+      {pending ? 'Creating account...' : 'Create Account'}
     </Button>
-  );
+  )
 }
 
 export function SignupForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<'div'>) {
   // Use useActionState for form state management
-  const [state, formAction] = useActionState(signUpAction, null);
+  const [state, formAction] = useActionState(signUpAction, null)
   // Local state for password confirmation (client-side validation)
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [localError, setLocalError] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [localError, setLocalError] = useState('')
 
   const handleGoogleSignUp = async () => {
     try {
       await authClient.signIn.social({
-        provider: "google",
-        callbackURL: "/pte/dashboard",
-      });
-    } catch (err: any) {
-      console.error("Google sign up error:", err);
+        provider: 'google',
+        callbackURL: '/pte/dashboard',
+      })
+    } catch (err: unknown) {
+      console.error('Google sign up error:', err)
     }
-  };
+  }
 
   const handleAppleSignUp = async () => {
     try {
       await authClient.signIn.social({
-        provider: "apple",
-        callbackURL: "/pte/dashboard",
-      });
-    } catch (err: any) {
-      console.error("Apple sign up error:", err);
+        provider: 'apple',
+        callbackURL: '/pte/dashboard',
+      })
+    } catch (err: unknown) {
+      console.error('Apple sign up error:', err)
     }
-  };
+  }
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn('flex flex-col gap-6', className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
             className="p-6 md:p-8"
             action={async (formData) => {
-              setLocalError("");
-              const password = (formData.get("password") as string) || "";
+              setLocalError('')
+              const password = (formData.get('password') as string) || ''
               // Client-side validation
               if (password !== confirmPassword) {
-                setLocalError("Passwords do not match");
-                return;
+                setLocalError('Passwords do not match')
+                return
               }
               if (password.length < 8) {
-                setLocalError("Password must be at least 8 characters long");
-                return;
+                setLocalError('Password must be at least 8 characters long')
+                return
               }
-              await formAction(formData);
+              await formAction(formData)
             }}
           >
             <FieldGroup>
@@ -88,7 +88,7 @@ export function SignupForm({
               </div>
 
               {(state?.error || localError) && (
-                <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded">
+                <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-red-800">
                   {localError || state?.error}
                 </div>
               )}
@@ -102,7 +102,7 @@ export function SignupForm({
                   name="name"
                   type="text"
                   placeholder="John Doe"
-                  defaultValue={state?.name || ""}
+                  defaultValue={(state as any)?.name || ''}
                 />
               </Field>
 
@@ -113,7 +113,7 @@ export function SignupForm({
                   name="email"
                   type="email"
                   placeholder="m@example.com"
-                  defaultValue={state?.email || ""}
+                  defaultValue={(state as any)?.email || ''}
                   required
                 />
                 <FieldDescription>
@@ -160,7 +160,7 @@ export function SignupForm({
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">
+                  <span className="bg-background text-muted-foreground px-2">
                     Or continue with
                   </span>
                 </div>
@@ -204,7 +204,7 @@ export function SignupForm({
               </Field>
 
               <div className="mt-4 text-center text-sm">
-                Already have an account?{" "}
+                Already have an account?{' '}
                 <a href="/sign-in" className="underline underline-offset-4">
                   Sign in
                 </a>
@@ -221,16 +221,16 @@ export function SignupForm({
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our{" "}
+        By clicking continue, you agree to our{' '}
         <a href="#" className="text-primary hover:underline">
           Terms of Service
-        </a>{" "}
-        and{" "}
+        </a>{' '}
+        and{' '}
         <a href="#" className="text-primary hover:underline">
           Privacy Policy
         </a>
         .
       </FieldDescription>
     </div>
-  );
+  )
 }

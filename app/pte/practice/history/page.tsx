@@ -1,4 +1,4 @@
-import { Trophy, Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, Trophy } from 'lucide-react'
 
 const mockHistory = [
   {
@@ -25,69 +25,72 @@ const mockHistory = [
     status: 'Completed',
     sections: { speaking: 55, writing: 58, reading: 60, listening: 59 },
   },
-];
+]
 
 export default function TestHistoryPage() {
   return (
     <div className="space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Test History</h1>
-        <p className="mt-2 text-muted-foreground">
+        <p className="text-muted-foreground mt-2">
           Review your past test attempts and track your progress
         </p>
       </div>
 
       {/* Overall Stats */}
       <div className="grid gap-6 sm:grid-cols-3">
-        <div className="rounded-lg border bg-card p-6">
+        <div className="bg-card rounded-lg border p-6">
           <div className="flex items-center gap-3">
-            <div className="rounded-full bg-primary/10 p-3">
-              <Trophy className="h-6 w-6 text-primary" />
+            <div className="bg-primary/10 rounded-full p-3">
+              <Trophy className="text-primary h-6 w-6" />
             </div>
             <div>
               <p className="text-2xl font-bold">7</p>
-              <p className="text-sm text-muted-foreground">Total Tests</p>
+              <p className="text-muted-foreground text-sm">Total Tests</p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg border bg-card p-6">
+        <div className="bg-card rounded-lg border p-6">
           <div className="flex items-center gap-3">
             <div className="rounded-full bg-green-100 p-3 dark:bg-green-900">
               <Trophy className="h-6 w-6 text-green-600 dark:text-green-400" />
             </div>
             <div>
               <p className="text-2xl font-bold">65</p>
-              <p className="text-sm text-muted-foreground">Average Score</p>
+              <p className="text-muted-foreground text-sm">Average Score</p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg border bg-card p-6">
+        <div className="bg-card rounded-lg border p-6">
           <div className="flex items-center gap-3">
             <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
               <Trophy className="h-6 w-6 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
               <p className="text-2xl font-bold">72</p>
-              <p className="text-sm text-muted-foreground">Best Score</p>
+              <p className="text-muted-foreground text-sm">Best Score</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Test History Table */}
-      <div className="rounded-lg border bg-card">
+      <div className="bg-card rounded-lg border">
         <div className="border-b p-6">
           <h2 className="text-xl font-semibold">Recent Tests</h2>
         </div>
         <div className="divide-y">
           {mockHistory.map((test) => (
-            <div key={test.id} className="p-6 transition-colors hover:bg-accent/50">
+            <div
+              key={test.id}
+              className="hover:bg-accent/50 p-6 transition-colors"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
                   <h3 className="mb-2 font-semibold">{test.testName}</h3>
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                  <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
                       {test.date}
@@ -121,8 +124,10 @@ export default function TestHistoryPage() {
                   </div>
                 </div>
                 <div className="ml-6 flex flex-col items-end gap-2">
-                  <div className="text-3xl font-bold text-primary">{test.score}</div>
-                  <button className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+                  <div className="text-primary text-3xl font-bold">
+                    {test.score}
+                  </div>
+                  <button className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 text-sm font-medium">
                     View Details
                   </button>
                 </div>
@@ -132,5 +137,5 @@ export default function TestHistoryPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

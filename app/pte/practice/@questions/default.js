@@ -1,3 +1,3 @@
 export default function QuestionsSlot() {
-  return null;
+  return null
 }

@@ -1,5 +1,5 @@
-import "server-only";
-import { unstable_cache } from 'next/cache';
+import 'server-only'
+import { unstable_cache } from 'next/cache'
 
 /**
  * Cache wrapper with automatic tagging and revalidation
@@ -13,28 +13,34 @@ export function cache<T>(
   return unstable_cache(fn, tags, {
     revalidate: revalidate || 3600, // Default 1 hour
     tags,
-  })();
+  })()
 }
 
 /**
  * Short-term cache (5 minutes) - For frequently changing data
  */
-export function cacheShort<T>(fn: () => Promise<T>, tags: string[]): Promise<T> {
-  return cache(fn, tags, 300);
+export function cacheShort<T>(
+  fn: () => Promise<T>,
+  tags: string[]
+): Promise<T> {
+  return cache(fn, tags, 300)
 }
 
 /**
  * Medium-term cache (1 hour) - For moderately stable data
  */
-export function cacheMedium<T>(fn: () => Promise<T>, tags: string[]): Promise<T> {
-  return cache(fn, tags, 3600);
+export function cacheMedium<T>(
+  fn: () => Promise<T>,
+  tags: string[]
+): Promise<T> {
+  return cache(fn, tags, 3600)
 }
 
 /**
  * Long-term cache (24 hours) - For stable data
  */
 export function cacheLong<T>(fn: () => Promise<T>, tags: string[]): Promise<T> {
-  return cache(fn, tags, 86400);
+  return cache(fn, tags, 86400)
 }
 
 /**
@@ -45,31 +51,34 @@ export const CacheTags = {
   USER: 'user',
   USER_PROFILE: 'user-profile',
   USER_SUBSCRIPTION: 'user-subscription',
-  
+
   // PTE-related
   PTE_TESTS: 'pte-tests',
   PTE_QUESTIONS: 'pte-questions',
   PTE_ATTEMPTS: 'pte-attempts',
   PTE_HISTORY: 'pte-history',
-  
+
   // Community-related
   COMMUNITY_POSTS: 'community-posts',
   COMMUNITY_TRENDING: 'community-trending',
   COMMUNITY_CONTRIBUTORS: 'community-contributors',
-  
+
   // Static content
   TEMPLATES: 'templates',
   VOCAB: 'vocab',
   STUDY_MATERIALS: 'study-materials',
-} as const;
+} as const
 
 /**
  * Generate cache key with parameters
  */
-export function generateCacheKey(prefix: string, params: Record<string, any>): string {
+export function generateCacheKey(
+  prefix: string,
+  params: Record<string, unknown>
+): string {
   const paramStr = Object.entries(params)
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, value]) => `${key}:${value}`)
-    .join('_');
-  return `${prefix}_${paramStr}`;
+    .map(([key, value]) => `${key}:${String(value)}`)
+    .join('_')
+  return `${prefix}_${paramStr}`
 }

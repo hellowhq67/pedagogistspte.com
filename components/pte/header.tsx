@@ -1,49 +1,49 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { useState, Suspense } from "react";
-import { Button } from "@/components/ui/button";
-import { Menu, X, User } from "lucide-react";
+import { Suspense, useState } from 'react'
+import Link from 'next/link'
+import { Menu, User, X } from 'lucide-react'
+import useSWR from 'swr'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { signOutAction } from "@/lib/auth/actions";
-import { User as UserType } from "@/lib/db/schema";
-import useSWR from "swr";
+} from '@/components/ui/dropdown-menu'
+import { signOutAction } from '@/lib/auth/actions'
+import { User as UserType } from '@/lib/db/schema'
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 function UserMenu() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { data: user, error } = useSWR<UserType>("/api/user", fetcher, {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { data: user, error } = useSWR<UserType>('/api/user', fetcher, {
     onError: (err) => {
-      console.error("SWR Error:", err);
+      console.error('SWR Error:', err)
     },
     errorRetryCount: 0,
-  });
+  })
 
-  if (error || !user) {
+  if (error || !user || (!user.email && !user.name)) {
     return (
       <Button asChild className="rounded-full">
         <Link href="/sign-up">Sign Up</Link>
       </Button>
-    );
+    )
   }
 
   return (
     <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
       <DropdownMenuTrigger>
-        <Avatar className="cursor-pointer size-9">
-          <AvatarImage alt={user.name || ""} />
+        <Avatar className="size-9 cursor-pointer">
+          <AvatarImage alt={user.name || user.email || 'User'} />
           <AvatarFallback>
-            {user.email
-              .split(" ")
+            {(user.email || user.name || 'U')
+              .split(' ')
               .map((n) => n[0])
-              .join("")}
+              .join('')}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -64,26 +64,26 @@ function UserMenu() {
         </form>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }
 
 export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+    <header className="bg-background sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Button
         onClick={onMenuClick}
-        className="p-2 rounded-lg hover:bg-gray-100 lg:hidden"
+        className="rounded-lg p-2 hover:bg-gray-100 lg:hidden"
       >
         <Menu className="h-6 w-6" />
       </Button>
       <div className="flex-1" />
       <Suspense
         fallback={
-          <div className="h-9 w-24 bg-gray-100 rounded-full animate-pulse" />
+          <div className="h-9 w-24 animate-pulse rounded-full bg-gray-100" />
         }
       >
         <UserMenu />
       </Suspense>
     </header>
-  );
+  )
 }

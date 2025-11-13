@@ -11,6 +11,7 @@ cp .env.example .env.local
 ```
 
 Add these required variables:
+
 ```bash
 BETTER_AUTH_URL=http://localhost:3000
 NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:3000
@@ -64,17 +65,17 @@ import { useSession, useAuth } from "@/lib/auth/auth-client";
 // Get session data
 function MyComponent() {
   const { data: session, isPending } = useSession();
-  
+
   if (isPending) return <div>Loading...</div>;
   if (!session) return <div>Not signed in</div>;
-  
+
   return <div>Welcome {session.user.name}</div>;
 }
 
 // Simple auth check
 function MyComponent() {
   const { user, isAuthenticated, isPending } = useAuth();
-  
+
   if (!isAuthenticated) return <SignInButton />;
   return <UserProfile user={user} />;
 }
@@ -265,7 +266,7 @@ export function SignInForm() {
         required
       />
       <button type="submit">Sign In</button>
-      
+
       {/* OAuth Buttons */}
       <button
         type="button"
@@ -325,16 +326,19 @@ See [`BETTER_AUTH_API.md`](./BETTER_AUTH_API.md) for complete API reference.
 ## 🆘 Common Issues
 
 ### "Unauthorized" Error
+
 - Check if session cookie exists
 - Verify `BETTER_AUTH_SECRET` is set
 - Ensure session hasn't expired
 
 ### OAuth Not Working
+
 - Verify OAuth credentials in `.env.local`
 - Check redirect URIs in OAuth provider settings
 - Ensure provider is enabled in auth config
 
 ### Session Not Persisting
+
 - Check cookie settings
 - Verify `BETTER_AUTH_URL` matches your domain
 - Check browser cookie settings

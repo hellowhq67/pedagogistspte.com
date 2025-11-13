@@ -31,6 +31,7 @@ This application uses [Better Auth](https://www.better-auth.com/) for authentica
 **Base URL**: `/api/auth`
 
 **Authentication Methods**:
+
 - Email & Password
 - Google OAuth
 - GitHub OAuth
@@ -459,7 +460,7 @@ import { updateAccount } from "@/lib/auth/user-actions";
 
 export async function handleUpdateAccount(prevState: any, formData: FormData) {
   const result = await updateAccount(prevState, formData);
-  
+
   // Returns:
   // { name: string, success: string } | { error: string }
 }
@@ -473,7 +474,7 @@ import { updatePassword } from "@/lib/auth/user-actions";
 
 export async function handleUpdatePassword(prevState: any, formData: FormData) {
   const result = await updatePassword(prevState, formData);
-  
+
   // Returns:
   // { success: string } | { error: string }
 }
@@ -565,6 +566,7 @@ const response = await auth.api.signInEmail({
 **Endpoint**: `POST /api/auth/sign-up/email`
 
 **Body**:
+
 ```json
 {
   "email": "user@example.com",
@@ -574,6 +576,7 @@ const response = await auth.api.signInEmail({
 ```
 
 **Response**:
+
 ```json
 {
   "user": {
@@ -608,6 +611,7 @@ const response = await auth.api.signInEmail({
 **Endpoint**: `POST /api/auth/sign-in/email`
 
 **Body**:
+
 ```json
 {
   "email": "user@example.com",
@@ -624,10 +628,12 @@ const response = await auth.api.signInEmail({
 **Endpoint**: `GET /api/auth/sign-in/social`
 
 **Query Parameters**:
+
 - `provider`: `google` | `github` | `facebook` | `apple`
 - `callbackURL` (optional): Redirect URL after authentication
 
 **Example**:
+
 ```
 GET /api/auth/sign-in/social?provider=google&callbackURL=/dashboard
 ```
@@ -639,6 +645,7 @@ GET /api/auth/sign-in/social?provider=google&callbackURL=/dashboard
 Automatically handled by Better Auth. This endpoint receives the OAuth callback and creates/signs in the user.
 
 **Example**:
+
 ```
 GET /api/auth/callback/google?code=...&state=...
 ```
@@ -665,11 +672,13 @@ session: {
 **Endpoint**: `GET /api/auth/get-session`
 
 **Headers**:
+
 ```
 Cookie: better-auth.session_token=...
 ```
 
 **Response**:
+
 ```json
 {
   "session": {
@@ -704,6 +713,7 @@ Cookie: better-auth.session_token=...
 **Endpoint**: `GET /api/auth/list-sessions`
 
 **Response**:
+
 ```json
 [
   {
@@ -724,6 +734,7 @@ Cookie: better-auth.session_token=...
 **Endpoint**: `POST /api/auth/revoke-session`
 
 **Body**:
+
 ```json
 {
   "token": "session_token_to_revoke"
@@ -735,6 +746,7 @@ Cookie: better-auth.session_token=...
 **Endpoint**: `POST /api/auth/sign-out`
 
 **Response**:
+
 ```json
 {
   "success": true
@@ -750,6 +762,7 @@ Cookie: better-auth.session_token=...
 **Endpoint**: `POST /api/auth/update-user`
 
 **Body**:
+
 ```json
 {
   "name": "Jane Doe",
@@ -758,6 +771,7 @@ Cookie: better-auth.session_token=...
 ```
 
 **Response**:
+
 ```json
 {
   "id": "user_123",
@@ -780,6 +794,7 @@ Cookie: better-auth.session_token=...
 **Endpoint**: `POST /api/auth/change-password`
 
 **Body**:
+
 ```json
 {
   "currentPassword": "oldPassword123",
@@ -789,6 +804,7 @@ Cookie: better-auth.session_token=...
 ```
 
 **Response**:
+
 ```json
 {
   "success": true
@@ -800,6 +816,7 @@ Cookie: better-auth.session_token=...
 **Endpoint**: `GET /api/auth/list-accounts`
 
 **Response**:
+
 ```json
 [
   {
@@ -886,7 +903,7 @@ For development: `http://localhost:3000/api/auth/callback/{provider}`
   image: string | null
   createdAt: Date
   updatedAt: Date
-  
+
   // Custom fields
   dailyAiCredits: number (Default: 4)
   aiCreditsUsed: number (Default: 0)
@@ -1085,14 +1102,14 @@ try {
 
 ### Common Errors
 
-| Error Code | Status | Description |
-|------------|--------|-------------|
-| `USER_ALREADY_EXISTS` | 400 | Email already registered |
-| `INVALID_EMAIL_OR_PASSWORD` | 401 | Invalid login credentials |
-| `UNAUTHORIZED` | 401 | Not authenticated |
-| `EMAIL_NOT_VERIFIED` | 403 | Email verification required |
-| `INVALID_SESSION` | 401 | Session expired or invalid |
-| `BAD_REQUEST` | 400 | Invalid request data |
+| Error Code                  | Status | Description                 |
+| --------------------------- | ------ | --------------------------- |
+| `USER_ALREADY_EXISTS`       | 400    | Email already registered    |
+| `INVALID_EMAIL_OR_PASSWORD` | 401    | Invalid login credentials   |
+| `UNAUTHORIZED`              | 401    | Not authenticated           |
+| `EMAIL_NOT_VERIFIED`        | 403    | Email verification required |
+| `INVALID_SESSION`           | 401    | Session expired or invalid  |
+| `BAD_REQUEST`               | 400    | Invalid request data        |
 
 ---
 
@@ -1106,7 +1123,7 @@ import { requireAuth } from "@/lib/auth/server";
 
 export default async function DashboardPage() {
   const user = await requireAuth(); // Throws if not authenticated
-  
+
   return <div>Welcome {user.name}</div>;
 }
 ```
@@ -1119,10 +1136,10 @@ import { useAuth } from "@/lib/auth/auth-client";
 
 export function UserMenu() {
   const { user, isAuthenticated, isPending } = useAuth();
-  
+
   if (isPending) return <Skeleton />;
   if (!isAuthenticated) return <SignInButton />;
-  
+
   return <UserDropdown user={user} />;
 }
 ```
@@ -1285,6 +1302,7 @@ export async function updateUserProfile(formData: FormData) {
 ## Support
 
 For issues or questions:
+
 1. Check the [Better Auth Documentation](https://www.better-auth.com/docs)
 2. Review this API documentation
 3. Check the implementation in your codebase
