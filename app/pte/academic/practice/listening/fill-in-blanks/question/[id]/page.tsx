@@ -1,21 +1,37 @@
 import ListeningQuestionClient from '@/components/pte/listening/ListeningQuestionClient'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
+import { db } from '@/lib/db/drizzle'
+import { listeningQuestions } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
-type Props = { params: { id: string } }
+type Props = { params: Promise<{ id: string }> }
 
-// Don't prerender any question pages at build time
+// Generate static params for all fill_in_blanks questions at build time
 export async function generateStaticParams() {
-  return []
+  try {
+    const questions = await db
+      .select({ id: listeningQuestions.id })
+      .from(listeningQuestions)
+      .where(eq(listeningQuestions.type, 'fill_in_blanks'))
+
+    return questions.map((q) => ({ id: q.id }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
 
-export default function FillInBlanksQuestionPage({ params }: Props) {
+
+export default async function FillInBlanksQuestionPage({ params }: Props) {
+  const { id } = await params
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
         <AcademicPracticeHeader section="listening" showFilters={false} />
         <div className="mt-8">
           <ListeningQuestionClient
-            questionId={params.id}
+            questionId={id}
             questionType="fill_in_blanks"
           />
         </div>

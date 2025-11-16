@@ -5,14 +5,27 @@ import SpeakingAttempt from '@/components/pte/attempt/SpeakingAttempt'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { db } from '@/lib/db/drizzle'
+import { speakingQuestions } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 type Params = {
   params: Promise<{ id: string }>
 }
 
-// Don't prerender any question pages at build time
+// Generate static params for all read_aloud questions at build time
 export async function generateStaticParams() {
-  return []
+  try {
+    const questions = await db
+      .select({ id: speakingQuestions.id })
+      .from(speakingQuestions)
+      .where(eq(speakingQuestions.type, 'read_aloud'))
+
+    return questions.map((q) => ({ id: q.id }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
 
 type SpeakingQuestion = {
@@ -24,33 +37,28 @@ type SpeakingQuestion = {
   difficulty?: string
   tags?: any
   isActive: boolean
-  createdAt: string
+  createdAt: Date
 }
 
 async function fetchQuestion(id: string): Promise<SpeakingQuestion | null> {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      `http://localhost:${process.env.PORT || 3000}`
-    const res = await fetch(`${baseUrl}/api/speaking/questions/${id}`, {
-      cache: 'no-store',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    const result = await db
+      .select()
+      .from(speakingQuestions)
+      .where(eq(speakingQuestions.id, id))
+      .limit(1)
 
-    if (!res.ok) {
-      console.error('Failed to fetch question:', res.status)
+    if (!result || result.length === 0) {
       return null
     }
 
-    const data = await res.json()
-    return data.question || data
+    return result[0]
   } catch (error) {
     console.error('Error fetching question:', error)
     return null
   }
 }
+
 
 async function QuestionContent({ id }: { id: string }) {
   const question = await fetchQuestion(id)

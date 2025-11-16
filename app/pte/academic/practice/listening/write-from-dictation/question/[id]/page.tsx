@@ -1,12 +1,26 @@
 import ListeningAttempt from '@/components/pte/attempt/ListeningAttempt'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
+import { db } from '@/lib/db/drizzle'
+import { listeningQuestions } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 type Props = { params: Promise<{ id: string }> }
 
-// Don't prerender any question pages at build time
+// Generate static params for all write_from_dictation questions at build time
 export async function generateStaticParams() {
-  return []
+  try {
+    const questions = await db
+      .select({ id: listeningQuestions.id })
+      .from(listeningQuestions)
+      .where(eq(listeningQuestions.type, 'write_from_dictation'))
+
+    return questions.map((q) => ({ id: q.id }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
+
 
 export default async function WriteFromDictationQuestionPage({
   params,

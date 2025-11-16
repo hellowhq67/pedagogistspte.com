@@ -1,31 +1,44 @@
 import WritingAttempt from '@/components/pte/attempt/WritingAttempt'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
+import { db } from '@/lib/db/drizzle'
+import { writingQuestions } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 type Props = {
   params: Promise<{ id: string }>
 }
 
-// Don't prerender any question pages at build time
+// Generate static params for all write_essay questions at build time
 export async function generateStaticParams() {
-  return []
+  try {
+    const questions = await db
+      .select({ id: writingQuestions.id })
+      .from(writingQuestions)
+      .where(eq(writingQuestions.type, 'write_essay'))
+
+    return questions.map((q) => ({ id: q.id }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
+
 
 async function fetchWritingQuestion(id: string) {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      `http://localhost:${process.env.PORT || 3000}`
-    const res = await fetch(
-      `${baseUrl}/api/writing/questions/${encodeURIComponent(id)}`,
-      {
-        cache: 'no-store',
-        headers: { 'Content-Type': 'application/json' },
-      }
-    )
-    if (!res.ok) return null
-    const data = await res.json()
-    return data?.question || data
-  } catch {
+    const result = await db
+      .select()
+      .from(writingQuestions)
+      .where(eq(writingQuestions.id, id))
+      .limit(1)
+
+    if (!result || result.length === 0) {
+      return null
+    }
+
+    return result[0]
+  } catch (error) {
+    console.error('Error fetching question:', error)
     return null
   }
 }

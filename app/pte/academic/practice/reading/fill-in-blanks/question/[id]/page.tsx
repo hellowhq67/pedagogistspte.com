@@ -1,14 +1,28 @@
 import ReadingAttempt from '@/components/pte/attempt/ReadingAttempt'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
+import { db } from '@/lib/db/drizzle'
+import { readingQuestions } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 type Props = {
   params: Promise<{ id: string }>
 }
 
-// Don't prerender any question pages at build time
+// Generate static params for all fill_in_blanks questions at build time
 export async function generateStaticParams() {
-  return []
+  try {
+    const questions = await db
+      .select({ id: readingQuestions.id })
+      .from(readingQuestions)
+      .where(eq(readingQuestions.type, 'fill_in_blanks'))
+
+    return questions.map((q) => ({ id: q.id }))
+  } catch (error) {
+    console.error('Error generating static params:', error)
+    return []
+  }
 }
+
 
 export default async function FillInBlanksQuestionPage({ params }: Props) {
   const { id } = await params
