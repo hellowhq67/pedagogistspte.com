@@ -7,6 +7,11 @@ type Props = {
   params: Promise<{ id: string }>
 }
 
+// Don't prerender any question pages at build time
+export async function generateStaticParams() {
+  return []
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params
   const question = await getSpeakingQuestionById(id)

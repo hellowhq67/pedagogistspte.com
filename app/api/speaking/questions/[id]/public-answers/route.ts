@@ -17,7 +17,7 @@ import { eq, and, desc } from 'drizzle-orm'
  */
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const { searchParams } = new URL(request.url)
@@ -29,7 +29,7 @@ export async function GET(
     const minScore = parseInt(searchParams.get('minScore') || '0')
     const sortBy = searchParams.get('sortBy') || 'score'
 
-    const { id: questionId } = context.params
+    const { id: questionId } = await context.params
 
     if (!questionId) {
       return NextResponse.json(

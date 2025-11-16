@@ -3,6 +3,11 @@ import { AcademicPracticeHeader } from '@/components/pte/practice-header'
 
 type Props = { params: { id: string } }
 
+// Don't prerender any question pages at build time
+export async function generateStaticParams() {
+  return []
+}
+
 export default function FillInBlanksQuestionPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-gray-50">

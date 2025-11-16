@@ -61,8 +61,8 @@ export async function checkPracticeLock(
   let attemptsToday = 0
   let lastAttemptDate = null
 
-  if (result.rows.length > 0) {
-    const row = result.rows[0] as any
+  if (result.length > 0) {
+    const row = result[0] as any
     lastAttemptDate = row.last_attempt_date
 
     // Check if attempts are from today
@@ -172,7 +172,7 @@ export async function getPracticeStats(userId: string, days: number = 7) {
     ORDER BY total_attempts DESC
   `)
 
-  return result.rows
+  return result
 }
 
 /**

@@ -8,7 +8,7 @@ async function testWritingAPI() {
   const questionType = 'summarize_written_text'
   const isActive = true
   const difficulty = undefined
-  const search = ''
+  const search: string = ''
 
   // Build conditions array
   const conditions = [

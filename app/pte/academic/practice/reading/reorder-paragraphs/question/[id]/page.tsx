@@ -5,6 +5,11 @@ type Props = {
   params: Promise<{ id: string }>
 }
 
+// Don't prerender any question pages at build time
+export async function generateStaticParams() {
+  return []
+}
+
 export default async function ReorderParagraphsQuestionPage({ params }: Props) {
   const { id } = await params
 

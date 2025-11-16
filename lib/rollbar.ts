@@ -35,7 +35,7 @@ export function logError(error: Error | unknown, context?: Record<string, any>) 
   }
 
   if (serverRollbar && process.env.ROLLBAR_SERVER_TOKEN) {
-    serverRollbar.error(error, context)
+    serverRollbar.error(error as any, context)
   }
 }
 

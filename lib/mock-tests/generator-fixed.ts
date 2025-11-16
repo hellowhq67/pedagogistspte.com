@@ -1,3 +1,17 @@
+import { db } from '@/lib/db'
+import {
+  speakingQuestions,
+  writingQuestions,
+  readingQuestions,
+  listeningQuestions,
+} from '@/lib/db/schema'
+import {
+  mockTests,
+  mockTestQuestions,
+  type NewMockTest,
+  type NewMockTestQuestion,
+} from '@/lib/db/schema-mock-tests'
+import { eq, notInArray, sql, and } from 'drizzle-orm'
 
 // November 2025 Updated Question Distribution
 // Total: 52-64 questions (reduced from 70-82)

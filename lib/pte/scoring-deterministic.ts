@@ -75,7 +75,7 @@ export function scoreReadingMCQSingle(input: MCQSinglePayload): ScoringResult {
     section: TestSection.READING,
     accuracy: correct,
     rationale,
-    meta: { task: 'READING_MCQ_SINGLE' },
+    meta: { provider: 'deterministic', task: 'READING_MCQ_SINGLE' },
   })
 }
 
@@ -106,7 +106,7 @@ export function scoreReadingMCQMultiple(
     section: TestSection.READING,
     accuracy: acc,
     rationale,
-    meta: { task: 'READING_MCQ_MULTIPLE', tp, fp, correctCount: cor.size },
+    meta: { provider: 'deterministic', task: 'READING_MCQ_MULTIPLE', tp, fp, correctCount: cor.size },
   })
 }
 
@@ -138,7 +138,7 @@ export function scoreReadingFillInBlanks(
     section: TestSection.READING,
     accuracy: acc,
     rationale,
-    meta: { task: 'READING_FILL_IN_BLANKS', total, correct, wrong },
+    meta: { provider: 'deterministic', task: 'READING_FILL_IN_BLANKS', total, correct, wrong },
   })
 }
 
@@ -161,7 +161,7 @@ export function scoreReadingReorderParagraphs(
         n === 1
           ? 'Single paragraph is trivially correct.'
           : 'No paragraphs provided.',
-      meta: { task: 'READING_REORDER', pairs: 0, correctPairs: 0 },
+      meta: { provider: 'deterministic', task: 'READING_REORDER', pairs: 0, correctPairs: 0 },
     })
   }
 
@@ -192,7 +192,7 @@ export function scoreReadingReorderParagraphs(
     section: TestSection.READING,
     accuracy: acc,
     rationale,
-    meta: { task: 'READING_REORDER', pairs: totalPairs, correctPairs: agree },
+    meta: { provider: 'deterministic', task: 'READING_REORDER', pairs: totalPairs, correctPairs: agree },
   })
 }
 
@@ -217,10 +217,10 @@ export function scoreListeningWriteFromDictation(
   // Build deterministic result that includes both correctness and wer score contributions
   const res = buildDeterministicResult({
     section: TestSection.LISTENING,
-    accuracy,
+    accuracy: acc,
     wer,
     rationale,
-    meta: { task: 'LISTENING_WFD', refLen: refTokens.length, edits: dist },
+    meta: { provider: 'deterministic', task: 'LISTENING_WFD', refLen: refTokens.length, edits: dist },
   })
 
   // Ensure we include a 'wer' subscore representation (0..90 mapping) in subscores for transparency

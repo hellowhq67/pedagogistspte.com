@@ -3,6 +3,11 @@ import { AcademicPracticeHeader } from '@/components/pte/practice-header'
 
 type Props = { params: Promise<{ id: string }> }
 
+// Don't prerender any question pages at build time
+export async function generateStaticParams() {
+  return []
+}
+
 export default async function SelectMissingWordQuestionPage({ params }: Props) {
   const { id } = await params
 

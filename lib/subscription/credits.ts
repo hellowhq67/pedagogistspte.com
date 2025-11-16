@@ -67,9 +67,8 @@ export async function getCreditStatus(userId: string): Promise<CreditStatus> {
     throw new Error('User not found')
   }
 
-  const tier = user.subscriptionTier || 'free'
-  const config = getTierConfig(tier)
-  const total = config.dailyAiCredits
+  // Use the user's configured dailyAiCredits directly from the database
+  const total = user.dailyAiCredits || 4 // Default to 4 if not set
   const used = user.aiCreditsUsed || 0
 
   // Calculate when credits reset (midnight UTC)
@@ -104,11 +103,14 @@ export async function useAiCredit(
     throw new Error('User not found')
   }
 
-  const tier = user.subscriptionTier || 'free'
+  // Default to free tier if no subscription tier field exists
+  const tier = 'free'
   const currentUsed = user.aiCreditsUsed || 0
+  const dailyLimit = user.dailyAiCredits || 10
 
   // Check if user has enough credits
-  if (!hasAiCreditsAvailable(tier, currentUsed + count - 1)) {
+  // Use -1 for unlimited, otherwise check against the limit
+  if (dailyLimit !== -1 && currentUsed + count > dailyLimit) {
     return false
   }
 

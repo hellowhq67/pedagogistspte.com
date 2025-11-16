@@ -4,6 +4,7 @@
  */
 
 import 'server-only'
+import { db } from '@/lib/db'
 import {
   mockTests,
   mockTestQuestions,
@@ -218,7 +219,7 @@ export async function submitAnswer(params: {
   attemptId: string
   mockTestQuestionId: string
   questionId: string
-  questionTable: string
+  questionTable: 'speaking_questions' | 'writing_questions' | 'reading_questions' | 'listening_questions'
   userResponse: any
   timeTakenSeconds: number
 }) {
@@ -267,7 +268,7 @@ export async function moveToNextQuestion(attemptId: string) {
     .update(mockTestAttempts)
     .set({
       currentQuestionIndex: nextIndex,
-      currentSection: nextQuestion.section,
+      currentSection: nextQuestion.section as 'speaking' | 'writing' | 'reading' | 'listening',
       updatedAt: new Date(),
     })
     .where(eq(mockTestAttempts.id, attemptId))

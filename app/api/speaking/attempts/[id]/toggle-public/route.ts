@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { speakingAttempts } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
-import { getCurrentUser } from '@/lib/session'
+import { getCurrentUser } from '@/lib/auth/server'
 
 /**
  * PATCH /api/speaking/attempts/[id]/toggle-public
@@ -15,7 +15,7 @@ import { getCurrentUser } from '@/lib/session'
  */
 export async function PATCH(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const user = await getCurrentUser()
@@ -23,7 +23,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { id: attemptId } = context.params
+    const { id: attemptId } = await context.params
     if (!attemptId) {
       return NextResponse.json(
         { error: 'Attempt ID is required' },

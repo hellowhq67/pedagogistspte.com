@@ -10,6 +10,11 @@ type Params = {
   params: Promise<{ id: string }>
 }
 
+// Don't prerender any question pages at build time
+export async function generateStaticParams() {
+  return []
+}
+
 type SpeakingQuestion = {
   id: string
   type: string

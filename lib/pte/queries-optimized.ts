@@ -94,7 +94,7 @@ export async function getAcademicDashboardDataOptimized(
     ])
 
     // Parse the aggregated data
-    const testStats = testAttemptsData.rows[0] || {
+    const testStats = testAttemptsData[0] || {
       total_tests: 0,
       avg_overall_score: 0,
       avg_reading: 0,
@@ -109,7 +109,7 @@ export async function getAcademicDashboardDataOptimized(
         ? JSON.parse(testStats.recent_attempts)
         : testStats.recent_attempts
 
-    const recentPractice = practiceData.rows || []
+    const recentPractice = practiceData || []
 
     // Calculate monthly progress (in-memory, optimized)
     const academicProgress = calculateMonthlyProgressOptimized(recentAttempts)

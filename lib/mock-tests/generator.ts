@@ -79,7 +79,7 @@ async function getRandomQuestions(
     LIMIT ${count}
   `)
 
-  return result.rows as any[]
+  return result as any[]
 }
 
 /**
@@ -158,7 +158,7 @@ export async function generateSingleMockTest(testNumber: number) {
     RETURNING id
   `)
 
-  const testId = (mockTestId.rows[0] as any).id
+  const testId = (mockTestId[0] as any).id
 
   // Generate questions for each section
   let orderIndex = 0
