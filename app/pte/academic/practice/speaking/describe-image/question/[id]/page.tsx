@@ -1,78 +1,56 @@
-import { Suspense } from 'react'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { headers } from 'next/headers'
+import { Suspense } from "react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import SpeakingAttempt from "@/components/pte/attempt/SpeakingAttempt";
+import { AcademicPracticeHeader } from "@/components/pte/practice-header";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { db } from '@/lib/db/drizzle'
 import { speakingQuestions } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
-import SpeakingAttempt from '@/components/pte/attempt/SpeakingAttempt'
-import { AcademicPracticeHeader } from '@/components/pte/practice-header'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-
-export const dynamic = 'force-dynamic'
 
 type Params = {
-  params: Promise<{ id: string }>
-}
-
-// Generate static params for all describe_image questions at build time
-export async function generateStaticParams() {
-  try {
-    const questions = await db
-      .select({ id: speakingQuestions.id })
-      .from(speakingQuestions)
-      .where(eq(speakingQuestions.type, 'describe_image'))
-
-    // Ensure at least one result to satisfy Next.js requirements
-    if (questions.length === 0) {
-      console.warn('No describe_image questions found, returning fallback')
-      return [{ id: 'fallback-id' }]
-    }
-
-    return questions.map((q) => ({ id: q.id }))
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    // Return fallback to satisfy Next.js requirements
-    return [{ id: 'fallback-id' }]
-  }
-}
+  params: Promise<{ id: string }>;
+};
 
 type SpeakingQuestion = {
-  id: string
-  type: string
-  title: string
-  promptText?: string | null
-  promptMediaUrl?: string | null
-  difficulty?: string
-  tags?: any
-  isActive: boolean
-  createdAt: Date
-}
+  id: string;
+  type: string;
+  title: string;
+  promptText?: string | null;
+  promptMediaUrl?: string | null;
+  difficulty?: string;
+  tags?: any;
+  isActive: boolean;
+  createdAt: Date;
+};
 
 async function fetchQuestion(id: string): Promise<SpeakingQuestion | null> {
   try {
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const host = (await headers()).get('host')
-    const url = `${protocol}://${host}/api/speaking/questions/${id}`
-    const res = await fetch(url)
-    if (!res.ok) {
-      if (res.status === 404) return null
-      throw new Error(`Failed to fetch question: ${res.status}`)
+    console.log(`[Page] Fetching question with ID: ${id}`)
+    const rows = await db
+      .select()
+      .from(speakingQuestions)
+      .where(eq(speakingQuestions.id, id))
+      .limit(1)
+    const question = rows[0]
+    if (!question) {
+      console.log(`[Page] Question not found in DB`)
+      return null
     }
-    const data = await res.json()
-    return data.question
+    console.log(`[Page] Question found: ${question.id}, type: ${question.type}, isActive: ${question.isActive}`)
+    return question
   } catch (error) {
     console.error('Error fetching question:', error)
-    return null
+    return null // Return null to trigger notFound()
   }
 }
 
 async function QuestionContent({ id }: { id: string }) {
-  const question = await fetchQuestion(id)
+  const question = await fetchQuestion(id);
 
-  if (!question) {
-    notFound()
+  if (!question || !question.isActive || question.type !== 'describe_image') {
+    notFound();
   }
 
   return (
@@ -84,7 +62,7 @@ async function QuestionContent({ id }: { id: string }) {
         </h1>
         {question.difficulty && (
           <p className="text-muted-foreground mt-1 text-sm">
-            Difficulty:{' '}
+            Difficulty:{" "}
             <span className="font-medium capitalize">
               {question.difficulty}
             </span>
@@ -125,7 +103,7 @@ async function QuestionContent({ id }: { id: string }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function LoadingSkeleton() {
@@ -141,21 +119,21 @@ function LoadingSkeleton() {
         <Skeleton className="h-10 w-32" />
       </div>
     </div>
-  )
+  );
 }
 
 export async function generateMetadata(props: Params) {
-  const params = await props.params
-  const id = params.id
+  const params = await props.params;
+  const id = params.id;
   return {
     title: `Describe Image Practice — Question ${id.slice(0, 8)}`,
-    description: 'Practice PTE Academic Describe Image with AI scoring',
-  }
+    description: "Practice PTE Academic Describe Image with AI scoring",
+  };
 }
 
 export default async function DescribeImageQuestionPage(props: Params) {
-  const params = await props.params
-  const id = params.id
+  const params = await props.params;
+  const id = params.id;
 
   return (
     <div className="bg-background min-h-screen">
@@ -200,5 +178,5 @@ export default async function DescribeImageQuestionPage(props: Params) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useActionState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Mail, MessageSquare, Phone, MapPin, Send, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -23,15 +23,9 @@ import {
 } from "@/components/ui/select"
 
 export default function ContactPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
+  const formRef = useRef<HTMLFormElement>(null)
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitStatus("idle")
-
-    const formData = new FormData(e.currentTarget)
+  const submitAction = async (prevState, formData) => {
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),
@@ -48,18 +42,27 @@ export default function ContactPage() {
       })
 
       if (response.ok) {
-        setSubmitStatus("success")
-        ;(e.target as HTMLFormElement).reset()
+        return { status: "success" }
       } else {
-        setSubmitStatus("error")
+        return { status: "error" }
       }
     } catch (error) {
       console.error("Contact form error:", error)
-      setSubmitStatus("error")
-    } finally {
-      setIsSubmitting(false)
+      return { status: "error" }
     }
   }
+
+  const [state, action, isPending] = useActionState(submitAction, { status: "idle" })
+
+  const isSubmitting = isPending
+  const submitStatus = state.status
+
+  useEffect(() => {
+    if (submitStatus === "success") {
+      formRef.current?.reset()
+    }
+  }, [submitStatus])
+
 
   return (
     <div className="min-h-screen">
@@ -160,7 +163,7 @@ export default function ContactPage() {
           <div className="lg:col-span-2">
             <div className="rounded-lg border bg-card p-8">
               <h2 className="mb-6 text-2xl font-bold">Send Us a Message</h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form ref={formRef} action={action} className="space-y-6">
                 <div className="grid gap-6 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name *</Label>
@@ -233,8 +236,8 @@ export default function ContactPage() {
                   </div>
                 )}
 
-                <Button type="submit" disabled={isSubmitting} className="w-full sm:w-auto">
-                  {isSubmitting ? (
+                <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
+                  {isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Sending...

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import WritingAttemptsList from './WritingAttemptsList'
 import WritingInput from './WritingInput'
@@ -42,6 +42,18 @@ export default function WritingQuestionClient({
   const [attemptsKey, setAttemptsKey] = useState(0)
   const [startTime, setStartTime] = useState<number>(Date.now())
 
+  // Stable event handler for saving draft
+  const saveDraft = useEffectEvent((text: string, questionId: string) => {
+    const key = `pte-wr-draft:${questionId}`
+    try {
+      if (text && text.trim().length > 0) {
+        localStorage.setItem(key, text)
+      } else {
+        localStorage.removeItem(key)
+      }
+    } catch {}
+  })
+
   // Auto-save draft in localStorage
   useEffect(() => {
     const key = `pte-wr-draft:${questionId}`
@@ -51,18 +63,9 @@ export default function WritingQuestionClient({
   }, [questionId])
 
   useEffect(() => {
-    const key = `pte-wr-draft:${questionId}`
-    const id = setTimeout(() => {
-      try {
-        if (text && text.trim().length > 0) {
-          localStorage.setItem(key, text)
-        } else {
-          localStorage.removeItem(key)
-        }
-      } catch {}
-    }, 400)
+    const id = setTimeout(() => saveDraft(text, questionId), 400)
     return () => clearTimeout(id)
-  }, [text, questionId])
+  }, [text, questionId, saveDraft])
 
   const fetchQuestion = useCallback(async () => {
     setLoading(true)

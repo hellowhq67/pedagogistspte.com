@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useOptimistic, useActionState } from 'react'
 import { useAuth } from '@/lib/auth/auth-client'
 import { updateProfile } from '@/lib/auth/profile-actions'
 import { Button } from '../ui/button'
@@ -34,29 +34,37 @@ export function AcademicProfile({
     initialTargetScore?.toString() || '65'
   )
   const [examDate, setExamDate] = useState(initialExamDate || '')
+  const [displayTargetScore, addOptimisticTargetScore] = useOptimistic(targetScore)
+  const [displayExamDate, addOptimisticExamDate] = useOptimistic(examDate)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
+  const updateProfileAction = async (prevState, formData) => {
     if (!user) {
-      toast.error('You must be logged in to update your profile')
-      return
+      return { error: 'You must be logged in to update your profile' }
     }
 
-    const formData = new FormData()
     formData.append('name', user.name || user.email.split('@')[0] || 'User')
     formData.append('email', user.email || '')
-    formData.append('targetScore', targetScore)
-    formData.append('examDate', examDate)
 
-    const result = await updateProfile(undefined, formData)
+    const newTargetScore = formData.get('targetScore')
+    const newExamDate = formData.get('examDate')
+
+    addOptimisticTargetScore(newTargetScore)
+    addOptimisticExamDate(newExamDate)
+
+    const result = await updateProfile(prevState, formData)
 
     if (result?.success) {
-      toast.success(result.success)
+      setTargetScore(newTargetScore)
+      setExamDate(newExamDate)
     } else {
-      toast.error(result?.error || 'Failed to update profile')
+      addOptimisticTargetScore(targetScore)
+      addOptimisticExamDate(examDate)
     }
+
+    return result
   }
+
+  const [result, action, isPending] = useActionState(updateProfileAction, null)
 
   return (
     <Card>
@@ -67,15 +75,16 @@ export function AcademicProfile({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form action={action} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="targetScore">Target Score</Label>
             <Input
               id="targetScore"
+              name="targetScore"
               type="number"
               min="10"
               max="90"
-              value={targetScore}
+              value={displayTargetScore}
               onChange={(e) => setTargetScore(e.target.value)}
               placeholder="Enter your target score (10-90)"
             />
@@ -88,8 +97,9 @@ export function AcademicProfile({
             <Label htmlFor="examDate">Exam Date</Label>
             <Input
               id="examDate"
+              name="examDate"
               type="date"
-              value={examDate}
+              value={displayExamDate}
               onChange={(e) => setExamDate(e.target.value)}
             />
             <p className="text-muted-foreground text-sm">
@@ -97,8 +107,22 @@ export function AcademicProfile({
             </p>
           </div>
 
-          <Button type="submit">Update Profile</Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? 'Updating...' : 'Update Profile'}
+          </Button>
         </form>
+
+        {result?.success && (
+          <div className="mt-4 rounded-lg bg-green-50 p-4 text-sm text-green-800 dark:bg-green-900/20 dark:text-green-400">
+            {result.success}
+          </div>
+        )}
+
+        {result?.error && (
+          <div className="mt-4 rounded-lg bg-red-50 p-4 text-sm text-red-800 dark:bg-red-900/20 dark:text-red-400">
+            {result.error}
+          </div>
+        )}
       </CardContent>
     </Card>
   )

@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import {
   IconBook,
   IconBulb,
@@ -89,6 +90,8 @@ type UIUser = UserType & {
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export default function DashboardPage() {
+  const { data: featureStats } = useSWR('/api/dashboard/feature-stats', fetcher)
+  const { data: studyToolsProgress } = useSWR('/api/dashboard/study-tools-progress', fetcher)
   const { data: user, error: userError } = useSWR<UIUser>('/api/user', fetcher)
 
   if (userError) return <div>Failed to load dashboard data.</div>

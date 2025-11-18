@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useEffectEvent, useMemo, useRef, useState } from 'react'
 import CountdownTimer from '@/components/pte/timers/CountdownTimer'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
@@ -117,12 +117,12 @@ export default function AttemptController({
 
   // Accessibility live announcements
   const [announcement, setAnnouncement] = useState('')
-  const announce = useCallback((msg: string) => {
+  const announce = useEffectEvent((msg: string) => {
     setAnnouncement(msg)
     // clear after a short delay to avoid screen reader repetition
     const id = window.setTimeout(() => setAnnouncement(''), 1500)
     return () => window.clearTimeout(id)
-  }, [])
+  })
 
   // Notify parent on phase changes
   useEffect(() => {
@@ -206,18 +206,18 @@ export default function AttemptController({
   }, [])
 
   // Prep expire -> transition to answering
-  const onPrepExpire = useCallback(() => {
+  const onPrepExpire = useEffectEvent(() => {
     if (phase === 'prepare') {
       setPhase('answering')
     }
-  }, [phase])
+  })
 
   // Answer expire -> auto submit
-  const onAnswerExpire = useCallback(() => {
+  const onAnswerExpire = useEffectEvent(() => {
     if (phase === 'answering') {
       void submit('auto-expire')
     }
-  }, [phase, submit])
+  })
 
   const controls = useMemo(
     () => ({

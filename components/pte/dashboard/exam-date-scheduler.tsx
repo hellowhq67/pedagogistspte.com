@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useOptimistic, useCallback } from 'react'
 import { format } from 'date-fns'
 import { Calendar, Clock, X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
@@ -29,6 +29,7 @@ interface ExamDateSchedulerProps {
 
 export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
   const [examDates, setExamDates] = useState<ExamDate[]>([])
+  const [displayExamDates, addOptimisticExamDates] = useOptimistic(examDates)
   const [isLoading, setIsLoading] = useState(true)
   const [isAdding, setIsAdding] = useState(false)
   const [newDate, setNewDate] = useState('')
@@ -60,7 +61,7 @@ export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
     }
   }
 
-  const handleAddExamDate = async () => {
+  const handleAddExamDate = useCallback(async () => {
     setError('')
 
     if (!newDate) {
@@ -74,6 +75,17 @@ export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
       return
     }
 
+    const newExamDateObj = {
+      id: 'temp-' + Date.now(),
+      examDate: newDate,
+      examName: examName || 'PTE Academic',
+      isPrimary: examDates.length === 0 || !examDates.some((d) => d.isPrimary),
+      createdAt: new Date().toISOString(),
+    }
+
+    const oldExamDates = examDates
+    addOptimisticExamDates([...examDates, newExamDateObj])
+
     setIsLoading(true)
     try {
       const response = await fetch('/api/user/exam-dates', {
@@ -82,8 +94,7 @@ export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
         body: JSON.stringify({
           examDate: newDate,
           examName: examName || 'PTE Academic',
-          isPrimary:
-            examDates.length === 0 || !examDates.some((d) => d.isPrimary),
+          isPrimary: examDates.length === 0 || !examDates.some((d) => d.isPrimary),
         }),
       })
 
@@ -100,6 +111,7 @@ export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
       fetchExamDates()
       onUpdate?.()
     } catch (error) {
+      addOptimisticExamDates(oldExamDates)
       setError(
         error instanceof Error ? error.message : 'Failed to add exam date'
       )
@@ -107,10 +119,13 @@ export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [newDate, examName, examDates, onUpdate])
 
-  const handleDeleteExamDate = async (id: string) => {
+  const handleDeleteExamDate = useCallback(async (id: string) => {
     if (!confirm('Are you sure you want to delete this exam date?')) return
+
+    const oldExamDates = examDates
+    addOptimisticExamDates(examDates.filter(d => d.id !== id))
 
     try {
       const response = await fetch(`/api/user/exam-dates/${id}`, {
@@ -124,13 +139,14 @@ export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
       fetchExamDates()
       onUpdate?.()
     } catch (error) {
+      addOptimisticExamDates(oldExamDates)
       console.error('Error deleting exam date:', error)
       setError('Failed to delete exam date')
     }
-  }
+  }, [examDates, onUpdate])
 
   const getPrimaryExam = () => {
-    return examDates.find((d) => d.isPrimary) || examDates[0]
+    return displayExamDates.find((d) => d.isPrimary) || displayExamDates[0]
   }
 
   const getDaysUntilExam = (examDate: string): number => {
@@ -208,13 +224,13 @@ export function ExamDateScheduler({ onUpdate }: ExamDateSchedulerProps) {
             )}
 
             {/* Exam Dates List */}
-            {examDates.length > 0 && !isAdding && (
+            {displayExamDates.length > 0 && !isAdding && (
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold text-gray-700">
-                  All Scheduled Exams ({examDates.length})
+                  All Scheduled Exams ({displayExamDates.length})
                 </h4>
                 <div className="space-y-2">
-                  {examDates.map((date) => {
+                  {displayExamDates.map((date) => {
                     const daysUntil = getDaysUntilExam(date.examDate)
                     return (
                       <div

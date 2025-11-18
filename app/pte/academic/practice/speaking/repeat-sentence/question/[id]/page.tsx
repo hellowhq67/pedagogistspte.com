@@ -1,71 +1,58 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { headers } from 'next/headers'
-import SpeakingAttempt from '@/components/pte/attempt/SpeakingAttempt'
-import { AcademicPracticeHeader } from '@/components/pte/practice-header'
-import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
-import { db } from '@/lib/db/drizzle'
-import { speakingQuestions } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
-
-export const dynamic = 'force-dynamic'
+import { notFound } from "next/navigation";
+import SpeakingAttempt from "@/components/pte/attempt/SpeakingAttempt";
+import { AcademicPracticeHeader } from "@/components/pte/practice-header";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { db } from "@/lib/db/drizzle";
+import { speakingQuestions } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 type Params = {
-  params: Promise<{ id: string }>
-}
-
-// Generate static params for all repeat_sentence questions at build time
-export async function generateStaticParams() {
-  try {
-    const questions = await db
-      .select({ id: speakingQuestions.id })
-      .from(speakingQuestions)
-      .where(eq(speakingQuestions.type, 'repeat_sentence'))
-
-    return questions.map((q) => ({ id: q.id }))
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
-  }
-}
+  params: Promise<{ id: string }>;
+};
 
 type SpeakingQuestion = {
-  id: string
-  type: string
-  title: string
-  promptText?: string | null
-  promptMediaUrl?: string | null
-  difficulty?: string
-  tags?: any
-  isActive: boolean
-  createdAt: Date
-}
+  id: string;
+  type: string;
+  title: string;
+  promptText?: string | null;
+  promptMediaUrl?: string | null;
+  difficulty?: string;
+  tags?: any;
+  isActive: boolean;
+  createdAt: Date;
+};
 
 async function fetchQuestion(id: string): Promise<SpeakingQuestion | null> {
   try {
-    const headersList = await headers()
-    const host = headersList.get('host') || 'localhost:3000'
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const res = await fetch(`${protocol}://${host}/api/speaking/questions/${id}`)
-    if (!res.ok) {
-      if (res.status === 404) return null
-      throw new Error(`Failed to fetch question: ${res.status}`)
+    console.log(`[Page] Fetching question with ID: ${id}`);
+    const rows = await db
+      .select()
+      .from(speakingQuestions)
+      .where(eq(speakingQuestions.id, id))
+      .limit(1);
+    const question = rows[0];
+    if (!question) {
+      console.log(`[Page] Question not found in DB`);
+      return null;
     }
-    const data = await res.json()
-    return data.question
+    console.log(
+      `[Page] Question found: ${question.id}, type: ${question.type}, isActive: ${question.isActive}`
+    );
+    return question;
   } catch (error) {
-    console.error('Error fetching question:', error)
-    return null
+    console.error("Error fetching question:", error);
+    return null; // Return null to trigger notFound()
   }
 }
 
 async function QuestionContent({ id }: { id: string }) {
-  const question = await fetchQuestion(id)
+  const question = await fetchQuestion(id);
 
-  if (!question) {
-    notFound()
+  if (!question || !question.isActive || question.type !== "repeat_sentence") {
+    notFound();
   }
 
   return (
@@ -77,7 +64,7 @@ async function QuestionContent({ id }: { id: string }) {
         </h1>
         {question.difficulty && (
           <p className="text-muted-foreground mt-1 text-sm">
-            Difficulty:{' '}
+            Difficulty:{" "}
             <span className="font-medium capitalize">
               {question.difficulty}
             </span>
@@ -118,7 +105,7 @@ async function QuestionContent({ id }: { id: string }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function LoadingSkeleton() {

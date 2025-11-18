@@ -17,6 +17,8 @@ export const WritingListQuerySchema = z.object({
   search: z.string().trim().optional().default(''),
   difficulty: DifficultyFilterSchema,
   isActive: z.coerce.boolean().default(true),
+  sortBy: z.enum(['difficulty', 'createdAt']).default('createdAt'),
+  sortOrder: z.enum(['asc', 'desc']).default('desc'),
 })
 
 export type WritingListQuery = z.infer<typeof WritingListQuerySchema>

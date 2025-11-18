@@ -1,35 +1,17 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { headers } from 'next/headers'
 import SpeakingAttempt from '@/components/pte/attempt/SpeakingAttempt'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
 import { Button } from '@/components/ui/button'
-import { Skeleton } from '@/components/ui/skeleton'
+import { Skeleton } from "@/components/ui/skeleton";
 import { db } from '@/lib/db/drizzle'
 import { speakingQuestions } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 
-export const dynamic = 'force-dynamic'
-
 type Params = {
-  params: Promise<{ id: string }>
-}
-
-// Generate static params for all answer_short_question questions at build time
-export async function generateStaticParams() {
-  try {
-    const questions = await db
-      .select({ id: speakingQuestions.id })
-      .from(speakingQuestions)
-      .where(eq(speakingQuestions.type, 'answer_short_question'))
-
-    return questions.map((q) => ({ id: q.id }))
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
-  }
-}
+  params: Promise<{ id: string }>;
+};
 
 type SpeakingQuestion = {
   id: string
@@ -45,26 +27,29 @@ type SpeakingQuestion = {
 
 async function fetchQuestion(id: string): Promise<SpeakingQuestion | null> {
   try {
-    const headersList = await headers()
-    const host = headersList.get('host')
-    const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-    const res = await fetch(`${protocol}://${host}/api/speaking/questions/${id}`)
-    if (!res.ok) {
-      if (res.status === 404) return null
-      throw new Error(`Failed to fetch question: ${res.status}`)
+    console.log(`[Page] Fetching question with ID: ${id}`)
+    const rows = await db
+      .select()
+      .from(speakingQuestions)
+      .where(eq(speakingQuestions.id, id))
+      .limit(1)
+    const question = rows[0]
+    if (!question) {
+      console.log(`[Page] Question not found in DB`)
+      return null
     }
-    const data = await res.json()
-    return data.question
+    console.log(`[Page] Question found: ${question.id}, type: ${question.type}, isActive: ${question.isActive}`)
+    return question
   } catch (error) {
     console.error('Error fetching question:', error)
-    return null
+    return null // Return null to trigger notFound()
   }
 }
 
 async function QuestionContent({ id }: { id: string }) {
   const question = await fetchQuestion(id)
 
-  if (!question) {
+  if (!question || !question.isActive || question.type !== 'answer_short_question') {
     notFound()
   }
 

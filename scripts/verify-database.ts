@@ -6,6 +6,10 @@
  * Usage: npx tsx scripts/verify-database.ts [--verbose]
  */
 
+import dotenv from 'dotenv'
+dotenv.config({ path: '.env.local' })
+dotenv.config()
+
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import * as schema from '../lib/db/schema'
@@ -114,10 +118,10 @@ async function verifyTablesExist(client: postgres.Sql) {
 
   const expectedTables = [
     // Core authentication tables
-    'user',
-    'session',
-    'account',
-    'verification',
+    'users',
+    'sessions',
+    'accounts',
+    'verifications',
 
     // Practice section tables
     'speaking_questions',
@@ -180,13 +184,13 @@ async function verifyRecordCounts(client: postgres.Sql) {
   log('═══════════════════════════════════════════════════════', colors.bright)
 
   const tables = [
-    { name: 'speaking_questions', type: 'Speaking Questions' },
+    { name: 'speaking_questions', type: 'Speaking Questions', questionTypeColumn: 'type' },
     { name: 'speaking_attempts', type: 'Speaking Attempts' },
-    { name: 'reading_questions', type: 'Reading Questions' },
+    { name: 'reading_questions', type: 'Reading Questions', questionTypeColumn: 'type' },
     { name: 'reading_attempts', type: 'Reading Attempts' },
-    { name: 'writing_questions', type: 'Writing Questions' },
+    { name: 'writing_questions', type: 'Writing Questions', questionTypeColumn: 'type' },
     { name: 'writing_attempts', type: 'Writing Attempts' },
-    { name: 'listening_questions', type: 'Listening Questions' },
+    { name: 'listening_questions', type: 'Listening Questions', questionTypeColumn: 'type' },
     { name: 'listening_attempts', type: 'Listening Attempts' },
   ]
 
@@ -204,18 +208,18 @@ async function verifyRecordCounts(client: postgres.Sql) {
       })
 
       // Detail breakdown by question type if applicable
-      if (table.name.includes('questions')) {
+      if (table.questionTypeColumn) {
         const typeResult = await client.unsafe(`
-          SELECT question_type, COUNT(*) as count 
+          SELECT ${table.questionTypeColumn}, COUNT(*) as count 
           FROM ${table.name} 
-          GROUP BY question_type 
-          ORDER BY question_type
+          GROUP BY ${table.questionTypeColumn} 
+          ORDER BY ${table.questionTypeColumn}
         `)
 
         if (typeResult.length > 0) {
           logVerbose(`  Breakdown by type:`)
           typeResult.forEach((row: any) => {
-            logVerbose(`    - ${row.question_type}: ${row.count}`)
+            logVerbose(`    - ${row[table.questionTypeColumn]}: ${row.count}`)
           })
         }
       }
@@ -248,21 +252,31 @@ async function verifySchemaStructure(client: postgres.Sql) {
       name: 'speaking_questions',
       requiredColumns: [
         'id',
-        'question_type',
-        'prompt',
-        'audio_url',
-        'duration',
+        'type',
+        'title',
+        'prompt_text',
+        'prompt_media_url',
         'difficulty',
+        'tags',
+        'is_active',
+        'created_at',
       ],
     },
     {
       name: 'speaking_attempts',
       requiredColumns: [
         'id',
-        'question_id',
         'user_id',
+        'question_id',
+        'type',
         'audio_url',
-        'score',
+        'transcript',
+        'scores',
+        'duration_ms',
+        'words_per_minute',
+        'filler_rate',
+        'timings',
+        'is_public',
         'created_at',
       ],
     },
@@ -270,66 +284,87 @@ async function verifySchemaStructure(client: postgres.Sql) {
       name: 'reading_questions',
       requiredColumns: [
         'id',
-        'question_type',
+        'type',
         'title',
-        'passage',
-        'question',
+        'prompt_text',
+        'options',
+        'answer_key',
         'difficulty',
+        'tags',
+        'is_active',
+        'created_at',
       ],
     },
     {
       name: 'reading_attempts',
       requiredColumns: [
         'id',
-        'question_id',
         'user_id',
-        'answer',
-        'score',
+        'question_id',
+        'user_response',
+        'scores',
+        'time_taken',
         'created_at',
+        'updated_at',
       ],
     },
     {
       name: 'writing_questions',
       requiredColumns: [
         'id',
-        'question_type',
-        'prompt',
-        'word_limit',
-        'time_limit',
+        'type',
+        'title',
+        'prompt_text',
+        'options',
+        'answer_key',
+        'difficulty',
+        'tags',
+        'is_active',
+        'created_at',
       ],
     },
     {
       name: 'writing_attempts',
       requiredColumns: [
         'id',
-        'question_id',
         'user_id',
-        'answer',
-        'word_count',
-        'score',
+        'question_id',
+        'user_response',
+        'scores',
+        'time_taken',
         'created_at',
+        'updated_at',
       ],
     },
     {
       name: 'listening_questions',
       requiredColumns: [
         'id',
-        'question_type',
+        'type',
         'title',
-        'audio_url',
-        'duration',
+        'prompt_text',
+        'prompt_media_url',
+        'correct_answers',
+        'options',
+        'transcript',
         'difficulty',
+        'tags',
+        'is_active',
+        'created_at',
+        'updated_at',
       ],
     },
     {
       name: 'listening_attempts',
       requiredColumns: [
         'id',
-        'question_id',
         'user_id',
-        'answer',
-        'score',
+        'question_id',
+        'user_response',
+        'scores',
+        'time_taken',
         'created_at',
+        'updated_at',
       ],
     },
   ]
@@ -404,7 +439,7 @@ async function verifyForeignKeys(client: postgres.Sql) {
       column: 'question_id',
       referenced_table: 'speaking_questions',
     },
-    { table: 'speaking_attempts', column: 'user_id', referenced_table: 'user' },
+    { table: 'speaking_attempts', column: 'user_id', referenced_table: 'users' },
 
     // Reading attempts
     {
@@ -412,7 +447,7 @@ async function verifyForeignKeys(client: postgres.Sql) {
       column: 'question_id',
       referenced_table: 'reading_questions',
     },
-    { table: 'reading_attempts', column: 'user_id', referenced_table: 'user' },
+    { table: 'reading_attempts', column: 'user_id', referenced_table: 'users' },
 
     // Writing attempts
     {
@@ -420,7 +455,7 @@ async function verifyForeignKeys(client: postgres.Sql) {
       column: 'question_id',
       referenced_table: 'writing_questions',
     },
-    { table: 'writing_attempts', column: 'user_id', referenced_table: 'user' },
+    { table: 'writing_attempts', column: 'user_id', referenced_table: 'users' },
 
     // Listening attempts
     {
@@ -431,7 +466,7 @@ async function verifyForeignKeys(client: postgres.Sql) {
     {
       table: 'listening_attempts',
       column: 'user_id',
-      referenced_table: 'user',
+      referenced_table: 'users',
     },
   ]
 

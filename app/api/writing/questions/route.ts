@@ -53,7 +53,15 @@ export async function GET(request: Request) {
       )
     }
 
-    const { type, page, pageSize, search = '', isActive = true } = parsed.data
+    const {
+      type,
+      page,
+      pageSize,
+      search = '',
+      isActive = true,
+      sortBy,
+      sortOrder,
+    } = parsed.data
     const difficulty = normalizeDifficulty(parsed.data.difficulty)
 
     // Improved type safety for conditions array
@@ -79,6 +87,11 @@ export async function GET(request: Request) {
 
     const whereExpr = conditions.length ? and(...conditions) : undefined
 
+    const orderBy =
+      sortOrder === 'asc'
+        ? asc(writingQuestions[sortBy])
+        : desc(writingQuestions[sortBy])
+
     // Combine count and select queries for better performance using window function
     const result = await db
       .select({
@@ -98,7 +111,7 @@ export async function GET(request: Request) {
       })
       .from(writingQuestions)
       .where(whereExpr)
-      .orderBy(desc(writingQuestions.createdAt), desc(writingQuestions.id))
+      .orderBy(orderBy)
       .limit(pageSize)
       .offset((page - 1) * pageSize)
 

@@ -459,6 +459,7 @@ export const speakingQuestions = pgTable(
     difficulty: difficultyEnum('difficulty').notNull().default('Medium'),
     tags: jsonb('tags').default(sql`'[]'::jsonb`),
     isActive: boolean('is_active').notNull().default(true),
+    bookmarked: boolean('bookmarked').default(false).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => ({
@@ -571,6 +572,7 @@ export const readingQuestions = pgTable(
     difficulty: difficultyEnum('difficulty').notNull().default('Medium'),
     tags: jsonb('tags').default(sql`'[]'::jsonb`),
     isActive: boolean('is_active').notNull().default(true),
+    bookmarked: boolean('bookmarked').default(false).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => ({
@@ -593,6 +595,7 @@ export const writingQuestions = pgTable(
     difficulty: difficultyEnum('difficulty').notNull().default('Medium'),
     tags: jsonb('tags').default(sql`'[]'::jsonb`),
     isActive: boolean('is_active').notNull().default(true),
+    bookmarked: boolean('bookmarked').default(false).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => ({
@@ -646,6 +649,7 @@ export const listeningQuestions = pgTable(
     difficulty: difficultyEnum('difficulty').notNull().default('Medium'),
     tags: jsonb('tags').default(sql`'[]'::jsonb`),
     isActive: boolean('is_active').notNull().default(true),
+    bookmarked: boolean('bookmarked').default(false).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
   },

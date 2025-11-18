@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useOptimistic, useCallback, useActionState } from 'react'
 import { format } from 'date-fns'
 import {
   Award,
@@ -78,6 +78,8 @@ export function PracticeAttemptsClient() {
   const [loading, setLoading] = useState(true)
   const [examDate, setExamDate] = useState<Date | undefined>()
   const [targetScore, setTargetScore] = useState<number>(65)
+  const [displayExamDate, addOptimisticExamDate] = useOptimistic(examDate)
+  const [displayTargetScore, addOptimisticTargetScore] = useOptimistic(targetScore)
   const [filters, setFilters] = useState({
     section: 'all',
     questionType: 'all',
@@ -105,6 +107,29 @@ export function PracticeAttemptsClient() {
     }
     fetchProfile()
   }, [])
+
+  const [saveState, saveAction, isPending] = useActionState(async (prevState) => {
+    const oldExamDate = examDate
+    const oldTargetScore = targetScore
+    addOptimisticExamDate(examDate)
+    addOptimisticTargetScore(targetScore)
+    try {
+      await fetch('/api/user/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          examDate: examDate?.toISOString(),
+          targetScore,
+        }),
+      })
+      return { ...prevState, error: null }
+    } catch (error) {
+      console.error('Failed to save profile:', error)
+      addOptimisticExamDate(oldExamDate)
+      addOptimisticTargetScore(oldTargetScore)
+      return { ...prevState, error: 'Failed to save profile' }
+    }
+  }, { error: null })
 
   // Fetch all attempts
   useEffect(() => {
@@ -151,21 +176,7 @@ export function PracticeAttemptsClient() {
     fetchAttempts()
   }, [])
 
-  // Save exam date and target score
-  const saveProfile = async () => {
-    try {
-      await fetch('/api/user/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          examDate: examDate?.toISOString(),
-          targetScore,
-        }),
-      })
-    } catch (error) {
-      console.error('Failed to save profile:', error)
-    }
-  }
+  const saveProfile = useCallback(() => saveAction(), [saveAction])
 
   // Filter attempts
   const filteredAttempts = useMemo(() => {
@@ -241,9 +252,9 @@ export function PracticeAttemptsClient() {
     }
   }, [attempts])
 
-  const daysUntilExam = examDate
+  const daysUntilExam = displayExamDate
     ? Math.ceil(
-        (examDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+        (displayExamDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
       )
     : null
 
@@ -382,7 +393,7 @@ export function PracticeAttemptsClient() {
                   type="number"
                   min="10"
                   max="90"
-                  value={targetScore}
+                  value={displayTargetScore}
                   onChange={(e) => setTargetScore(Number(e.target.value))}
                   className="max-w-[200px]"
                 />
@@ -398,17 +409,17 @@ export function PracticeAttemptsClient() {
                     variant="outline"
                     className={cn(
                       'w-full justify-start text-left font-normal',
-                      !examDate && 'text-muted-foreground'
+                      !displayExamDate && 'text-muted-foreground'
                     )}
                   >
                     <CalendarIcon className="mr-2 h-4 w-4" />
-                    {examDate ? format(examDate, 'PPP') : 'Pick a date'}
+                    {displayExamDate ? format(displayExamDate, 'PPP') : 'Pick a date'}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={examDate}
+                    selected={displayExamDate}
                     onSelect={setExamDate}
                     initialFocus
                   />
@@ -417,22 +428,30 @@ export function PracticeAttemptsClient() {
             </div>
           </div>
 
-          <Button onClick={saveProfile}>
+          <Button onClick={saveProfile} disabled={isPending}>
             <CheckCircle2 className="mr-2 h-4 w-4" />
-            Save Goals
+            {isPending ? 'Saving...' : 'Save Goals'}
           </Button>
 
-          {targetScore > stats.avgScore && (
-            <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950/20">
-              <p className="text-sm text-orange-800 dark:text-orange-400">
-                <strong>Gap to target:</strong> You need{' '}
-                {targetScore - stats.avgScore} more points to reach your target
-                score of {targetScore}.
+          {saveState.error && (
+            <div className="rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-800 dark:bg-red-950/20">
+              <p className="text-sm text-red-800 dark:text-red-400">
+                {saveState.error}
               </p>
             </div>
           )}
 
-          {targetScore <= stats.avgScore && stats.avgScore > 0 && (
+          {displayTargetScore > stats.avgScore && (
+            <div className="rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950/20">
+              <p className="text-sm text-orange-800 dark:text-orange-400">
+                <strong>Gap to target:</strong> You need{' '}
+                {displayTargetScore - stats.avgScore} more points to reach your target
+                score of {displayTargetScore}.
+              </p>
+            </div>
+          )}
+
+          {displayTargetScore <= stats.avgScore && stats.avgScore > 0 && (
             <div className="rounded-lg border border-green-200 bg-green-50 p-4 dark:border-green-800 dark:bg-green-950/20">
               <p className="text-sm text-green-800 dark:text-green-400">
                 <strong>Great progress!</strong> You've reached your target

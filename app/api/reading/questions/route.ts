@@ -27,7 +27,15 @@ export async function GET(request: Request) {
       )
     }
 
-    const { type, page, pageSize, search = '', isActive = true } = parsed.data
+    const {
+      type,
+      page,
+      pageSize,
+      search = '',
+      isActive = true,
+      sortBy,
+      sortOrder,
+    } = parsed.data
     const difficulty = normalizeDifficulty(parsed.data.difficulty)
 
     const conditions: any[] = [eq(readingQuestions.type, type)]
@@ -53,9 +61,14 @@ export async function GET(request: Request) {
       : db.select({ count: sql<number>`count(*)` }).from(readingQuestions))
     const total = Number(countRows[0]?.count || 0)
 
+    const orderBy =
+      sortOrder === 'asc'
+        ? asc(readingQuestions[sortBy])
+        : desc(readingQuestions[sortBy])
+
     const baseSelect = db.select().from(readingQuestions)
     const items = await (whereExpr ? baseSelect.where(whereExpr) : baseSelect)
-      .orderBy(desc(readingQuestions.createdAt), desc(readingQuestions.id))
+      .orderBy(orderBy)
       .limit(pageSize)
       .offset((page - 1) * pageSize)
 

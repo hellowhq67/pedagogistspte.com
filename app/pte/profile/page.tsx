@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useOptimistic, useActionState, useCallback, useEffectEvent } from 'react'
 import {
   BookOpen,
   Calendar,
@@ -32,40 +32,62 @@ type UIUser = UserType & {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
+const getLevel = (score: number) => {
+  if (score >= 80) return 'A'
+  if (score >= 70) return 'B'
+  if (score >= 60) return 'C'
+  return 'D'
+}
+
 export default function ProfilePage() {
   const { data: user, error, mutate } = useSWR<UIUser>('/api/user', fetcher)
+  const { data: progress } = useSWR('/api/user/progress', fetcher)
   const [isEditing, setIsEditing] = useState(false)
   const [profileData, setProfileData] = useState<Partial<UIUser>>({})
+  const [optimisticUser, setOptimisticUser] = useOptimistic(user, (state, update) => ({ ...state, ...update }))
 
-  useEffect(() => {
+  const updateProfileData = useEffectEvent(() => {
     if (user) {
       setProfileData(user)
     }
+  })
+
+  useEffect(() => {
+    updateProfileData()
   }, [user])
 
-  const handleSave = async () => {
-    setIsEditing(false)
+  const saveProfile = async (prevState, newData: Partial<UIUser>) => {
+    setOptimisticUser(newData)
     try {
       const response = await fetch('/api/user', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(profileData),
+        body: JSON.stringify(newData),
       })
       if (!response.ok) throw new Error('Failed to update profile')
       const updatedUser = await response.json()
       mutate(updatedUser)
+      return { success: true }
     } catch (error) {
       console.error('Failed to save profile:', error)
-      // Optionally, show an error message to the user
+      setOptimisticUser(user)
+      return { success: false, error }
     }
   }
 
-  const handleInputChange = (field: keyof UIUser, value: unknown) => {
+  const [saveState, saveAction, isPending] = useActionState(saveProfile, { success: true })
+
+  const handleSave = useCallback(() => {
+    setIsEditing(false)
+    saveAction(profileData)
+  }, [profileData, saveAction])
+
+  const handleInputChange = useCallback((field: keyof UIUser, value: unknown) => {
     setProfileData((prev) => ({
       ...prev,
       [field]: value,
     }))
-  }
+  }, [])
 
   if (error) return <div>Failed to load user data.</div>
   if (!user) return <div>Loading...</div>
@@ -93,7 +115,7 @@ export default function ProfilePage() {
             <CardHeader className="items-center">
               <div className="relative">
                 <div className="flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 text-2xl font-bold text-white">
-                  {profileData.name
+                  {optimisticUser?.name
                     ?.split(' ')
                     .map((n) => n[0])
                     .join('')}
@@ -103,21 +125,20 @@ export default function ProfilePage() {
                   <Input type="file" className="hidden" />
                 </label>
               </div>
-              <CardTitle className="mt-4 text-xl">{profileData.name}</CardTitle>
-              <CardDescription>{profileData.email}</CardDescription>
+              <CardTitle className="mt-4 text-xl">{optimisticUser?.name}</CardTitle>
+              <CardDescription>{optimisticUser?.email}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-center">
               <div className="flex items-center justify-center gap-2 text-gray-600">
                 <GraduationCap className="h-4 w-4" />
-                <span>PTE Student</span>
+                <span>{optimisticUser?.role || 'PTE Student'}</span>
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
                   <Calendar className="h-4 w-4" />
-                  <span>Member since January 2024</span>
+                  <span>Member since {optimisticUser?.createdAt ? new Date(optimisticUser.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : ''}</span>
                 </div>
-                <div className="text-sm text-gray-500">Last active: Today</div>
               </div>
 
               <div className="mt-4 flex gap-2">
@@ -144,19 +165,19 @@ export default function ProfilePage() {
             <CardContent>
               <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 <div className="text-center">
-                  <div className="text-primary text-2xl font-bold">8</div>
+                  <div className="text-primary text-2xl font-bold">{progress?.testsCompleted || 0}</div>
                   <div className="text-sm text-gray-500">Tests Completed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">42h</div>
+                  <div className="text-2xl font-bold text-green-600">{progress?.practiceTime || 0}h</div>
                   <div className="text-sm text-gray-500">Practice Time</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">12</div>
+                  <div className="text-2xl font-bold text-blue-600">{progress?.dayStreak || 0}</div>
                   <div className="text-sm text-gray-500">Day Streak</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">A</div>
+                  <div className="text-2xl font-bold text-purple-600">{progress?.overallScore ? getLevel(progress.overallScore) : 'N/A'}</div>
                   <div className="text-sm text-gray-500">Current Level</div>
                 </div>
               </div>
@@ -178,11 +199,11 @@ export default function ProfilePage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-3xl font-bold">75/90</div>
+                    <div className="text-3xl font-bold">{progress?.overallScore || 0}/{optimisticUser?.targetScore || 90}</div>
                     <div className="text-gray-500">Current Score</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-3xl font-bold text-green-600">+15</div>
+                    <div className="text-3xl font-bold text-green-600">+{Math.max(0, (optimisticUser?.targetScore || 90) - (progress?.overallScore || 0))}</div>
                     <div className="text-gray-500">To Target</div>
                   </div>
                 </div>
@@ -190,19 +211,19 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Progress</span>
-                    <span>75/90</span>
+                    <span>{progress?.overallScore || 0}/{optimisticUser?.targetScore || 90}</span>
                   </div>
                   <div className="h-3 overflow-hidden rounded-full bg-gray-200">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-blue-500 to-purple-600"
-                      style={{ width: `${(75 / 90) * 100}%` }}
+                      style={{ width: `${((progress?.overallScore || 0) / (optimisticUser?.targetScore || 90)) * 100}%` }}
                     ></div>
                   </div>
                 </div>
 
                 <div className="flex gap-2">
                   <Input
-                    value={profileData.targetScore || 79}
+                    value={profileData.targetScore || optimisticUser?.targetScore || 90}
                     onChange={(e) =>
                       handleInputChange('targetScore', e.target.value)
                     }
@@ -212,7 +233,7 @@ export default function ProfilePage() {
                     max="90"
                     className="w-32"
                   />
-                  <Button disabled={!isEditing} onClick={handleSave}>
+                  <Button disabled={!isEditing || isPending} onClick={handleSave}>
                     Update Target
                   </Button>
                 </div>
@@ -258,12 +279,12 @@ export default function ProfilePage() {
             <div className="space-y-4">
               <div>
                 <Label htmlFor="role">Role</Label>
-                <Input id="role" value={'PTE Student'} disabled={true} />
+                <Input id="role" value={optimisticUser?.role || 'PTE Student'} disabled={true} />
               </div>
 
               <div>
                 <Label htmlFor="joinDate">Join Date</Label>
-                <Input id="joinDate" value={'January 2024'} disabled={true} />
+                <Input id="joinDate" value={optimisticUser?.createdAt ? new Date(optimisticUser.createdAt).toLocaleDateString() : ''} disabled={true} />
               </div>
             </div>
           </div>
@@ -276,64 +297,6 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
-      {/* Achievements */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Achievements</CardTitle>
-          <CardDescription>Your PTE learning milestones</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            <div className="rounded-lg border p-4 text-center">
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100">
-                <Trophy className="h-6 w-6 text-yellow-600" />
-              </div>
-              <div className="font-medium">Perfect Score</div>
-              <div className="text-sm text-gray-500">
-                Scored 90/90 on Reading
-              </div>
-              <Badge variant="secondary" className="mt-2">
-                Completed
-              </Badge>
-            </div>
-
-            <div className="rounded-lg border p-4 text-center">
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-                <Target className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="font-medium">Target Achieved</div>
-              <div className="text-sm text-gray-500">Reached 75 score</div>
-              <Badge variant="secondary" className="mt-2">
-                Completed
-              </Badge>
-            </div>
-
-            <div className="rounded-lg border p-4 text-center">
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <BookOpen className="h-6 w-6 text-green-600" />
-              </div>
-              <div className="font-medium">10 Mock Tests</div>
-              <div className="text-sm text-gray-500">
-                Completed 10 practice tests
-              </div>
-              <Badge variant="outline" className="mt-2">
-                In Progress
-              </Badge>
-            </div>
-
-            <div className="rounded-lg border p-4 text-center">
-              <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-                <Calendar className="h-6 w-6 text-purple-600" />
-              </div>
-              <div className="font-medium">30-Day Streak</div>
-              <div className="text-sm text-gray-500">Study for 30 days</div>
-              <Badge variant="outline" className="mt-2">
-                In Progress
-              </Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }

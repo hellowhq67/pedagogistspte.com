@@ -1,6 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import {
+  useEffect,
+  useState,
+  useOptimistic,
+  useActionState,
+} from "react";
 import { Target } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -31,6 +36,10 @@ interface TargetScoreWidgetProps {
 
 export function TargetScoreWidget({ onUpdate }: TargetScoreWidgetProps) {
   const [targetScore, setTargetScore] = useState<number>(70)
+  const [displayTargetScore, addOptimisticTargetScore] = useOptimistic<number, number>(
+    targetScore,
+    (state, newScore) => newScore
+  );
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [editValue, setEditValue] = useState('70')
@@ -56,41 +65,48 @@ export function TargetScoreWidget({ onUpdate }: TargetScoreWidgetProps) {
     }
   }
 
-  const handleSave = async () => {
-    const score = parseInt(editValue)
-    setError('')
+  const [saveState, saveAction, isPending] = useActionState(
+    async (prevState, score: number) => {
+      const oldTargetScore = targetScore;
+      addOptimisticTargetScore(score);
+      try {
+        const response = await fetch("/api/user/target-score", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ targetScore: score }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save");
+        }
+
+        setTargetScore(score);
+        setIsEditing(false);
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+        onUpdate?.(score);
+        return { ...prevState, error: null };
+      } catch (error) {
+        addOptimisticTargetScore(oldTargetScore);
+        return { ...prevState, error: "Failed to save target score" };
+      }
+    },
+    { error: null }
+  );
+
+  const handleSave = () => {
+    const score = parseInt(editValue);
+    setError("");
 
     if (isNaN(score) || score < 30 || score > 90) {
-      setError('Score must be between 30 and 90')
-      return
+      setError("Score must be between 30 and 90");
+      return;
     }
 
-    setIsLoading(true)
-    try {
-      const response = await fetch('/api/user/target-score', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ targetScore: score }),
-      })
+    saveAction(score);
+  };
 
-      if (!response.ok) {
-        throw new Error('Failed to save')
-      }
-
-      setTargetScore(score)
-      setIsEditing(false)
-      setSuccess(true)
-      setTimeout(() => setSuccess(false), 3000)
-      onUpdate?.(score)
-    } catch (error) {
-      setError('Failed to save target score')
-      console.error('Error saving target score:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const cefrLevel = getCEFRLevel(targetScore)
+  const cefrLevel = getCEFRLevel(displayTargetScore);
 
   return (
     <Card className="transition-shadow duration-200 hover:shadow-lg">
@@ -144,28 +160,28 @@ export function TargetScoreWidget({ onUpdate }: TargetScoreWidgetProps) {
               </div>
             </div>
 
-            {error && (
+            {(error || saveState.error) && (
               <div
                 className="rounded bg-red-50 p-2 text-sm text-red-600"
                 role="alert"
               >
-                {error}
+                {error || saveState.error}
               </div>
             )}
 
             <div className="flex gap-2">
               <Button
                 onClick={handleSave}
-                disabled={isLoading}
+                disabled={isPending}
                 className="flex-1"
               >
                 Save
               </Button>
               <Button
                 onClick={() => {
-                  setIsEditing(false)
-                  setEditValue(String(targetScore))
-                  setError('')
+                  setIsEditing(false);
+                  setEditValue(String(targetScore));
+                  setError("");
                 }}
                 variant="outline"
                 className="flex-1"
@@ -184,9 +200,11 @@ export function TargetScoreWidget({ onUpdate }: TargetScoreWidgetProps) {
               <div className="relative h-2 overflow-hidden rounded-full bg-gray-200">
                 <div
                   className="h-full bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-300"
-                  style={{ width: `${((targetScore - 30) / 60) * 100}%` }}
+                  style={{
+                    width: `${((displayTargetScore - 30) / 60) * 100}%`,
+                  }}
                   role="progressbar"
-                  aria-valuenow={targetScore}
+                  aria-valuenow={displayTargetScore}
                   aria-valuemin={30}
                   aria-valuemax={90}
                 />
@@ -194,7 +212,7 @@ export function TargetScoreWidget({ onUpdate }: TargetScoreWidgetProps) {
               <div className="mt-1 flex justify-between text-xs text-gray-500">
                 <span>30</span>
                 <span className="font-semibold text-blue-600">
-                  {targetScore}
+                  {displayTargetScore}
                 </span>
                 <span>90</span>
               </div>
@@ -226,5 +244,5 @@ export function TargetScoreWidget({ onUpdate }: TargetScoreWidgetProps) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

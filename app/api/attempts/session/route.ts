@@ -33,15 +33,11 @@ const encoder = new TextEncoder()
 const decoder = new TextDecoder()
 
 function getSecret(): string {
-  const s =
-    process.env.PTE_SESSION_SECRET ||
-    process.env.NEXTAUTH_SECRET ||
-    process.env.AUTH_SECRET ||
-    ''
+  const s = process.env.AUTH_SECRET || process.env.BETTER_AUTH_SECRET || ''
   if (!s) {
     // eslint-disable-next-line no-console
     console.warn(
-      '[attempts/session] Missing PTE_SESSION_SECRET. Falling back to non-secret dev key.'
+      '[attempts/session] Missing AUTH_SECRET. Falling back to non-secret dev key.'
     )
     return 'dev-secret-not-for-production'
   }

@@ -45,22 +45,7 @@ export default function QuestionsTable({
   section,
   questionType,
 }: QuestionsTableProps) {
-  const isDev = process.env.NODE_ENV !== "production";
   const isEmpty = rows.length === 0;
-
-  const handleSeedClick = async () => {
-    try {
-      const response = await fetch(`/api/${section}/seed`, { method: "POST" });
-      if (response.ok) {
-        window.location.reload();
-      } else {
-        alert("Failed to seed questions. Check console for details.");
-      }
-    } catch (error) {
-      console.error("Error seeding questions:", error);
-      alert("Error seeding questions. Check console.");
-    }
-  };
 
   return (
     <div className="rounded-md border bg-white dark:border-gray-800 dark:bg-gray-900">
@@ -85,34 +70,9 @@ export default function QuestionsTable({
                       No questions available
                     </p>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
-                      Questions haven't been seeded yet for this section.
+                      Questions for this section will be available soon.
                     </p>
                   </div>
-                  {isDev && (
-                    <div className="mt-4 max-w-md space-y-3 rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950">
-                      <p className="text-sm font-medium text-orange-900 dark:text-orange-200">
-                        Developer Mode
-                      </p>
-                      <p className="text-xs text-orange-700 dark:text-orange-300">
-                        Click the button below to seed questions, or use:
-                      </p>
-                      <code className="block rounded bg-orange-100 p-2 text-xs text-orange-900 dark:bg-orange-900 dark:text-orange-100">
-                        POST /api/{section}/seed
-                      </code>
-                      {section && (
-                        <Button
-                          onClick={handleSeedClick}
-                          size="sm"
-                          variant="outline"
-                          className="w-full"
-                        >
-                          Seed{" "}
-                          {section.charAt(0).toUpperCase() + section.slice(1)}{" "}
-                          Questions
-                        </Button>
-                      )}
-                    </div>
-                  )}
                 </div>
               </TableCell>
             </TableRow>
