@@ -13,7 +13,7 @@ export async function NonceWrapper({
   const nonce = (await headers()).get('x-nonce')
 
   return (
-    <NonceProvider nonce={nonce}>
+    <NonceProvider nonce={nonce ?? undefined}>
       <RollbarProvider>
         <NuqsAdapter>
           <ThemeProvider

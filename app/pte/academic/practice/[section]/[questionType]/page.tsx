@@ -53,7 +53,7 @@ function toKebab(v: string) {
 
 export default async function PracticeListPage(props: Params) {
   const searchParams = await props.searchParams;
-  const { section: rawSection, questionType } = props.params;
+  const { section: rawSection, questionType } = await props.params;
   const section = (rawSection ?? "").toLowerCase();
 
   const page = Number(searchParams?.page || 1);
@@ -86,8 +86,8 @@ export default async function PracticeListPage(props: Params) {
     url.searchParams.set("type", speakingType);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", "10");
-    const sortBy = searchParams?.sortBy || "createdAt";
-    const sortOrder = searchParams?.sortOrder || "desc";
+    const sortBy = String(searchParams?.sortBy || "createdAt");
+    const sortOrder = String(searchParams?.sortOrder || "desc");
     url.searchParams.set("sortBy", sortBy);
     url.searchParams.set("sortOrder", sortOrder);
 
@@ -225,6 +225,7 @@ export default async function PracticeListPage(props: Params) {
                 {page > 1 && (
                   <PaginationItem>
                     <PaginationPrevious
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page - 1
                       }`}
@@ -235,6 +236,7 @@ export default async function PracticeListPage(props: Params) {
                   (p) => (
                     <PaginationItem key={p}>
                       <PaginationLink
+                        size="default"
                         href={`/pte/academic/practice/${section}/${questionType}?page=${p}`}
                         isActive={p === page}
                       >
@@ -246,6 +248,7 @@ export default async function PracticeListPage(props: Params) {
                 {page < totalPages && (
                   <PaginationItem>
                     <PaginationNext
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page + 1
                       }`}
@@ -285,8 +288,8 @@ export default async function PracticeListPage(props: Params) {
     url.searchParams.set("type", writingType);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", "10");
-    const sortBy = searchParams?.sortBy || "createdAt";
-    const sortOrder = searchParams?.sortOrder || "desc";
+    const sortBy = String(searchParams?.sortBy || "createdAt");
+    const sortOrder = String(searchParams?.sortOrder || "desc");
     url.searchParams.set("sortBy", sortBy);
     url.searchParams.set("sortOrder", sortOrder);
 
@@ -426,6 +429,7 @@ export default async function PracticeListPage(props: Params) {
                 {page > 1 && (
                   <PaginationItem>
                     <PaginationPrevious
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page - 1
                       }&sortBy=${sortBy}&sortOrder=${sortOrder}`}
@@ -436,6 +440,7 @@ export default async function PracticeListPage(props: Params) {
                   (p) => (
                     <PaginationItem key={p}>
                       <PaginationLink
+                        size="default"
                         href={`/pte/academic/practice/${section}/${questionType}?page=${p}&sortBy=${sortBy}&sortOrder=${sortOrder}`}
                         isActive={p === page}
                       >
@@ -447,6 +452,7 @@ export default async function PracticeListPage(props: Params) {
                 {page < totalPages && (
                   <PaginationItem>
                     <PaginationNext
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page + 1
                       }&sortBy=${sortBy}&sortOrder=${sortOrder}`}
@@ -488,8 +494,8 @@ export default async function PracticeListPage(props: Params) {
     url.searchParams.set("type", readingType);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", "10");
-    const sortBy = searchParams?.sortBy || "createdAt";
-    const sortOrder = searchParams?.sortOrder || "desc";
+    const sortBy = String(searchParams?.sortBy || "createdAt");
+    const sortOrder = String(searchParams?.sortOrder || "desc");
     url.searchParams.set("sortBy", sortBy);
     url.searchParams.set("sortOrder", sortOrder);
 
@@ -629,6 +635,7 @@ export default async function PracticeListPage(props: Params) {
                 {page > 1 && (
                   <PaginationItem>
                     <PaginationPrevious
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page - 1
                       }&sortBy=${sortBy}&sortOrder=${sortOrder}`}
@@ -639,6 +646,7 @@ export default async function PracticeListPage(props: Params) {
                   (p) => (
                     <PaginationItem key={p}>
                       <PaginationLink
+                        size="default"
                         href={`/pte/academic/practice/${section}/${questionType}?page=${p}&sortBy=${sortBy}&sortOrder=${sortOrder}`}
                         isActive={p === page}
                       >
@@ -650,6 +658,7 @@ export default async function PracticeListPage(props: Params) {
                 {page < totalPages && (
                   <PaginationItem>
                     <PaginationNext
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page + 1
                       }&sortBy=${sortBy}&sortOrder=${sortOrder}`}
@@ -694,8 +703,8 @@ export default async function PracticeListPage(props: Params) {
     url.searchParams.set("type", listeningType);
     url.searchParams.set("page", String(page));
     url.searchParams.set("pageSize", "10");
-    const sortBy = searchParams?.sortBy || "createdAt";
-    const sortOrder = searchParams?.sortOrder || "desc";
+    const sortBy = String(searchParams?.sortBy || "createdAt");
+    const sortOrder = String(searchParams?.sortOrder || "desc");
     url.searchParams.set("sortBy", sortBy);
     url.searchParams.set("sortOrder", sortOrder);
 
@@ -835,6 +844,7 @@ export default async function PracticeListPage(props: Params) {
                 {page > 1 && (
                   <PaginationItem>
                     <PaginationPrevious
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page - 1
                       }&sortBy=${sortBy}&sortOrder=${sortOrder}`}
@@ -845,6 +855,7 @@ export default async function PracticeListPage(props: Params) {
                   (p) => (
                     <PaginationItem key={p}>
                       <PaginationLink
+                        size="default"
                         href={`/pte/academic/practice/${section}/${questionType}?page=${p}&sortBy=${sortBy}&sortOrder=${sortOrder}`}
                         isActive={p === page}
                       >
@@ -856,6 +867,7 @@ export default async function PracticeListPage(props: Params) {
                 {page < totalPages && (
                   <PaginationItem>
                     <PaginationNext
+                      size="default"
                       href={`/pte/academic/practice/${section}/${questionType}?page=${
                         page + 1
                       }&sortBy=${sortBy}&sortOrder=${sortOrder}`}

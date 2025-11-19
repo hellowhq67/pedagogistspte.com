@@ -21,7 +21,7 @@ async function checkQuestionCounts() {
     const count = await db
       .select({ count: sql<number>`count(*)` })
       .from(speakingQuestions)
-      .where(eq(speakingQuestions.type, type))
+      .where(eq(speakingQuestions.type, type as any))
 
     console.log(`  ${type}: ${count[0].count}`)
   }

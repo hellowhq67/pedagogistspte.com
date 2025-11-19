@@ -108,7 +108,7 @@ export function PracticeAttemptsClient() {
     fetchProfile()
   }, [])
 
-  const [saveState, saveAction, isPending] = useActionState(async (prevState) => {
+  const [saveState, saveAction, isPending] = useActionState(async (prevState: { error: string | null }, data: { questionId: string, questionType: string, bookmarked: boolean }) => {
     const oldExamDate = examDate
     const oldTargetScore = targetScore
     addOptimisticExamDate(examDate)

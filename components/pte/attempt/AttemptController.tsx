@@ -287,7 +287,7 @@ export default function AttemptController({
             >
               {starting ? (
                 <>
-                  <Spinner size={16} className="mr-2" /> Starting…
+                  <Spinner className="mr-2" /> Starting…
                 </>
               ) : (
                 'Start'
@@ -315,7 +315,7 @@ export default function AttemptController({
             </>
           ) : phase === 'submitting' ? (
             <Button aria-disabled className="opacity-80">
-              <Spinner size={16} className="mr-2" /> Submitting…
+              <Spinner className="mr-2" /> Submitting…
             </Button>
           ) : phase === 'done' ? (
             <span className="text-sm text-emerald-600">✓ Submitted</span>

@@ -247,7 +247,13 @@ function SidebarMenuItem({ item, isActive, isMobile = false, onNavigate }: Sideb
             <SidebarMenuItem
               key={child.href}
               item={child}
-              isActive={pathname === child.href || pathname?.startsWith(child.href + '/')}
+              'use client'
+import { usePathname } from 'next/navigation'
+// ... other imports
+// ... component code
+const pathname = usePathname()
+// ... later in the component
+isActive={pathname === child.href || pathname?.startsWith(child.href + '/')}
               isMobile={isMobile}
               onNavigate={onNavigate}
             />

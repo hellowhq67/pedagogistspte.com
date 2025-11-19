@@ -1,9 +1,10 @@
+'use client';
 import { countWords } from '@/lib/pte/utils'
 import React, { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { Button } from '@/components/ui/button'
+import AiScoreDisplay from './AiScoreDisplay';
 import WritingAttemptsList from './WritingAttemptsList'
 import WritingInput from './WritingInput'
-import AiScoreDisplay from './AiScoreDisplay';
 import WritingScoreBreakdown from './WritingScoreBreakdown'
 
 type WritingType = 'summarize_written_text' | 'write_essay'

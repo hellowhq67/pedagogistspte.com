@@ -44,7 +44,10 @@ export default function ProfilePage() {
   const { data: progress } = useSWR('/api/user/progress', fetcher)
   const [isEditing, setIsEditing] = useState(false)
   const [profileData, setProfileData] = useState<Partial<UIUser>>({})
-  const [optimisticUser, setOptimisticUser] = useOptimistic(user, (state, update) => ({ ...state, ...update }))
+  const [optimisticUser, setOptimisticUser] = useOptimistic(
+    user,
+    (state, update: Partial<UIUser>) => ({ ...state, ...update })
+  )
 
   const updateProfileData = useEffectEvent(() => {
     if (user) {
@@ -56,7 +59,7 @@ export default function ProfilePage() {
     updateProfileData()
   }, [user])
 
-  const saveProfile = async (prevState, newData: Partial<UIUser>) => {
+  const saveProfile = async (prevState: any, newData: Partial<UIUser>) => {
     setOptimisticUser(newData)
     try {
       const response = await fetch('/api/user', {

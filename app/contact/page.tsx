@@ -25,7 +25,7 @@ import {
 export default function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null)
 
-  const submitAction = async (prevState, formData) => {
+  const submitAction = async (prevState: any, formData: FormData) => {
     const data = {
       name: formData.get("name"),
       email: formData.get("email"),

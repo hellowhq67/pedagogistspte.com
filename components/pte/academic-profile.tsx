@@ -37,7 +37,7 @@ export function AcademicProfile({
   const [displayTargetScore, addOptimisticTargetScore] = useOptimistic(targetScore)
   const [displayExamDate, addOptimisticExamDate] = useOptimistic(examDate)
 
-  const updateProfileAction = async (prevState, formData) => {
+  const updateProfileAction = async (prevState: any, formData: FormData) => {
     if (!user) {
       return { error: 'You must be logged in to update your profile' }
     }

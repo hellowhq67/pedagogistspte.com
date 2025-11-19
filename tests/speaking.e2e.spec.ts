@@ -37,7 +37,7 @@
  * To run:
  *   E2E_SESSION=&lt;your_cookie_value&gt; npx playwright test tests/speaking.e2e.spec.ts -g "Authenticated E2E"
  */
-import { expect, request as pwRequest, request, test } from '@playwright/test'
+import { expect, request as pwRequest, test, APIRequestContext } from '@playwright/test'
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
 

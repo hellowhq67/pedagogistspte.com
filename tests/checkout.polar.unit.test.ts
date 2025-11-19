@@ -73,7 +73,7 @@ test.describe('Webhook Processing Logic', () => {
     const { metadata } = invalidEvent.data
 
     // Should detect missing userId
-    expect(metadata?.userId).toBeUndefined()
+    expect((metadata as any)?.userId).toBeUndefined()
     expect(metadata?.tier).toBe('pro')
   })
 

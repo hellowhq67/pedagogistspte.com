@@ -89,8 +89,10 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.56.1",
     "@tailwindcss/postcss": "4.1.7",
     "@types/canvas-confetti": "^1.9.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^22.15.18",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.2.2",
