@@ -12,6 +12,7 @@ type ModelsHealthResponse = {
     OPENAI_API_KEY?: string
     GOOGLE_GENERATIVE_AI_API_KEY?: string
     VERCEL_AI_API_KEY?: string
+    AI_GATEWAY_API_KEY?: string
     PTE_SCORING_PROVIDER_PRIORITY?: string
     PTE_SCORING_TIMEOUT_MS?: string
     VERCEL_AI_OPENAI_MODEL?: string
@@ -59,6 +60,7 @@ export async function GET() {
         process.env.GOOGLE_GENERATIVE_AI_API_KEY
       ),
       VERCEL_AI_API_KEY: redactEnv(process.env.VERCEL_AI_API_KEY),
+      AI_GATEWAY_API_KEY: redactEnv(process.env.AI_GATEWAY_API_KEY),
       PTE_SCORING_PROVIDER_PRIORITY: process.env.PTE_SCORING_PROVIDER_PRIORITY,
       PTE_SCORING_TIMEOUT_MS: process.env.PTE_SCORING_TIMEOUT_MS,
       VERCEL_AI_OPENAI_MODEL: process.env.VERCEL_AI_OPENAI_MODEL,

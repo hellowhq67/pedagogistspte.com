@@ -596,6 +596,25 @@ export default function SpeakingRecorder({
 
   return (
     <div className="w-full space-y-6">
+      <div
+        className={
+          [
+            'h-1 w-full rounded-full',
+            state === 'recording'
+              ? 'bg-red-500 animate-pulse'
+              : state === 'prepping'
+              ? 'bg-yellow-500'
+              : state === 'processing'
+              ? 'bg-blue-500'
+              : state === 'finished'
+              ? 'bg-emerald-500'
+              : state === 'error' || state === 'denied' || state === 'unsupported'
+              ? 'bg-red-600'
+              : 'bg-muted'
+          ].join(' ')
+        }
+        aria-hidden="true"
+      />
       {/* Microphone Selector */}
       <div className="flex justify-center">
         <MicSelector onDeviceChange={setSelectedMicId} />
@@ -706,7 +725,11 @@ export default function SpeakingRecorder({
               {Math.ceil(prepRemainingMs / 1000)}s
             </span>
           </div>
-          <Progress value={prepProgress} aria-label="Preparation progress" />
+          <Progress
+            value={prepProgress}
+            aria-label="Preparation progress"
+            className="h-2 bg-yellow-100"
+          />
         </div>
       )}
 
@@ -718,7 +741,11 @@ export default function SpeakingRecorder({
               {Math.ceil((recordMs - recordElapsedMs) / 1000)}s
             </span>
           </div>
-          <Progress value={recordProgress} aria-label="Recording progress" />
+          <Progress
+            value={recordProgress}
+            aria-label="Recording progress"
+            className="h-2 bg-red-100"
+          />
         </div>
       )}
 

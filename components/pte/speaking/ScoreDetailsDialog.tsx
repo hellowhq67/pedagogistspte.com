@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import {
   Dialog,
@@ -35,6 +35,54 @@ export default function ScoreDetailsDialog({
   const rubric = scores?.rubric || {}
   const feedback = scores?.feedback || {}
   const audioUrl: string | undefined = attempt?.audioUrl
+  const transcript: string | undefined = attempt?.transcript
+
+  const [aiLoading, setAiLoading] = useState(false)
+  const [aiError, setAiError] = useState<string | null>(null)
+  const [aiDetails, setAiDetails] = useState<any | null>(null)
+
+  useEffect(() => {
+    if (!open || !attempt) return
+    setAiError(null)
+    setAiLoading(true)
+    ;(async () => {
+      try {
+        const res = await fetch('/api/ai-scoring/speaking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            questionType: attempt?.type,
+            payload: {
+              transcript: transcript || '',
+            },
+            includeRationale: true,
+          }),
+        })
+        if (!res.ok) {
+          const msg = (await res.json().catch(() => null))?.error || 'Failed to fetch AI details'
+          throw new Error(msg)
+        }
+        const json = await res.json()
+        setAiDetails(json?.result || null)
+      } catch (e: any) {
+        setAiError(e?.message || 'Failed to fetch AI details')
+        setAiDetails(null)
+      } finally {
+        setAiLoading(false)
+      }
+    })()
+  }, [open, attempt?.id])
+
+  const aiSubscores = useMemo(() => {
+    const s = (aiDetails?.subscores as any) || {}
+    return {
+      content: asNumber(s?.content),
+      pronunciation: asNumber(s?.pronunciation),
+      fluency: asNumber(s?.fluency),
+      grammar: asNumber(s?.grammar),
+      vocabulary: asNumber(s?.vocabulary),
+    }
+  }, [aiDetails])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -62,7 +110,7 @@ export default function ScoreDetailsDialog({
           </div>
         ) : null}
 
-        {/* Score summary - Official PTE Academic 0-5 scale */}
+        {/* Summary - 0-5 scale */}
         <div
           className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4"
           role="group"
@@ -95,6 +143,14 @@ export default function ScoreDetailsDialog({
             </div>
           </div>
         </div>
+
+        {/* Transcript */}
+        {transcript ? (
+          <div className="mt-4 space-y-2">
+            <div className="text-sm font-medium">AI Speech Recognition</div>
+            <div className="rounded-md border p-3 text-sm">{transcript}</div>
+          </div>
+        ) : null}
 
         {/* Suggestions */}
         <div className="mt-4 space-y-3">
@@ -161,6 +217,44 @@ export default function ScoreDetailsDialog({
               ) : null}
             </div>
           ) : null}
+
+          {/* AI Details (0–90 subscores + rationale) */}
+          <div className="mt-4 space-y-2">
+            <div className="text-sm font-medium">AI Details</div>
+            {aiLoading ? (
+              <div className="text-muted-foreground text-sm">Loading AI details…</div>
+            ) : aiError ? (
+              <div role="alert" className="text-sm text-red-600">{aiError}</div>
+            ) : aiDetails ? (
+              <div className="space-y-3">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+                  <div className="rounded-md border p-3">
+                    <div className="text-muted-foreground text-xs">Content</div>
+                    <div className="text-base font-semibold">{aiSubscores.content ?? '—'}</div>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <div className="text-muted-foreground text-xs">Pronunciation</div>
+                    <div className="text-base font-semibold">{aiSubscores.pronunciation ?? '—'}</div>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <div className="text-muted-foreground text-xs">Fluency</div>
+                    <div className="text-base font-semibold">{aiSubscores.fluency ?? '—'}</div>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <div className="text-muted-foreground text-xs">Grammar</div>
+                    <div className="text-base font-semibold">{aiSubscores.grammar ?? '—'}</div>
+                  </div>
+                  <div className="rounded-md border p-3">
+                    <div className="text-muted-foreground text-xs">Vocabulary</div>
+                    <div className="text-base font-semibold">{aiSubscores.vocabulary ?? '—'}</div>
+                  </div>
+                </div>
+                {aiDetails?.rationale ? (
+                  <div className="rounded-md border p-3 text-sm">{aiDetails.rationale}</div>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

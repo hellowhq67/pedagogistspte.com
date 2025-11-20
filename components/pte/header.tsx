@@ -67,15 +67,17 @@ function UserMenu() {
   )
 }
 
-export function Header({ onMenuClick }: { onMenuClick: () => void }) {
+export function Header({ onMenuClick }: { onMenuClick?: () => void }) {
   return (
     <header className="bg-background sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-      <Button
-        onClick={onMenuClick}
-        className="rounded-lg p-2 hover:bg-gray-100 lg:hidden"
-      >
-        <Menu className="h-6 w-6" />
-      </Button>
+      {onMenuClick && (
+        <Button
+          onClick={onMenuClick}
+          className="rounded-lg p-2 hover:bg-gray-100 lg:hidden"
+        >
+          <Menu className="h-6 w-6" />
+        </Button>
+      )}
       <div className="flex-1" />
       <Suspense
         fallback={

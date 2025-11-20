@@ -18,6 +18,9 @@ export default {
   dialect: 'postgresql',
   dbCredentials: {
     url: DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
   migrations: {
     // Configure migrations settings here if needed

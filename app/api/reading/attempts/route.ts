@@ -4,6 +4,8 @@ import { and, desc, eq, sql } from 'drizzle-orm'
 import { getSession } from '@/lib/auth/session'
 import { db } from '@/lib/db/drizzle'
 import { readingAttempts, readingQuestions } from '@/lib/db/schema'
+import { scoreWithOrchestrator } from '@/lib/ai/orchestrator'
+import { TestSection } from '@/lib/pte/types'
 import { ReadingAttemptBodySchema } from '../schemas'
 
 type JsonError = { error: string; code?: string }
@@ -218,11 +220,36 @@ export async function POST(request: Request) {
         return error(400, 'Unsupported question type', 'UNSUPPORTED_TYPE')
     }
 
+    // Optionally get AI rationale for non-perfect scores (to save AI credits)
+    let rationale: string | undefined
+    if (scores.accuracy < 100) {
+      try {
+        const orchestratorResult = await scoreWithOrchestrator({
+          section: TestSection.READING,
+          questionType: type,
+          payload: {
+            question: q.promptText,
+            options: q.options,
+            correct: q.answerKey,
+            userSelected: (userResponse as any).selectedOption
+              ? [(userResponse as any).selectedOption]
+              : (userResponse as any).selectedOptions || (userResponse as any).order || [],
+          },
+          includeRationale: true,
+          timeoutMs: 8000,
+        })
+        rationale = orchestratorResult.rationale
+      } catch {
+        // Rationale is optional, ignore errors
+      }
+    }
+
     // Persist attempt
     const scoresJson = {
       accuracy: scores.accuracy,
       correctAnswers: scores.correctAnswers,
       totalAnswers: scores.totalAnswers,
+      ...(rationale ? { rationale } : {}),
     }
 
     const [attempt] = await db

@@ -39,6 +39,7 @@ async function getVercelAI(): Promise<{
 } | null> {
   try {
     const apiKey =
+      process.env.AI_GATEWAY_API_KEY ||
       process.env.VERCEL_AI_API_KEY ||
       process.env.OPENAI_API_KEY ||
       process.env.GOOGLE_GENERATIVE_AI_API_KEY

@@ -1,5 +1,5 @@
 import 'server-only'
-import { generateAIFeedback } from '@/lib/pte/ai-feedback'
+import { scoreWithOrchestrator } from '@/lib/ai/orchestrator'
 import {
   QuestionType,
   TestSection,
@@ -8,9 +8,9 @@ import {
 } from '@/lib/pte/types'
 
 /**
- * Score a speaking attempt using available adapters.
+ * Score a speaking attempt using the production-grade AI orchestrator.
  * Uses official PTE Academic 0-5 scoring scale for Content, Pronunciation, and Fluency.
- * Prefers AI feedback when available; otherwise falls back to simple heuristics.
+ * Falls back to heuristics if AI scoring fails.
  */
 export async function scoreAttempt(params: {
   type: SpeakingType
@@ -21,7 +21,7 @@ export async function scoreAttempt(params: {
 }): Promise<
   SpeakingScore & { feedback?: any; meta?: Record<string, unknown> }
 > {
-  const { type, transcript = '', durationMs } = params
+  const { type, transcript = '', durationMs, question } = params
 
   const words = tokenizeWords(transcript)
   const wordCount = words.length
@@ -35,36 +35,48 @@ export async function scoreAttempt(params: {
     fillerRate,
   }
 
-  // Try AI feedback (uses OpenAI if configured; otherwise mocked)
+  // Try AI scoring via orchestrator
   try {
-    const qType = mapSpeakingToQuestionType(type)
-    const ai = await generateAIFeedback(qType, TestSection.SPEAKING, transcript)
-    meta.ai = { provider: process.env.OPENAI_API_KEY ? 'openai' : 'mock' }
+    const orchestratorResult = await scoreWithOrchestrator({
+      section: TestSection.SPEAKING,
+      questionType: type,
+      payload: {
+        transcript,
+        referenceText: question?.promptText || undefined,
+        audioUrl: params.audioUrl,
+      },
+      includeRationale: true,
+      timeoutMs: 10000,
+    })
 
-    // Map AI feedback to official PTE 0-5 scale
-    // AI returns 0-90, so we need to convert to 0-5
+    // Extract provider metadata
+    const providerMeta = orchestratorResult.metadata?.providers?.[0]
+    meta.ai = {
+      provider: providerMeta?.provider || 'orchestrator',
+      latencyMs: providerMeta?.latencyMs,
+    }
+
+    // Convert orchestrator subscores (0-90) to PTE 0-5 scale
     const pronunciation = clamp0to5(
-      convertTo5Scale(ai.pronunciation?.score ?? roughPronunciation(wordsPerMinute, fillerRate))
+      convertTo5Scale(orchestratorResult.subscores?.pronunciation ?? roughPronunciation(wordsPerMinute, fillerRate))
     )
     const fluency = clamp0to5(
-      convertTo5Scale(ai.fluency?.score ?? roughFluency(wordsPerMinute, fillerRate))
+      convertTo5Scale(orchestratorResult.subscores?.fluency ?? roughFluency(wordsPerMinute, fillerRate))
     )
     const content = clamp0to5(
-      convertTo5Scale(ai.content?.score ?? roughContent(wordCount, durationMs, type))
+      convertTo5Scale(orchestratorResult.subscores?.content ?? roughContent(wordCount, durationMs, type))
     )
 
-    // Calculate total score (aggregate enabling skills score 0-90)
-    // Based on PTE Academic scoring: each criteria contributes proportionally
-    const total = calculateTotalScore(content, pronunciation, fluency)
+    // Use orchestrator overall score or calculate from subscores
+    const total = orchestratorResult.overall || calculateTotalScore(content, pronunciation, fluency)
 
     const rubric = {
-      contentNotes: ai.content?.feedback,
-      fluencyNotes: ai.fluency?.feedback,
-      pronunciationNotes: ai.pronunciation?.feedback,
+      contentNotes: orchestratorResult.rationale || 'AI scoring completed',
+      fluencyNotes: `Fluency score: ${fluency}/5`,
+      pronunciationNotes: `Pronunciation score: ${pronunciation}/5`,
       details: {
-        suggestions: ai.suggestions,
-        strengths: ai.strengths,
-        areasForImprovement: ai.areasForImprovement,
+        provider: providerMeta?.provider,
+        rationale: orchestratorResult.rationale,
       },
     }
 
@@ -74,12 +86,15 @@ export async function scoreAttempt(params: {
       fluency,
       total,
       rubric,
-      feedback: ai,
+      feedback: {
+        rationale: orchestratorResult.rationale,
+        subscores: orchestratorResult.subscores,
+      },
       meta,
     }
   } catch (err) {
     // Fall back to heuristics
-    meta.aiError = err instanceof Error ? err.message : 'ai_feedback_failed'
+    meta.aiError = err instanceof Error ? err.message : 'orchestrator_failed'
 
     const pronunciation = clamp0to5(
       convertTo5Scale(roughPronunciation(wordsPerMinute, fillerRate))
@@ -106,28 +121,6 @@ export async function scoreAttempt(params: {
 }
 
 /** Helpers **/
-
-function mapSpeakingToQuestionType(t: SpeakingType): QuestionType {
-  switch (t) {
-    case 'read_aloud':
-      return QuestionType.READ_ALOUD
-    case 'repeat_sentence':
-      return QuestionType.REPEAT_SENTENCE
-    case 'describe_image':
-      return QuestionType.DESCRIBE_IMAGE
-    case 'retell_lecture':
-      return QuestionType.RE_TELL_LECTURE
-    case 'answer_short_question':
-      return QuestionType.ANSWER_SHORT_QUESTION
-    // Not present in QuestionType enum; map to closest for feedback prompts
-    case 'summarize_group_discussion':
-      return QuestionType.RE_TELL_LECTURE
-    case 'respond_to_a_situation':
-      return QuestionType.REPEAT_SENTENCE
-    default:
-      return QuestionType.READ_ALOUD
-  }
-}
 
 function tokenizeWords(text: string): string[] {
   if (!text) return []

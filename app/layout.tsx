@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Manrope } from 'next/font/google'
 import { Suspense } from 'react'
 import { NonceWrapper } from '@/components/nonce-wrapper'
+import { Toaster } from '@/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'PTE Learning LMS',
@@ -37,6 +38,7 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <NonceWrapper>
             {children}
+            <Toaster />
           </NonceWrapper>
         </Suspense>
       </body>

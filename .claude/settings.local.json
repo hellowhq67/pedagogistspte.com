@@ -18,7 +18,13 @@
       "Bash(git push:*)",
       "Bash(find:*)",
       "Bash(npx tsx scripts/export-to-strapi-json.ts:*)",
-      "Bash(pnpm tsx:*)"
+      "Bash(pnpm tsx:*)",
+      "Bash(railway variables:*)",
+      "Bash(findstr:*)",
+      "Bash(railway status:*)",
+      "Bash(node get-railway-vars.js:*)",
+      "Bash(node get-db-vars.js:*)",
+      "Bash(node test-db-connection.js:*)"
     ],
     "deny": [],
     "ask": []

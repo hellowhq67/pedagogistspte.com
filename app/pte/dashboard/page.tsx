@@ -53,6 +53,18 @@ const ExamDateScheduler = dynamic(
   }
 )
 
+const LiveCountdown = dynamic(
+  () =>
+    import('@/components/pte/dashboard/live-countdown').then(
+      (mod) => mod.LiveCountdown
+    ),
+  {
+    loading: () => (
+      <div className="h-64 animate-pulse rounded-lg bg-gray-200" />
+    ),
+  }
+)
+
 const PracticeProgressWidget = dynamic(
   () =>
     import('@/components/pte/dashboard/practice-progress-widget').then(
@@ -111,18 +123,18 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8 p-4 md:p-6">
       {/* Welcome Banner */}
-      <Card className="overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800 text-white">
+      <Card className="border border-gray-200 bg-white">
         <div className="flex flex-col items-center justify-between p-6 md:flex-row">
           <div className="mb-4 md:mb-0">
-            <h2 className="text-2xl font-bold">
-              Welcome to your PTE Practice Hub
+            <h2 className="text-2xl font-bold text-gray-900">
+              Welcome to Pedagogist's PTE Practice Hub
             </h2>
-            <p className="text-gray-300">
+            <p className="text-gray-600">
               Get full access to all features and tools to help you prepare for
               the PTE exam.
             </p>
           </div>
-          <Button variant="secondary" size="lg">
+          <Button variant="default" size="lg">
             Get VIP Now
           </Button>
         </div>
@@ -141,11 +153,11 @@ export default function DashboardPage() {
         {/* Left Column */}
         <div className="space-y-6 lg:col-span-2">
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <Card className="transition-shadow hover:shadow-lg">
+            <Card className="border border-gray-200 transition-shadow hover:shadow-md">
               <CardHeader>
-                <IconBook className="mb-2 h-8 w-8 text-blue-500" />
-                <CardTitle>PTE Practice</CardTitle>
-                <CardDescription>5000+ Questions</CardDescription>
+                <IconBook className="mb-2 h-6 w-6 text-gray-700" />
+                <CardTitle className="text-gray-900">PTE Practice</CardTitle>
+                <CardDescription className="text-gray-600">5000+ Questions</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
@@ -153,11 +165,11 @@ export default function DashboardPage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="transition-shadow hover:shadow-lg">
+            <Card className="border border-gray-200 transition-shadow hover:shadow-md">
               <CardHeader>
-                <IconFileCheck className="mb-2 h-8 w-8 text-green-500" />
-                <CardTitle>Mock Tests</CardTitle>
-                <CardDescription>200+ Tests</CardDescription>
+                <IconFileCheck className="mb-2 h-6 w-6 text-gray-700" />
+                <CardTitle className="text-gray-900">Mock Tests</CardTitle>
+                <CardDescription className="text-gray-600">200+ Tests</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
@@ -165,11 +177,11 @@ export default function DashboardPage() {
                 </p>
               </CardContent>
             </Card>
-            <Card className="transition-shadow hover:shadow-lg">
+            <Card className="border border-gray-200 transition-shadow hover:shadow-md">
               <CardHeader>
-                <IconTemplate className="mb-2 h-8 w-8 text-purple-500" />
-                <CardTitle>Templates</CardTitle>
-                <CardDescription>20+ Templates</CardDescription>
+                <IconTemplate className="mb-2 h-6 w-6 text-gray-700" />
+                <CardTitle className="text-gray-900">Templates</CardTitle>
+                <CardDescription className="text-gray-600">20+ Templates</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
@@ -179,11 +191,11 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          <Card className="border-2 border-dashed border-yellow-400 bg-yellow-50">
+          <Card className="border border-blue-200 bg-blue-50/30">
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
-                <CardTitle className="flex items-center gap-2">
-                  <IconStar className="h-6 w-6 text-yellow-500" />
+                <CardTitle className="flex items-center gap-2 text-gray-900">
+                  <IconStar className="h-5 w-5 text-blue-600" />
                   Take free Mock Test with AI scoring
                 </CardTitle>
               </div>
@@ -194,15 +206,15 @@ export default function DashboardPage() {
             <CardContent>
               <ul className="space-y-2 text-sm text-gray-700">
                 <li className="flex items-center gap-2">
-                  <IconCheck className="h-4 w-4 text-green-500" /> AI score +
+                  <IconCheck className="h-4 w-4 text-blue-600" /> AI score +
                   personalized feedback
                 </li>
                 <li className="flex items-center gap-2">
-                  <IconCheck className="h-4 w-4 text-green-500" /> Total 19-21
+                  <IconCheck className="h-4 w-4 text-blue-600" /> Total 19-21
                   questions
                 </li>
                 <li className="flex items-center gap-2">
-                  <IconCheck className="h-4 w-4 text-green-500" /> Estimated
+                  <IconCheck className="h-4 w-4 text-blue-600" /> Estimated
                   time 30+ minutes
                 </li>
               </ul>
@@ -257,20 +269,20 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Study Tools</CardTitle>
+              <CardTitle className="text-gray-900">Study Tools</CardTitle>
             </CardHeader>
             <CardContent className="grid grid-cols-3 gap-4">
               <div className="text-center">
-                <IconVocabulary className="mx-auto mb-2 h-8 w-8 text-blue-500" />
-                <p className="text-sm font-medium">Vocab Books</p>
+                <IconVocabulary className="mx-auto mb-2 h-6 w-6 text-gray-700" />
+                <p className="text-sm font-medium text-gray-900">Vocab Books</p>
               </div>
               <div className="text-center">
-                <IconWaveSine className="mx-auto mb-2 h-8 w-8 text-green-500" />
-                <p className="text-sm font-medium">Shadowing</p>
+                <IconWaveSine className="mx-auto mb-2 h-6 w-6 text-gray-700" />
+                <p className="text-sm font-medium text-gray-900">Shadowing</p>
               </div>
               <div className="text-center">
-                <IconEar className="mx-auto mb-2 h-8 w-8 text-purple-500" />
-                <p className="text-sm font-medium">OnePTE MP3</p>
+                <IconEar className="mx-auto mb-2 h-6 w-6 text-gray-700" />
+                <p className="text-sm font-medium text-gray-900">OnePTE MP3</p>
               </div>
             </CardContent>
           </Card>

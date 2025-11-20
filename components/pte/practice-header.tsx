@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { ExamCountdownMini } from '@/components/pte/practice/exam-countdown-mini'
 
 interface AcademicPracticeHeaderProps {
   section?: string
@@ -75,13 +76,16 @@ export function AcademicPracticeHeader({
 
         {/* Header Content */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-              {section
-                ? `${formatSectionName(section)} Practice`
-                : 'PTE Academic Practice'}
-            </h1>
-            <Badge variant="secondary">AI-Powered</Badge>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center space-x-4">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                {section
+                  ? `${formatSectionName(section)} Practice`
+                  : 'PTE Academic Practice'}
+              </h1>
+              <Badge variant="secondary">AI-Powered</Badge>
+            </div>
+            <ExamCountdownMini />
           </div>
 
           {/* Filters */}

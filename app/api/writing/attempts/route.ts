@@ -4,6 +4,8 @@ import { and, desc, eq, sql } from 'drizzle-orm'
 import { getSession } from '@/lib/auth/session'
 import { db } from '@/lib/db/drizzle'
 import { writingAttempts, writingQuestions } from '@/lib/db/schema'
+import { scoreWithOrchestrator } from '@/lib/ai/orchestrator'
+import { TestSection } from '@/lib/pte/types'
 import {
   basicLengthValidation,
   countWords,
@@ -149,15 +151,15 @@ export async function POST(request: Request) {
       return error(400, 'Question is not active', 'INACTIVE_QUESTION')
     }
 
-    // Compute basic metrics and scoring
+    // Compute basic metrics
     const wc = countWords(textAnswer)
     const lengthCheck = basicLengthValidation(type, textAnswer)
     const sc = sentenceCountOf(textAnswer)
     const uwr = uniqueWordRatio(textAnswer)
     const charCount = String(textAnswer || '').length
 
-    // Prepare for future AI scoring integration
-    const scoresJson: Record<string, unknown> = {
+    // Use AI orchestrator for scoring
+    let scoresJson: Record<string, unknown> = {
       wordCount: wc,
       sentenceCount: sc,
       length: {
@@ -169,15 +171,52 @@ export async function POST(request: Request) {
         uniqueWordRatio: Number(uwr.toFixed(3)),
         charCount,
       },
-      // Placeholder enabling skills to be populated by AI later
-      grammar: null,
-      vocabulary: null,
-      coherence: null,
-      taskResponse: lengthCheck.withinRange ? 1 : 0, // simplistic placeholder
     }
 
-    const total = computeTotalScore(type, wc, lengthCheck.withinRange)
-    ;(scoresJson as any).total = total
+    let total = 0
+
+    try {
+      // Get question for prompt context
+      const orchestratorResult = await scoreWithOrchestrator({
+        section: TestSection.WRITING,
+        questionType: type,
+        payload: {
+          text: textAnswer,
+          prompt: q.promptText || q.title,
+        },
+        includeRationale: true,
+        timeoutMs: 15000, // Writing may need more time
+      })
+
+      // Extract AI scores
+      total = orchestratorResult.overall || 0
+      const providerMeta = orchestratorResult.metadata?.providers?.[0]
+
+      scoresJson = {
+        ...scoresJson,
+        // AI-powered subscores (0-90 scale)
+        grammar: orchestratorResult.subscores?.grammar || null,
+        vocabulary: orchestratorResult.subscores?.vocabulary || null,
+        coherence: orchestratorResult.subscores?.coherence || null,
+        content: orchestratorResult.subscores?.content || null,
+        taskResponse: lengthCheck.withinRange ? 1 : 0,
+        total,
+        rationale: orchestratorResult.rationale,
+        provider: {
+          name: providerMeta?.provider,
+          latencyMs: providerMeta?.latencyMs,
+        },
+      }
+    } catch (err) {
+      // Fallback to heuristic scoring
+      total = computeTotalScore(type, wc, lengthCheck.withinRange)
+      scoresJson.total = total
+      scoresJson.grammar = null
+      scoresJson.vocabulary = null
+      scoresJson.coherence = null
+      scoresJson.taskResponse = lengthCheck.withinRange ? 1 : 0
+      scoresJson.error = err instanceof Error ? err.message : 'orchestrator_failed'
+    }
 
     // Persist attempt
     const [attempt] = await db
