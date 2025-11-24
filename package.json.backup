@@ -39,11 +39,7 @@
     "deploy:railway": "pnpm deploy:check && railway up",
     "postbuild": "echo '✅ Build completed successfully!'",
     "vm:setup": "echo 'Setting up for VM development...' && pnpm install:vm && echo 'VM setup complete!'",
-    "vm:dev": "pnpm fresh:vm",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:ci": "jest --ci --coverage --maxWorkers=2"
+    "vm:dev": "pnpm fresh:vm"
   },
   "dependencies": {
     "@ai-sdk/google": "^2.0.38",
