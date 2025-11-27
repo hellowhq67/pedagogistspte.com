@@ -1,11 +1,10 @@
-import { NextResponse } from 'next/server'
 import { validateTimingFromRequest } from '@/app/api/attempts/session/utils'
-import { and, desc, eq, sql } from 'drizzle-orm'
 import { getSession } from '@/lib/auth/session'
 import { db } from '@/lib/db/drizzle'
 import { writingAttempts, writingQuestions } from '@/lib/db/schema'
-import { scoreWithOrchestrator } from '@/lib/ai/orchestrator'
-import { TestSection } from '@/lib/pte/types'
+import { and, desc, eq, sql } from 'drizzle-orm'
+import { NextResponse } from 'next/server'
+
 import {
   basicLengthValidation,
   countWords,
@@ -175,49 +174,6 @@ export async function POST(request: Request) {
 
     let total = 0
 
-    try {
-      // Get question for prompt context
-      const orchestratorResult = await scoreWithOrchestrator({
-        section: TestSection.WRITING,
-        questionType: type,
-        payload: {
-          text: textAnswer,
-          prompt: q.promptText || q.title,
-        },
-        includeRationale: true,
-        timeoutMs: 15000, // Writing may need more time
-      })
-
-      // Extract AI scores
-      total = orchestratorResult.overall || 0
-      const providerMeta = orchestratorResult.metadata?.providers?.[0]
-
-      scoresJson = {
-        ...scoresJson,
-        // AI-powered subscores (0-90 scale)
-        grammar: orchestratorResult.subscores?.grammar || null,
-        vocabulary: orchestratorResult.subscores?.vocabulary || null,
-        coherence: orchestratorResult.subscores?.coherence || null,
-        content: orchestratorResult.subscores?.content || null,
-        taskResponse: lengthCheck.withinRange ? 1 : 0,
-        total,
-        rationale: orchestratorResult.rationale,
-        provider: {
-          name: providerMeta?.provider,
-          latencyMs: providerMeta?.latencyMs,
-        },
-      }
-    } catch (err) {
-      // Fallback to heuristic scoring
-      total = computeTotalScore(type, wc, lengthCheck.withinRange)
-      scoresJson.total = total
-      scoresJson.grammar = null
-      scoresJson.vocabulary = null
-      scoresJson.coherence = null
-      scoresJson.taskResponse = lengthCheck.withinRange ? 1 : 0
-      scoresJson.error = err instanceof Error ? err.message : 'orchestrator_failed'
-    }
-
     // Persist attempt
     const [attempt] = await db
       .insert(writingAttempts)
@@ -226,6 +182,13 @@ export async function POST(request: Request) {
         questionId,
         userResponse: textAnswer,
         scores: scoresJson as any,
+        // Extracted score columns for efficient querying
+        overallScore: total || null,
+        grammarScore: (scoresJson.grammar as number) || null,
+        vocabularyScore: (scoresJson.vocabulary as number) || null,
+        coherenceScore: (scoresJson.coherence as number) || null,
+        contentScore: (scoresJson.content as number) || null,
+        wordCount: wc,
         timeTaken: timeTaken ?? null,
       })
       .returning()

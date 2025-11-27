@@ -1,14 +1,12 @@
-import { Suspense } from 'react'
 import { PracticeAttemptsClient } from '@/components/pte/practice-attempts/practice-attempts-client'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+  CardHeader
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Suspense } from 'react'
 
 export const metadata = {
   title: 'Practice Attempts - PTE Academic',

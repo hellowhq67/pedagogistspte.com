@@ -1,20 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-async function searchBlog(query: string) {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/strapi/blog?search=${encodeURIComponent(query)}&page=1&pageSize=8`)
-    const data = await res.json()
-    const posts = Array.isArray(data?.data) ? data.data : []
-    return posts.map((p: any) => ({
-      title: p.attributes?.title || p.title,
-      url: `/blog/${p.attributes?.slug || p.slug || ''}`,
-      source: 'blog',
-    }))
-  } catch {
-    return []
-  }
-}
-
 async function searchMXBAI(query: string) {
   const key = process.env.MXBAI_API_KEY
   const store = process.env.MXBAI_STORE_ID
@@ -43,6 +28,6 @@ async function searchMXBAI(query: string) {
 export async function GET(request: NextRequest) {
   const q = request.nextUrl.searchParams.get('query') || ''
   if (!q.trim()) return NextResponse.json({ results: [] })
-  const [blog, ai] = await Promise.all([searchBlog(q), searchMXBAI(q)])
-  return NextResponse.json({ results: [...ai, ...blog] })
+  const ai = await searchMXBAI(q)
+  return NextResponse.json({ results: ai })
 }

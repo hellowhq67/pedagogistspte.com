@@ -381,19 +381,31 @@ export const teamMembers = pgTable('team_members', {
 })
 
 // Activity Logs table
-export const activityLogs = pgTable('activity_logs', {
-  id: uuid('id')
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  action: text('action').notNull(),
-  ipAddress: text('ip_address'),
-  userAgent: text('user_agent'),
-  metadata: jsonb('metadata'),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-})
+export const activityLogs = pgTable(
+  'activity_logs',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    action: text('action').notNull(),
+    ipAddress: text('ip_address'),
+    userAgent: text('user_agent'),
+    metadata: jsonb('metadata'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    // NEW: Composite index for user activity history
+    idxUserCreated: index('idx_activity_logs_user_created').on(
+      table.userId,
+      table.createdAt.desc()
+    ),
+    // NEW: For action-based analytics
+    idxAction: index('idx_activity_logs_action').on(table.action),
+  })
+)
 
 /**
  * Media linked to questions (audio, image, video)
@@ -481,6 +493,11 @@ export const speakingQuestions = pgTable(
       table.tags
     ),
     idxExternalId: index('idx_speaking_questions_external_id').on(table.externalId),
+    // NEW: Partial index for active questions only (most common query)
+    idxActiveTypePartial: index('idx_speaking_questions_active_type').on(
+      table.type,
+      table.difficulty
+    ).where(sql`${table.isActive} = true`),
   })
 )
 
@@ -502,6 +519,11 @@ export const speakingAttempts = pgTable(
     scores: jsonb('scores')
       .notNull()
       .default(sql`'{}'::jsonb`),
+    // Extracted score columns for efficient querying
+    overallScore: integer('overall_score'),
+    pronunciationScore: integer('pronunciation_score'),
+    fluencyScore: integer('fluency_score'),
+    contentScore: integer('content_score'),
     durationMs: integer('duration_ms').notNull(),
     wordsPerMinute: decimal('words_per_minute', { precision: 6, scale: 2 }),
     fillerRate: decimal('filler_rate', { precision: 6, scale: 3 }),
@@ -516,6 +538,26 @@ export const speakingAttempts = pgTable(
       table.type
     ),
     idxPublic: index('idx_speaking_attempts_public').on(table.isPublic),
+    // NEW: Composite index for date-range queries
+    idxUserCreated: index('idx_speaking_attempts_user_created').on(
+      table.userId,
+      table.createdAt.desc()
+    ),
+    // NEW: For leaderboard/public answers
+    idxPublicScores: index('idx_speaking_attempts_public_scores').on(
+      table.isPublic,
+      table.questionId,
+      table.createdAt.desc()
+    ),
+    // NEW: For analytics and leaderboards
+    idxOverallScore: index('idx_speaking_attempts_overall_score').on(
+      table.overallScore.desc()
+    ),
+    // NEW: For weak area identification
+    idxUserScores: index('idx_speaking_attempts_user_scores').on(
+      table.userId,
+      table.overallScore.desc()
+    ),
   })
 )
 
@@ -559,6 +601,10 @@ export const readingAttempts = pgTable(
       .references(() => readingQuestions.id, { onDelete: 'cascade' }),
     userResponse: jsonb('user_response').notNull(), // Store answers, selections, etc.
     scores: jsonb('scores'), // { accuracy: number, correctAnswers: number, totalAnswers: number }
+    // Extracted score columns for efficient querying
+    accuracy: decimal('accuracy', { precision: 5, scale: 2 }), // Percentage 0-100
+    correctAnswers: integer('correct_answers'),
+    totalAnswers: integer('total_answers'),
     timeTaken: integer('time_taken'), // in seconds
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -569,6 +615,15 @@ export const readingAttempts = pgTable(
       table.questionId
     ),
     createdAtIdx: index('reading_attempts_created_at_idx').on(table.createdAt),
+    // NEW: Composite index for user history queries
+    idxUserCreated: index('idx_reading_attempts_user_created').on(
+      table.userId,
+      table.createdAt.desc()
+    ),
+    // NEW: For analytics and leaderboards
+    idxAccuracy: index('idx_reading_attempts_accuracy').on(
+      table.accuracy.desc()
+    ),
   })
 )
 
@@ -592,6 +647,11 @@ export const readingQuestions = pgTable(
   (table) => ({
     idxType: index('idx_reading_questions_type').on(table.type),
     idxActive: index('idx_reading_questions_is_active').on(table.isActive),
+    // NEW: Partial index for active questions only (most common query)
+    idxActiveTypePartial: index('idx_reading_questions_active_type').on(
+      table.type,
+      table.difficulty
+    ).where(sql`${table.isActive} = true`),
   })
 )
 
@@ -615,6 +675,11 @@ export const writingQuestions = pgTable(
   (table) => ({
     idxType: index('idx_writing_questions_type').on(table.type),
     idxActive: index('idx_writing_questions_is_active').on(table.isActive),
+    // NEW: Partial index for active questions only (most common query)
+    idxActiveTypePartial: index('idx_writing_questions_active_type').on(
+      table.type,
+      table.difficulty
+    ).where(sql`${table.isActive} = true`),
   })
 )
 
@@ -632,6 +697,13 @@ export const writingAttempts = pgTable(
       .references(() => writingQuestions.id, { onDelete: 'cascade' }),
     userResponse: text('user_response').notNull(), // Store essay/summary text
     scores: jsonb('scores'), // { grammar, vocabulary, coherence, taskResponse, wordCount, etc. }
+    // Extracted score columns for efficient querying
+    overallScore: integer('overall_score'),
+    grammarScore: integer('grammar_score'),
+    vocabularyScore: integer('vocabulary_score'),
+    coherenceScore: integer('coherence_score'),
+    contentScore: integer('content_score'),
+    wordCount: integer('word_count'),
     timeTaken: integer('time_taken'), // in seconds
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -642,6 +714,15 @@ export const writingAttempts = pgTable(
       table.questionId
     ),
     createdAtIdx: index('writing_attempts_created_at_idx').on(table.createdAt),
+    // NEW: Composite index for user history queries
+    idxUserCreated: index('idx_writing_attempts_user_created').on(
+      table.userId,
+      table.createdAt.desc()
+    ),
+    // NEW: For analytics and leaderboards
+    idxOverallScore: index('idx_writing_attempts_overall_score').on(
+      table.overallScore.desc()
+    ),
   })
 )
 
@@ -691,6 +772,13 @@ export const listeningQuestions = pgTable(
     createdAtIdx: index('listening_questions_created_at_idx').on(
       table.createdAt
     ),
+    // NEW: Index for active status
+    idxActive: index('idx_listening_questions_is_active').on(table.isActive),
+    // NEW: Partial index for active questions only (most common query)
+    idxActiveTypePartial: index('idx_listening_questions_active_type').on(
+      table.type,
+      table.difficulty
+    ).where(sql`${table.isActive} = true`),
   })
 )
 
@@ -708,6 +796,10 @@ export const listeningAttempts = pgTable(
       .references(() => listeningQuestions.id, { onDelete: 'cascade' }),
     userResponse: jsonb('user_response').notNull(),
     scores: jsonb('scores'),
+    // Extracted score columns for efficient querying
+    accuracy: decimal('accuracy', { precision: 5, scale: 2 }), // Percentage 0-100
+    correctAnswers: integer('correct_answers'),
+    totalAnswers: integer('total_answers'),
     timeTaken: integer('time_taken'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -719,6 +811,15 @@ export const listeningAttempts = pgTable(
     ),
     createdAtIdx: index('listening_attempts_created_at_idx').on(
       table.createdAt
+    ),
+    // NEW: Composite index for user history queries
+    idxUserCreated: index('idx_listening_attempts_user_created').on(
+      table.userId,
+      table.createdAt.desc()
+    ),
+    // NEW: For analytics and leaderboards
+    idxAccuracy: index('idx_listening_attempts_accuracy').on(
+      table.accuracy.desc()
     ),
   })
 )
@@ -949,6 +1050,16 @@ export const aiCreditUsage = pgTable(
     createdAtIdx: index('idx_ai_usage_created_at').on(table.createdAt),
     sessionIdIdx: index('idx_ai_usage_session_id').on(table.sessionId),
     attemptIdIdx: index('idx_ai_usage_attempt_id').on(table.attemptId),
+    // NEW: Composite index for cost tracking by user and date
+    idxUserCreated: index('idx_ai_usage_user_created').on(
+      table.userId,
+      table.createdAt.desc()
+    ),
+    // NEW: For provider cost analysis
+    idxProviderCreated: index('idx_ai_usage_provider_created').on(
+      table.provider,
+      table.createdAt.desc()
+    ),
   })
 )
 

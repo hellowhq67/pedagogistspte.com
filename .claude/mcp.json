@@ -1,8 +1,82 @@
 {
   "mcpServers": {
-    "shadcn": {
+    "context7": {
       "command": "npx",
-      "args": ["shadcn@latest", "mcp"]
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {
+        "DEFAULT_MINIMUM_TOKENS": ""
+      }
+    },
+    "sequentialthinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-puppeteer"
+      ]
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "time": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-time"
+      ]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://postgres:ijkvNvkfLdlDbQSlqjILYxueUGssVHje@maglev.proxy.rlwy.net:55008/railway"
+      ]
+    },
+    "codegen": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/codegen-sh/codegen-sdk.git#egg=codegen-mcp-server&subdirectory=codegen-examples/examples/codegen-mcp-server",
+        "codegen-mcp-server"
+      ]
+    },
+    "genkit": {
+      "command": "npm",
+      "args": [
+        "install",
+        "@genkit-ai/mcp"
+      ]
+    },
+    "figma-dev-mode": {
+      "type": "sse",
+      "url": "http://127.0.0.1:3845/sse"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@0.0.38"
+      ]
+    },
+    "n8n-mcp": {
+      "command": "npx",
+      "args": [
+        "shadcn@latest",
+        "mcp"
+      ]
     }
   }
 }

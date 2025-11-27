@@ -158,6 +158,11 @@ export async function POST(request: Request) {
         audioUrl,
         transcript,
         scores: scoresJson as any,
+        // Extracted score columns for efficient querying
+        overallScore: scored.total || null,
+        pronunciationScore: scored.pronunciation || null,
+        fluencyScore: scored.fluency || null,
+        contentScore: scored.content || null,
         durationMs,
         wordsPerMinute: wpm.toString(),
         fillerRate: fillerRate.toString(),

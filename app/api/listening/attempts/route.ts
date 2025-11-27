@@ -336,6 +336,10 @@ export async function POST(request: Request) {
         questionId,
         userResponse: userResponse as any,
         scores: scores as any,
+        // Extracted score columns for efficient querying
+        accuracy: scores.accuracy?.toString() || null,
+        correctAnswers: scores.correctAnswers || scores.correctWords || null,
+        totalAnswers: scores.totalAnswers || scores.totalWords || null,
         timeTaken: timeTaken ?? null,
       })
       .returning()

@@ -78,6 +78,13 @@
       "when": 1763850222930,
       "tag": "0010_wealthy_mimic",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1764048214360,
+      "tag": "0011_jazzy_wolfpack",
+      "breakpoints": true
     }
   ]
 }

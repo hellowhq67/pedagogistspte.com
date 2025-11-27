@@ -1,22 +1,22 @@
 'use client'
 
-import { useEffect, useMemo, useState, useTransition, useDeferredValue } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
-import {
-    Award,
-    BarChart3,
-    BookOpen,
-    FileText,
-    Headphones,
-    Mic,
-} from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { pteScoreBreakdown } from '@/lib/pte/score-breakdown'
+import {
+  Award,
+  BarChart3,
+  BookOpen,
+  FileText,
+  Headphones,
+  Mic,
+} from 'lucide-react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useDeferredValue, useMemo, useState, useTransition } from 'react'
 
 type SectionKey = 'speaking' | 'writing' | 'reading' | 'listening'
 
@@ -45,21 +45,14 @@ const speakingCodeToPath: Record<string, string> = {
     s_summarize_group_discussion: 'summarize-group-discussion',
 }
 
-export function PracticeDashboard() {
+export function PracticeDashboard({ categories }: { categories: any[] }) {
     const [activeSection, setActiveSection] = useState<SectionKey>('speaking')
-    const [allCategories, setAllCategories] = useState<any[]>([])
     const [searchTerm, setSearchTerm] = useState('')
     const [isPending, startTransition] = useTransition()
     const deferredSearchTerm = useDeferredValue(searchTerm)
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            const res = await fetch('/api/pte/categories')
-            const data = await res.json()
-            setAllCategories(data)
-        }
-        fetchCategories()
-    }, [])
+    // Use passed categories instead of fetching
+    const allCategories = categories
 
     const items = useMemo(() => {
         const id = SECTION_META[activeSection].id

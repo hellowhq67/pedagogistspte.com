@@ -259,6 +259,10 @@ export async function POST(request: Request) {
         questionId,
         userResponse,
         scores: scoresJson as any,
+        // Extracted score columns for efficient querying
+        accuracy: scores.accuracy.toString(),
+        correctAnswers: scores.correctAnswers,
+        totalAnswers: scores.totalAnswers,
         timeTaken,
       })
       .returning()

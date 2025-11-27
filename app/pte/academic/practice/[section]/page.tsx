@@ -1,10 +1,24 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { AcademicPracticeHeader } from '@/components/pte/practice-header'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { db } from '@/lib/db'
+import { pteCategories } from '@/lib/db/schema'
 import { initialCategories } from '@/lib/pte/data'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+
+async function getCategories() {
+  try {
+    const categories = await db.select().from(pteCategories)
+    if (categories.length > 0) {
+      return categories
+    }
+    return initialCategories
+  } catch (error) {
+    console.error('Failed to fetch categories from DB, using fallback:', error)
+    return initialCategories
+  }
+}
 
 type SectionKey = 'speaking' | 'writing' | 'reading' | 'listening'
 
@@ -25,9 +39,10 @@ export default async function SectionLandingPage(props: {
     notFound()
   }
 
+  const categories = await getCategories()
   const parentId = SECTION_META[sectionParam].id
 
-  const items = initialCategories.filter((c) => c.parent === parentId)
+  const items = categories.filter((c) => c.parent === parentId)
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -36,23 +51,34 @@ export default async function SectionLandingPage(props: {
 
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
           {items.map((q) => {
-            const href =
-              sectionParam === 'speaking' && q.code === 's_read_aloud'
-                ? '/pte/academic/practice/speaking/read-aloud'
-                : `/pte/academic/practice/${sectionParam}/${q.code}`
+            let href = `/pte/academic/practice/${sectionParam}/${q.code}`
+
+            // Special routes for dedicated pages
+            if (sectionParam === 'speaking' && q.code === 's_read_aloud') {
+              href = '/pte/academic/practice/speaking/read-aloud'
+            } else if (sectionParam === 'writing' && q.code === 'w_summarize_text') {
+              href = '/pte/academic/practice/writing/summarize-written-text'
+            } else if (sectionParam === 'writing' && q.code === 'w_essay') {
+              href = '/pte/academic/practice/writing/write-essay'
+            } else if (sectionParam === 'reading' && q.code === 'rw_fib') {
+              href = '/pte/academic/practice/reading/reading-writing-fill-blanks'
+            } else if (sectionParam === 'reading' && q.code === 'r_mcq_multiple') {
+              href = '/pte/academic/practice/reading/multiple-choice-multiple'
+            } else if (sectionParam === 'reading' && q.code === 'r_reorder_paragraphs') {
+              href = '/pte/academic/practice/reading/reorder-paragraphs'
+            } else if (sectionParam === 'reading' && q.code === 'r_fib') {
+              href = '/pte/academic/practice/reading/fill-in-blanks'
+            } else if (sectionParam === 'reading' && q.code === 'r_mcq_single') {
+              href = '/pte/academic/practice/reading/multiple-choice-single'
+            }
+
             return (
               <Link key={q.id} href={href} className="block">
                 <Card className="cursor-pointer transition-shadow hover:shadow-lg dark:border-gray-800 dark:bg-gray-900">
                   <CardContent className="p-5">
                     <div className="flex items-start gap-4">
                       <div className="shrink-0 rounded-lg bg-gray-50 p-2 dark:bg-gray-800">
-                        <Image
-                          src={q.icon}
-                          alt={q.title}
-                          width={40}
-                          height={40}
-                          className="rounded-md"
-                        />
+
                       </div>
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center gap-2">

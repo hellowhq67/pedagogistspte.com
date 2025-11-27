@@ -32,7 +32,11 @@
       "Bash(pnpm run clean:all:*)",
       "Bash(nul)",
       "Bash(powershell -ExecutionPolicy Bypass -File cleanup.ps1)",
-      "Bash(dir node_modules* /B 2)"
+      "Bash(dir node_modules* /B 2)",
+      "Bash(curl:*)",
+      "Bash(dir /B appblog 2)",
+      "Bash(npm cache clean:*)",
+      "Bash(del nul)"
     ],
     "deny": [],
     "ask": []

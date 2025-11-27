@@ -1,7 +1,7 @@
-import { NextResponse } from 'next/server'
-import { and, asc, desc, eq, sql } from 'drizzle-orm'
 import { db } from '@/lib/db/drizzle'
 import { writingQuestions } from '@/lib/db/schema'
+import { and, asc, desc, eq, sql } from 'drizzle-orm'
+import { NextResponse } from 'next/server'
 import { WritingIdParamsSchema } from '../../schemas'
 
 type JsonError = { error: string; code?: string }
