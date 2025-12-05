@@ -38,7 +38,9 @@
       "Bash(npm cache clean:*)",
       "Bash(del nul)",
       "Bash(dir:*)",
-      "WebFetch(domain:0bnqt3onuegvdmxo.public.blob.vercel-storage.com)"
+      "WebFetch(domain:0bnqt3onuegvdmxo.public.blob.vercel-storage.com)",
+      "Bash(ls:*)",
+      "Bash(pnpm type-check:*)"
     ],
     "deny": [],
     "ask": []

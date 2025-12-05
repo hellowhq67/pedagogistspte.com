@@ -1,0 +1,36 @@
+# Google OAuth
+GOOGLE_CLIENT_SECRET_PATH="c:\Users\lemon\Documents\api-v1-pte-academic-preview-pte-platform-overhaul\client_secret_2_68935518934-ljcceu7i9ev3l5v40nqlmnnv73pfrc0a.apps.googleusercontent.com.json"
+GOOGLE_API_KEY="AIzaSyBkG_vPRhFzp4-SrnUnVCr-bDBmz9Q6VNw"
+
+# Vercel Blob Storage
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_0BNQT3onuEGVDMXo_dvxZ2I1fPoDUa0lYIkCenDfdNEUNFs"
+
+# Database (Railway) - Drizzle Studio
+DATABASE_URL="postgresql://postgres:FIomnuqssqiTlJvGIePMPZZBjZzNbZKS@drizzle-gateway-production-0002.up.railway.app/railway"
+POSTGRES_USER="postgres"
+POSTGRES_PASSWORD="FIomnuqssqiTlJvGIePMPZZBjZzNbZKS"
+RAILWAY_PUBLIC_DOMAIN="drizzle-gateway-production-0002.up.railway.app"
+RAILWAY_PRIVATE_DOMAIN="drizzle-gateway.railway.internal"
+RAILWAY_PROJECT_NAME="robust-heart"
+RAILWAY_ENVIRONMENT_NAME="production"
+MASTERPASS="MASTERPASS"
+
+# Rollbar
+ROLLBAR_PEDAGOGISTPTE_CLIENT_TOKEN_1763820319="190cb134e8ec43f2a0064859b3083308"
+ROLLBAR_PEDAGOGISTPTE_SERVER_TOKEN_1763820319="77451dd1b2df44fd89950b7f7bde45f5"
+ROLLBAR_PTE_SERVER_TOKEN_1763567104="4140070a12d448f686b605a934c2fdab"
+
+# Mux
+MUX_TOKEN_ID="94acb622-f43f-48c1-88f6-241e0fedf954"
+MUX_TOKEN_SECRET="ivWtBOZapacbhjt2wrHnbhIqG5hp2cfNKBrBtuqd+uBAbnGtBKWHyka1Ceeieg1WPFwwAVo+zoZ"
+
+# Redis/Upstash KV
+KV_REST_API_READ_ONLY_TOKEN="Aoh5AAIgcDKLKunKFK2LkS06SURH0lN-S22YPJoIYqj51ApxwcpKwA"
+KV_REST_API_TOKEN="AYh5AAIncDI3ZDVmYjRmM2M5YzU0ODE1YTlkOGE4Y2YwZGQwMWI2OHAyMzQ5Mzc"
+KV_REST_API_URL="https://awake-dodo-34937.upstash.io"
+KV_URL="rediss://default:AYh5AAIncDI3ZDVmYjRmM2M5YzU0ODE1YTlkOGE4Y2YwZGQwMWI2OHAyMzQ5Mzc@awake-dodo-34937.upstash.io:6379"
+REDIS_URL="rediss://default:AYh5AAIncDI3ZDVmYjRmM2M5YzU0ODE1YTlkOGE4Y2YwZGQwMWI2OHAyMzQ5Mzc@awake-dodo-34937.upstash.io:6379"
+
+# MXBAI
+MXBAI_API_KEY="mxb_1vLkstmmwmLYRChv24kljXj7MyNe"
+MXBAI_STORE_ID="5563a996-5cb7-4101-a7e9-cd00126a5943"

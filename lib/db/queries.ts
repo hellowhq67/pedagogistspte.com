@@ -17,8 +17,10 @@ import {
   userProfiles,
   userProgress,
   users,
-  userSubscriptions,
 } from './schema'
+import {
+  userSubscriptions,
+} from './schema-lessons'
 
 // User queries with improved error handling and caching
 export const getUserProfile = cache(async () => {

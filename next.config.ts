@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable Next.js 16 Cache Components (opt-in caching model)
-  cacheComponents: true,
-
   // Enable React Compiler for automatic memoization
   reactCompiler: true,
 
@@ -16,8 +13,24 @@ const nextConfig: NextConfig = {
   // Compress responses (improves load times)
   compress: true,
 
-  // Power off x-powered-by header
-  poweredByHeader: false,
+  // Fix for postgres module in client components
+  serverComponentsExternalPackages: ['postgres', '@neondatabase/serverless'],
+
+  // Webpack configuration for Railway deployment
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Don't try to bundle server-only modules in client
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        'tls': false,
+        'net': false,
+        'dns': false,
+        'fs': false,
+        'path': false,
+      };
+    }
+    return config;
+  },
 
   // Allow remote icons/assets used by PTE data
   images: {
@@ -44,99 +57,18 @@ const nextConfig: NextConfig = {
   },
 
   // Content Security Policy headers
-  headers: async () => [
-    {
-      source: '/(.*)',
-      headers: [
-        {
-          key: 'Content-Security-Policy',
-          value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://lh3.googleusercontent.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;"
-        }
-      ]
-    }
-  ],
+
 
   experimental: {
     // Faster dev restarts for large apps
     turbopackFileSystemCacheForDev: true,
     browserDebugInfoInTerminal: true,
 
-    // Optimize CSS
-    optimizeCss: true,
-
-    // Optimize package imports
-    optimizePackageImports: [
-      '@radix-ui/react-icons',
-      '@tabler/icons-react',
-      'lucide-react',
-      'recharts',
-      'framer-motion'
-    ],
-
-    // Enable web workers
-    webVitalsAttribution: ['CLS', 'FCP', 'FID', 'LCP', 'TTFB'],
-
-    // Faster middleware
-    serverActions: {
-      bodySizeLimit: '2mb',
-    },
+  
   },
 
-  logging: {
-    fetches: {
-      fullUrl: true,
-      hmrRefreshes: true,
-    },
-  },
 
-  // Custom webpack config for optimizations
-  webpack: (config, { isServer, webpack, dev }) => {
-    // Fallbacks for browser
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-        crypto: false,
-        stream: false,
-        url: false,
-        zlib: false,
-        http: false,
-        https: false,
-        assert: false,
-        os: false,
-        path: false,
-      };
-    }
-
-    // Production optimizations
-    if (!dev) {
-      // Enable tree shaking
-      config.optimization = {
-        ...config.optimization,
-        usedExports: true,
-        sideEffects: true,
-        minimize: true,
-      };
-    }
-
-    // Bundle analyzer (when ANALYZE=true)
-    if (process.env.ANALYZE === 'true') {
-      const { BundleAnalyzerPlugin } = require('@next/bundle-analyzer')({
-        enabled: true,
-      });
-      config.plugins.push(
-        new BundleAnalyzerPlugin({
-          analyzerMode: 'static',
-          reportFilename: isServer ? '../analyze/server.html' : './analyze/client.html',
-          openAnalyzer: true,
-        })
-      );
-    }
-
-    return config;
-  },
+  
 };
 
 export default nextConfig;

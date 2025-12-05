@@ -18,7 +18,16 @@
     "clean": "rimraf .next",
     "test": "echo 'No tests configured yet'",
     "postbuild": "echo '✅ Build completed successfully!'",
-    "postinstall": "echo '✅ Dependencies installed successfully!'"
+    "postinstall": "echo '✅ Dependencies installed successfully!'",
+    "railway:migrate": "pnpm db:migrate",
+    "railway:seed": "pnpm db:seed:all",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "tsx lib/db/seed.ts",
+    "db:seed:speaking": "tsx lib/db/seed-read-aloud.ts",
+    "db:seed:all": "tsx lib/db/seed.ts"
   },
   "dependencies": {
     "@ai-sdk/assemblyai": "^1.0.21",

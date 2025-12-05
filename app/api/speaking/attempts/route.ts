@@ -48,6 +48,7 @@ async function checkRateLimit(userId: string, maxPerHour = 60) {
  *
  * @param request - HTTP request whose JSON body must include `questionId`, `type`, `audioUrl`, `durationMs`, and optional `timings`
  * @returns A NextResponse with a JSON body `{ attempt: SpeakingAttempt, feedback?: any }` and HTTP 201 on success; on failure returns a JSON error response with an appropriate status code and error code.
+ */
 export async function POST(request: Request) {
   const requestId = request.headers.get('x-request-id') || crypto.randomUUID()
 

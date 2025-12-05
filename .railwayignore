@@ -1,0 +1,12 @@
+# Railway ignore file
+.git
+.next
+node_modules
+*.log
+.env.local
+.env*.local
+coverage
+.DS_Store
+*.trace
+.vscode
+.idea

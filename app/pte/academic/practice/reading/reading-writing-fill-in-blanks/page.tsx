@@ -4,7 +4,7 @@ import {
   getReadingQuestionTypeStats,
 }
 from '@/lib/pte/queries-enhanced'
-import { Textarea } from 'lucide-react'
+import { FileText } from 'lucide-react'
 
 export default async function ReadingWritingFillInBlanksPage() {
   return (
@@ -13,7 +13,7 @@ export default async function ReadingWritingFillInBlanksPage() {
       questionType="reading_writing_fill_in_blanks"
       title="Reading & Writing: Fill in the Blanks"
       description="Read the text and choose the best option to complete each blank."
-      icon={Textarea}
+      icon={FileText}
       basePath="/pte/academic/practice/reading"
       getQuestions={() =>
         getReadingQuestionsWithStats('reading_writing_fill_in_blanks')

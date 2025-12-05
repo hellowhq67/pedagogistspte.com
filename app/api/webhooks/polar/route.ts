@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Polar } from '@polar-sh/sdk'
 import { db } from '@/lib/db/drizzle'
-import { userSubscriptions } from '@/lib/db/schema'
+import { userSubscriptions } from '@/lib/db/schema-lessons'
 import { eq } from 'drizzle-orm'
 
 // Webhook signature verification
