@@ -9,3 +9,26 @@ export function mediaKindFromUrl(url: string): 'audio' | 'video' | 'image' | 'un
   if (url.match(/\.(jp(e?)g|png|gif|svg|webp)$/)) return 'image';
   return 'unknown';
 }
+
+/**
+ * Format score for display based on module
+ * Client-safe utility function (no database imports)
+ */
+export function formatScoreByModule(
+  score: number | null,
+  module: 'speaking' | 'reading' | 'writing' | 'listening'
+): string {
+  if (score === null || score === undefined) {
+    return 'N/A'
+  }
+
+  // Speaking and listening use ranges (e.g., 75-80)
+  if (module === 'speaking' || module === 'listening') {
+    const lower = Math.floor(score / 5) * 5
+    const upper = lower + 5
+    return `${lower}-${upper}`
+  }
+
+  // Reading and writing use exact scores
+  return score.toString()
+}

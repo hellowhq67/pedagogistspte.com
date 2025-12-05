@@ -22,7 +22,7 @@ import {
   QuestionWithStats,
   PTEModule,
 } from '@/lib/pte/types-enhanced'
-import { formatScoreByModule } from '@/lib/pte/queries-enhanced'
+import { formatScoreByModule } from '@/lib/pte/utils'
 
 export function UniversalQuestionPage({
   module,
