@@ -383,6 +383,32 @@ railway open
 
 ---
 
-**Session End**: All work committed and pushed to GitHub
-**Next Action**: Monitor Railway deployment in dashboard
-**Status**: ✅ Ready for deployment
+## 🔄 UPDATE - Railway Deployment Fix (December 5, 2025)
+
+### Issue Resolved: Missing pnpm-lock.yaml
+**Problem**: Railway deployment failed with error:
+```
+ERR_PNPM_NO_LOCKFILE  Cannot install with "frozen-lockfile" because pnpm-lock.yaml is absent
+```
+
+**Resolution**:
+- Ran `pnpm install` to regenerate `pnpm-lock.yaml` (473KB file created)
+- Committed file: `git commit -m "Add pnpm-lock.yaml for Railway deployment"`
+- Pushed to GitHub: Commit `a2095b2a`
+
+**Status**: ✅ pnpm-lock.yaml now in repository, Railway should auto-deploy
+
+### Next Steps
+1. Monitor Railway dashboard for new deployment attempt at https://railway.app/project/1a76c323-07fa-40d1-bac2-c563b61dbf7f
+2. Once deployment succeeds, run migrations via Railway dashboard:
+   ```bash
+   pnpm db:migrate
+   ```
+3. Verify deployment at https://pedagogistpte.com/api/health
+4. Test authentication and PTE practice features
+
+---
+
+**Session End**: pnpm-lock.yaml committed and pushed to GitHub
+**Next Action**: Monitor Railway deployment in dashboard - should auto-deploy from new commit
+**Status**: ✅ Deployment blocker resolved, waiting for Railway to build
