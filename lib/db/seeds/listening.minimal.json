@@ -1,0 +1,104 @@
+[
+  {
+    "title": "Listening — Summarize Spoken Text 1",
+    "type": "summarize_spoken_text",
+    "promptText": "Listen to the lecture and write a summary in 50-70 words.",
+    "promptMediaUrl": "/asset/audio/lecture1.mp3",
+    "transcript": "The lecture discusses the importance of renewable energy sources in combating climate change. Solar and wind power have become increasingly cost-effective alternatives to fossil fuels. Government policies and technological advances are accelerating the transition to clean energy.",
+    "correctAnswers": [],
+    "difficulty": "Medium",
+    "tags": ["seed", "listening", "sst"]
+  },
+  {
+    "title": "Listening — MCQ Single 1",
+    "type": "multiple_choice_single",
+    "promptText": "What is the main topic of the recording?",
+    "promptMediaUrl": "/asset/audio/mcq1.mp3",
+    "options": [
+      "Climate change policy",
+      "Renewable energy adoption",
+      "Fossil fuel prices",
+      "Technology innovation"
+    ],
+    "correctAnswers": ["Renewable energy adoption"],
+    "difficulty": "Easy",
+    "tags": ["seed", "listening", "mcq_single"]
+  },
+  {
+    "title": "Listening — MCQ Multiple 1",
+    "type": "multiple_choice_multiple",
+    "promptText": "Select ALL the benefits of public transportation mentioned.",
+    "promptMediaUrl": "/asset/audio/mcq_multi1.mp3",
+    "options": [
+      "Reduced traffic congestion",
+      "Lower emissions",
+      "Increased property values",
+      "Better air quality"
+    ],
+    "correctAnswers": [
+      "Reduced traffic congestion",
+      "Lower emissions",
+      "Better air quality"
+    ],
+    "difficulty": "Medium",
+    "tags": ["seed", "listening", "mcq_multiple"]
+  },
+  {
+    "title": "Listening — Fill in the Blanks 1",
+    "type": "fill_in_blanks",
+    "promptText": "The study shows that regular exercise [blank] mental health and [blank] stress levels.",
+    "promptMediaUrl": "/asset/audio/fib1.mp3",
+    "correctAnswers": [
+      { "index": 1, "answer": "improves" },
+      { "index": 2, "answer": "reduces" }
+    ],
+    "difficulty": "Medium",
+    "tags": ["seed", "listening", "fib"]
+  },
+  {
+    "title": "Listening — Highlight Correct Summary 1",
+    "type": "highlight_correct_summary",
+    "promptText": "Select the summary that best matches the recording.",
+    "promptMediaUrl": "/asset/audio/summary1.mp3",
+    "options": [
+      "The speaker discusses how technology has transformed education through online learning platforms.",
+      "The speaker explains the challenges of implementing new educational technologies in schools.",
+      "The speaker advocates for traditional classroom methods over digital learning tools."
+    ],
+    "correctAnswers": [
+      "The speaker discusses how technology has transformed education through online learning platforms."
+    ],
+    "difficulty": "Medium",
+    "tags": ["seed", "listening", "hcs"]
+  },
+  {
+    "title": "Listening — Select Missing Word 1",
+    "type": "select_missing_word",
+    "promptText": "Select the word or phrase that completes the sentence you heard.",
+    "promptMediaUrl": "/asset/audio/missing_word1.mp3",
+    "options": ["successful", "challenging", "impossible", "unnecessary"],
+    "correctAnswers": ["successful"],
+    "difficulty": "Easy",
+    "tags": ["seed", "listening", "smw"]
+  },
+  {
+    "title": "Listening — Highlight Incorrect Words 1",
+    "type": "highlight_incorrect_words",
+    "promptText": "The quick brown fox jumps over the lazy dog and runs through the forest quickly.",
+    "promptMediaUrl": "/asset/audio/incorrect_words1.mp3",
+    "transcript": "The quick brown fox jumps over the lazy dog and runs through the forest quickly.",
+    "correctAnswers": [3, 9],
+    "difficulty": "Hard",
+    "tags": ["seed", "listening", "hiw"]
+  },
+  {
+    "title": "Listening — Write from Dictation 1",
+    "type": "write_from_dictation",
+    "promptText": "Type the sentence you hear.",
+    "promptMediaUrl": "/asset/audio/dictation1.mp3",
+    "transcript": "The conference will be held next month in the convention center.",
+    "correctAnswers": [],
+    "difficulty": "Medium",
+    "tags": ["seed", "listening", "wfd"]
+  }
+]

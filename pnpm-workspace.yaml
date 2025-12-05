@@ -1,0 +1,2 @@
+packages:
+  - '.' # Include the root project as a workspace package

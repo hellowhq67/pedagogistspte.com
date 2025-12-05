@@ -1,0 +1,169 @@
+[
+  {
+    "title": "Reading — MCQ Single 1",
+    "type": "mcq_single",
+    "promptText": "Which sentence best summarizes the main idea of the passage about renewable energy adoption trends?",
+    "options": [
+      "Costs have increased",
+      "Adoption is declining",
+      "Adoption has accelerated due to lower costs",
+      "Only wind energy is viable"
+    ],
+    "answerKey": "Adoption has accelerated due to lower costs",
+    "difficulty": "Easy",
+    "tags": ["seed", "reading", "mcq_single"]
+  },
+  {
+    "title": "Reading — MCQ Single 2",
+    "type": "mcq_single",
+    "promptText": "According to the paragraph, what is the primary benefit of public transportation investment?",
+    "options": [
+      "Increased car ownership",
+      "Reduced congestion and improved access",
+      "Higher fuel prices",
+      "Longer commute times"
+    ],
+    "answerKey": "Reduced congestion and improved access",
+    "difficulty": "Medium",
+    "tags": ["seed", "reading", "mcq_single"]
+  },
+  {
+    "title": "Reading — MCQ Single 3",
+    "type": "mcq_single",
+    "promptText": "What is the author's attitude toward data privacy regulations?",
+    "options": [
+      "Strongly opposed",
+      "Neutral but cautious",
+      "Supportive with implementation concerns",
+      "Indifferent"
+    ],
+    "answerKey": "Supportive with implementation concerns",
+    "difficulty": "Hard",
+    "tags": ["seed", "reading", "mcq_single"]
+  },
+
+  {
+    "title": "Reading — MCQ Multiple 1",
+    "type": "mcq_multiple",
+    "promptText": "Select TWO statements that are supported by the passage about coral reef conservation.",
+    "options": [
+      "Reefs support diverse marine life",
+      "Acidification is not a threat",
+      "Human activity near coasts affects reefs",
+      "Reefs are unaffected by temperature changes"
+    ],
+    "answerKey": [
+      "Reefs support diverse marine life",
+      "Human activity near coasts affects reefs"
+    ],
+    "difficulty": "Medium",
+    "tags": ["seed", "reading", "mcq_multiple"]
+  },
+  {
+    "title": "Reading — MCQ Multiple 2",
+    "type": "mcq_multiple",
+    "promptText": "Select TWO accurate claims about learning strategies discussed.",
+    "options": [
+      "Active recall improves retention",
+      "Spaced repetition is ineffective",
+      "Passive review is less effective",
+      "All strategies work equally well"
+    ],
+    "answerKey": [
+      "Active recall improves retention",
+      "Passive review is less effective"
+    ],
+    "difficulty": "Easy",
+    "tags": ["seed", "reading", "mcq_multiple"]
+  },
+  {
+    "title": "Reading — MCQ Multiple 3",
+    "type": "mcq_multiple",
+    "promptText": "Choose TWO benefits of heat-resilient infrastructure mentioned.",
+    "options": [
+      "Lower urban temperatures",
+      "Increased fuel dependency",
+      "Improved community resilience",
+      "Restricted public access"
+    ],
+    "answerKey": ["Lower urban temperatures", "Improved community resilience"],
+    "difficulty": "Hard",
+    "tags": ["seed", "reading", "mcq_multiple"]
+  },
+
+  {
+    "title": "Reading — Fill in the Blanks 1",
+    "type": "fib",
+    "promptText": "Active recall and spaced repetition are evidence-based strategies shown to [blank] long-term retention.",
+    "options": ["weaken", "ignore", "improve", "confuse"],
+    "answerKey": { "blanks": [{ "index": 1, "answer": "improve" }] },
+    "difficulty": "Easy",
+    "tags": ["seed", "reading", "fib"]
+  },
+  {
+    "title": "Reading — Fill in the Blanks 2",
+    "type": "fib",
+    "promptText": "Coral reefs are increasingly threatened by rising ocean [blank] and [blank].",
+    "options": ["temperatures", "acidification", "salinity", "biodiversity"],
+    "answerKey": {
+      "blanks": [
+        { "index": 1, "answer": "temperatures" },
+        { "index": 2, "answer": "acidification" }
+      ]
+    },
+    "difficulty": "Medium",
+    "tags": ["seed", "reading", "fib"]
+  },
+  {
+    "title": "Reading — Fill in the Blanks 3",
+    "type": "fib",
+    "promptText": "Public health measures, including vaccination and [blank] testing, reduce severe outcomes.",
+    "options": ["delayed", "timely", "optional", "random"],
+    "answerKey": { "blanks": [{ "index": 1, "answer": "timely" }] },
+    "difficulty": "Medium",
+    "tags": ["seed", "reading", "fib"]
+  },
+
+  {
+    "title": "Reading — Reorder Paragraphs 1",
+    "type": "reorder_paragraphs",
+    "promptText": "Reorder the paragraphs to form a coherent passage about urban mobility.",
+    "options": [
+      "Public transit expansions can reduce congestion and emissions.",
+      "Cities with reliable transit improve access to opportunities.",
+      "Initial investment is required, but long-term benefits are significant.",
+      "Community engagement ensures equitable route planning."
+    ],
+    "answerKey": [1, 2, 4, 3],
+    "difficulty": "Medium",
+    "tags": ["seed", "reading", "reorder_paragraphs"]
+  },
+  {
+    "title": "Reading — Reorder Paragraphs 2",
+    "type": "reorder_paragraphs",
+    "promptText": "Arrange the steps to summarize a lecture effectively.",
+    "options": [
+      "Identify the central idea.",
+      "Group supporting details.",
+      "Eliminate minor digressions.",
+      "Draft a concise summary."
+    ],
+    "answerKey": [1, 2, 3, 4],
+    "difficulty": "Easy",
+    "tags": ["seed", "reading", "reorder_paragraphs"]
+  },
+  {
+    "title": "Reading — Reorder Paragraphs 3",
+    "type": "reorder_paragraphs",
+    "promptText": "Reorder the statements to outline a research process.",
+    "options": [
+      "Formulate a clear question.",
+      "Collect relevant data.",
+      "Analyze results and draw conclusions.",
+      "Review existing literature."
+    ],
+    "answerKey": [1, 4, 2, 3],
+    "difficulty": "Hard",
+    "tags": ["seed", "reading", "reorder_paragraphs"]
+  }
+]
