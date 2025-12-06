@@ -5,8 +5,8 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   test: {
-    environment: 'jsdom',
     globals: true,
+    environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     coverage: {
       provider: 'v8',
@@ -14,11 +14,18 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         '.next/',
+        'dist/',
         'coverage/',
-        '**/*.config.*',
-        '**/types/**',
         '**/*.d.ts',
+        '**/*.config.*',
+        '**/mockData/',
       ],
+      thresholds: {
+        branches: 70,
+        functions: 70,
+        lines: 70,
+        statements: 70,
+      },
     },
   },
   resolve: {
