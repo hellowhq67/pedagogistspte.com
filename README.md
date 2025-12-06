@@ -398,3 +398,24 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Made with ❤️ using Next.js 16 and Better Auth
 # Trigger deployment
+
+## Testing
+
+This project includes comprehensive unit tests. See [TESTING.md](./TESTING.md) for details.
+
+### Quick Start
+
+```bash
+# Run all tests
+pnpm test
+
+# Run with coverage
+pnpm test:coverage
+```
+
+### Test Coverage
+
+- ✅ Core PTE Utilities: Word counting, media detection, score formatting
+- ✅ Timing Configuration: Section and question timing
+- ✅ Scoring System: Mock test scoring, AI feedback, band descriptors
+- ✅ General Utilities: Class name merging with Tailwind support

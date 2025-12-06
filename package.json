@@ -16,7 +16,7 @@
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
     "clean": "rimraf .next",
-    "test": "echo 'No tests configured yet'",
+    "test": "vitest",
     "postbuild": "echo '✅ Build completed successfully!'",
     "postinstall": "echo '✅ Dependencies installed successfully!'",
     "railway:migrate": "pnpm db:migrate",
@@ -27,7 +27,11 @@
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx lib/db/seed.ts",
     "db:seed:speaking": "tsx lib/db/seed-read-aloud.ts",
-    "db:seed:all": "tsx lib/db/seed.ts"
+    "db:seed:all": "tsx lib/db/seed.ts",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:ci": "vitest run --coverage"
   },
   "dependencies": {
     "@ai-sdk/assemblyai": "^1.0.21",
@@ -120,6 +124,12 @@
     "tailwindcss": "4.1.7",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.48.1"
+    "typescript-eslint": "^8.48.1",
+    "vitest": "^2.1.8",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/ui": "^2.1.8",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "jsdom": "^25.0.1"
   }
 }

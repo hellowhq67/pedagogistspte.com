@@ -9,3 +9,8 @@ expect.extend(matchers)
 afterEach(() => {
   cleanup()
 })
+
+// Mock environment variables
+process.env.BETTER_AUTH_URL = 'http://localhost:3000'
+process.env.BETTER_AUTH_SECRET = 'test-secret-key'
+process.env.DATABASE_URL = 'postgresql://test:test@localhost:5432/testdb'
